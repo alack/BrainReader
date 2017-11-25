@@ -6,9 +6,21 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const bodyParser = require('body-parser');
+// mongoose
+const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
 const app = express();
+// mongodb에 연결
+const db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', function(){
+  // CONNECTED TO MONGODB SERVER
+  console.log("Connected to mongod server");
+});
+
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/web-system-design', { useMongoClient: true });
 // POST 데이터 파싱 설정
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
