@@ -11,6 +11,8 @@ const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
 const app = express();
+// express-session
+const session = require('express-session');
 // mongodb에 연결
 const db = mongoose.connection;
 db.on('error', console.error);
@@ -21,12 +23,18 @@ db.once('open', function(){
 
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/web-system-design', { useMongoClient: true });
+
 // POST 데이터 파싱 설정
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 // ng build 명령 실행시 생성되는 static 리소스 폴더 경로 및 이름 설정
 app.use(express.static(path.join(__dirname, 'dist')));
-
+// session 설정
+app.use(session({
+  secret: 'WEBSYSTEMDESIGN',
+  resave: false,
+  saveUninitialized: true
+}));
 // user
 app.use('/user', user);
 
