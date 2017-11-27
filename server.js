@@ -10,6 +10,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
+const room = require('./server/routes/room');
+
 const app = express();
 // express-session
 const session = require('express-session');
@@ -38,6 +40,8 @@ app.use(session({
 // user
 app.use('/user', user);
 
+app.use('/room', room);
+
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
@@ -54,3 +58,18 @@ const server = http.createServer(app);
 server.listen(port, function () {
   console.log(`Express running on localhost:${port}`);
 });
+
+const io = require('socket.io').listen(server);
+
+exports.rooms = [ { room:1}, {room:2}];
+
+io.sockets.on('connection', socket => {
+  // Join Room
+  socket.on('joinroom', data => {
+    socket.join('room' + data.roomId);
+  });
+  // Broadcast to room
+  socket.on('send:message', function(data) {
+    io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+  });
+})
