@@ -29,9 +29,59 @@ router.post('/', function (req, res) {
     if(err){
       console.error(err);
       res.json({result: 0});
+      return true;
     }
     res.json({result: 1});
 
   });
+})
+
+// 로그인 https://devdactic.com/restful-api-user-authentication-1/
+router.post('/login', (req, res) => {
+  const sess = req.session;
+
+  User.findOne({
+    id: req.body.id
+  }, (err, user) => {
+    if (err) throw err;
+
+    if (!user) {
+      res.send({success: false, msg: 'Authentication failed. User not found.'});
+    } else {
+      user.comparePassword(req.body.password, function (err, isMatch) {
+        if (isMatch && !err) {
+          // if user is found and password is right create a token
+
+          sess.name = req.body.id;
+
+          res.json({success: true });
+        } else {
+          res.send({success: false, msg: 'Authentication failed. Wrong password.'});
+        }
+      });
+    }
+  });
+})
+// 로그아웃
+router.post('/logout', (req, res) => {
+  const sess = req.session;
+
+  if(sess.name){
+    req.session.destroy(function(err){
+      if(err){
+        console.log(err);
+      }else{
+        res.redirect('/');
+      }
+    })
+  }else{
+    res.redirect('/');
+  }
+})
+
+// 로그인 유저의 정보 반환
+router.get('/me', (req, res) => {
+  const sess = req.session;
+  res.send(`my id : ${sess.name}`);
 })
 module.exports = router;
