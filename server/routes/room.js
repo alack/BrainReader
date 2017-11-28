@@ -7,8 +7,8 @@ const server = require('../../server');
 const router = express.Router();
 
 // 모든 방 정보
-router.get('/', function (req, res) {
-  res.json(server.rooms);
+router.get('/', (req, res) => {
+  res.json({ result: server.rooms });
 });
 
 router.get('/:id', (req, res) => {

@@ -64,12 +64,29 @@ const io = require('socket.io').listen(server);
 exports.rooms = [ { room:1}, {room:2}];
 
 io.sockets.on('connection', socket => {
+  // join lobby
+  socket.on('createroom', data => {
+    exports.rooms[data.name] = {
+      name: data.name,
+      password: data.password,
+      type: data.type,
+      max: data.maxuser,
+      user: 1
+    }
+  })
   // Join Room
   socket.on('joinroom', data => {
-    socket.join('room' + data.roomId);
+    socket.join('room' + data.name);
+    socket.roomname = data.name;
+
+    io.sockets.in('room' + data.roomId).emit('broadcast_msg', {msg: 'coming'});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
     io.sockets.in('room' + data.roomId).emit('send:message', data.message);
   });
+
+  socket.on('disconnect', data => {
+    // socket.leave
+  })
 })
