@@ -62,18 +62,20 @@ server.listen(port, function () {
 
 const io = require('socket.io').listen(server);
 
-exports.rooms = [ { room:1}, {room:2}];
+exports.rooms = [];
 
 io.sockets.on('connection', socket => {
   // join lobby
   socket.on('createroom', data => {
-    exports.rooms[data.name] = {
+    exports.rooms.push({
       name: data.name,
       password: data.password,
       type: data.type,
-      max: data.maxuser,
+      max: data.max,
       user: 1
-    }
+    });
+    console.log('createRooooom!!!!',data.name);
+    console.log(exports.rooms);
   })
   // Join Room
   socket.on('joinroom', data => {

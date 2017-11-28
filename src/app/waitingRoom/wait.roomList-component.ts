@@ -21,25 +21,25 @@ export class WaitRoomListComponent implements OnInit {
 
     this.rooms = [
      {
-      name: 'asdf';
-    password: '1234';
-    type: 'all';
-    max: 8;
-    user: 1;
+      name: 'asdf',
+    password: '1234',
+    type: 'all',
+    max: 8,
+    user: 1,
      },
     {
-      name: 'asdf';
-      password: '1234';
-      type: 'all';
-      max: 8;
-      user: 1;
+      name: 'ho',
+      password: '',
+      type: 'all',
+      max: 8,
+      user: 1,
     },
     {
-      name: 'asdf';
-      password: '1234';
-      type: 'all';
-      max: 8;
-      user: 1;
+      name: 'hi2',
+      password: '2222',
+      type: 'all',
+      max: 8,
+      user: 1,
     }
     ];
 

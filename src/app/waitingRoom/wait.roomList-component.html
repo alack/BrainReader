@@ -1,1 +1,3 @@
-<li *ngFor="let room of rooms">{{room.name}}</li>
+<li *ngFor="let room of rooms">
+    <app-wait-room [room]="room"></app-wait-room>
+</li>

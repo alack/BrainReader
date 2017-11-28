@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { WaitRoomComponent, CreateRoom } from './waitingRoom/wait.room-component';
+import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
@@ -13,17 +13,19 @@ import {WaitUserInfoComponent} from './waitingRoom/wait.userInfo-component';
 import {GameUserListComponent} from './gameRoom/game.userList-component';
 import {GameChattingComponent} from './gameRoom/game.chatting-component';
 import {GameCanvasComponent} from './gameRoom/game.canvas-component';
+import { WaitRoomComponent, InputPassword } from './waitingRoom/wait.room-component';
 
 // material
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatButtonModule, MatCheckboxModule, MatDialogModule, MatInputModule, MatSelectModule} from '@angular/material';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
     AppComponent,
-    WaitRoomComponent,
+    WaitLobbyComponent,
     WaitUserListComponent,
     WaitChattingComponent,
     WaitRoomListComponent,
@@ -31,7 +33,9 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     GameUserListComponent,
     GameChattingComponent,
     GameCanvasComponent,
-    CreateRoom
+    CreateRoom,
+    WaitRoomComponent,
+    InputPassword
   ],
   imports: [
     BrowserModule,
@@ -44,10 +48,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatCardModule
   ],
   providers: [HttpWaitingRoomService],
   bootstrap: [AppComponent],
-  entryComponents: [CreateRoom]
+  entryComponents: [
+    CreateRoom,
+    InputPassword
+  ]
 })
 export class AppModule { }

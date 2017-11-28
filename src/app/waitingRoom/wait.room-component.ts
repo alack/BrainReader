@@ -1,58 +1,84 @@
-import { Component, OnInit, Inject } from '@angular/core';
+/**
+ * Created by jaehong on 2017. 11. 29..
+ */
+import { Component, OnInit, Input } from '@angular/core';
+import { MatDialog, MatDialogRef, MatDialogClose } from '@angular/material/dialog';
 import { Room } from '../../../models/room';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'lobby',
-  templateUrl: './wait.room-component.html',
-  styleUrls: ['./wait.room-component.css']
+    selector : 'app-wait-room',
+    template: `
+    <mat-card (click)="enterPassword()">
+        <mat-card-header style="height: 70px;">
+            {{room.name}}
+        </mat-card-header>
+        <mat-card-content>
+            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
+            <p align="right">{{room.type}}</p>
+        </mat-card-content>
+    </mat-card>`
 })
 
 export class WaitRoomComponent implements OnInit {
-  title = 'app';
-  rooms: Object[];
+    @Input() room: Room;
 
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+    constructor(public dialog: MatDialog) {}
 
-  ngOnInit(): void {
-    // Make the HTTP request:
-    this.http.get('/room').subscribe(data => {
-      // Read the result field from the JSON response.
-      this.rooms = data['result'];
-    });
-  }
 
-  openDialog(): void {
-    let dialogRef = this.dialog.open(CreateRoom, {
-      width: '250px'
-    });
+    ngOnInit(): void {
+    }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result);
+    enterPassword(): void {
+        (this.room.password == '' ? this.correctPassword():this.openDialog());
+    }
 
-    });
-  }
+    openDialog(): void {
+        let dialogRef = this.dialog.open(InputPassword, {
+            width: '250px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            console.log('result', result);
+            (result == this.room.password? this.correctPassword():alert('nono'));
+        });
+
+        // dialogRef.keydownEvents().subscribe(result => {
+        //     console.log(dialogRef.password,'how to ok when enter key input');
+        //     if(result.key == 'Enter') {
+        //         dialogRef.close(dialogRef.password);
+        //     }
+        // })
+    }
+
+    correctPassword(): void {
+        alert('gogo');
+    }
 }
 
 @Component({
-  selector: 'create-room',
-  templateUrl: './wait.createRoom-dialog.html'
+    selector: 'input-password',
+    template: `
+    <h1 mat-dialog-title>Enter a Password</h1>
+    <div mat-dialog-content>
+        <mat-form-field>
+            <input matInput [(ngModel)]="password">
+        </mat-form-field>
+    </div>
+    <div mat-dialog-actions>
+        <button mat-button [mat-dialog-close]="password" tabindex="2">Enter</button>
+        <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+    </div>
+    `
 })
-export class CreateRoom {
-  room: Room = {
-    name: '',
-    password: '',
-    type: '',
-    max: 8,
-    user: 1
-  };
+export class InputPassword {
+    password: string;
 
-  constructor(public dialogRef: MatDialogRef<CreateRoom>) { }
+    constructor(public dialogRef: MatDialogRef<InputPassword>) { }
 
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
+    onNoClick(): void {
+        this.dialogRef.close();
+    }
 }
+
+
+
