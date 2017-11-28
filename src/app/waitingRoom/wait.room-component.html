@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<mat-grid-list cols="3" rowHeight="7:2">
+    <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <button mat-raised-button color="primary" (click)="openDialog()">방 만들기</button>
+        <button mat-raised-button color="primary">랭크</button>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="6">
+        <app-wait-room-list style="overflow: scroll;width: inherit;height: inherit;">
+
+        </app-wait-room-list>
+    </mat-grid-tile>
+    <mat-grid-tile [rowspan]="5">접속자 리스트</mat-grid-tile>
+    <mat-grid-tile [rowspan]="2">내 정보</mat-grid-tile>
+    <mat-grid-tile [colspan]="2" [rowspan]="2">채팅</mat-grid-tile>
+</mat-grid-list>

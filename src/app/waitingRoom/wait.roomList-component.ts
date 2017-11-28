@@ -1,6 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-
-
+import { Component, OnInit, Input } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector : 'app-wait-room-list',
@@ -9,11 +8,42 @@ import {Component, OnInit} from '@angular/core';
 })
 
 export class WaitRoomListComponent implements OnInit {
+  rooms: Object[];
 
-  constructor() {
-
-  }
+  constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    // Make the HTTP request:
+    // this.http.get('/room').subscribe(data => {
+    //   // Read the result field from the JSON response.
+    //   this.rooms = data['result'];
+    // });
+
+    this.rooms = [
+     {
+      name: 'asdf';
+    password: '1234';
+    type: 'all';
+    max: 8;
+    user: 1;
+     },
+    {
+      name: 'asdf';
+      password: '1234';
+      type: 'all';
+      max: 8;
+      user: 1;
+    },
+    {
+      name: 'asdf';
+      password: '1234';
+      type: 'all';
+      max: 8;
+      user: 1;
+    }
+    ];
+
+
+    console.log('roomlist', this.rooms);
   }
 }
