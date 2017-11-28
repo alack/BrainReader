@@ -1,8 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
 
 
 import { AppComponent } from './app.component';
+import { Lobby } from './lobby';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
@@ -19,6 +21,12 @@ import {GameCanvasComponent} from './gameRoom/game.canvas-component';
 @NgModule({
   declarations: [
     AppComponent,
+    Lobby
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    FormsModule,
     WaitUserListComponent,
     WaitChattingComponent,
     WaitRoomListComponent,
@@ -26,11 +34,6 @@ import {GameCanvasComponent} from './gameRoom/game.canvas-component';
     GameUserListComponent,
     GameChattingComponent,
     GameCanvasComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule
   ],
   providers: [HttpWaitingRoomService],
   bootstrap: [AppComponent]
