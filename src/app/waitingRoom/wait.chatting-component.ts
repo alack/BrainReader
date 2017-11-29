@@ -10,7 +10,7 @@ import * as io from 'socket.io-client';
 })
 
 export class WaitChattingComponent implements OnInit, OnDestroy {
-  messages= [];
+  messages = [];
   connection;
   message;
   // private url = 'http://localhost:3000';

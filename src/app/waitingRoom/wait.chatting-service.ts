@@ -1,7 +1,6 @@
 /**
  * Created by jaehong on 2017. 11. 29..
  */
-import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import * as io from 'socket.io-client';
 

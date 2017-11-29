@@ -11,6 +11,17 @@ router.get('/', (req, res) => {
   res.json({ result: server.rooms });
 });
 
+router.post('/', (req, res) => {
+  server.rooms.push({
+    name: req.body.data.name,
+    password: req.body.password,
+    type: req.body.type,
+    maxUser: req.body.maxUser,
+    userCount: 1
+  });
+  res.json({ result: 'ok'});
+})
+
 router.get('/:id', (req, res) => {
   res.json({id: req.params.id })
 })

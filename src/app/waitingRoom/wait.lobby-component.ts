@@ -1,8 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Room } from '../../../models/room';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import * as io from 'socket.io-client';
 
 @Component({
   selector: 'lobby',
@@ -13,8 +12,6 @@ import * as io from 'socket.io-client';
 export class WaitLobbyComponent implements OnInit {
   title = 'app';
   rooms: Object[];
-  private url = 'http://localhost:3000';
-  private socket = io(this.url);
 
   constructor(private http: HttpClient, public dialog: MatDialog) {}
 
@@ -32,9 +29,10 @@ export class WaitLobbyComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.http.post('/room', {data: result}).subscribe(data => {
+        console.log(data);
+      });
       console.log('The dialog was closed');
-      console.log(result);
-      this.socket.emit('createroom', result);
     });
   }
 }
