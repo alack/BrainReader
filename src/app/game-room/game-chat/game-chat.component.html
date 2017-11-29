@@ -1,0 +1,6 @@
+<div id="game_room_chat_window" >
+    <label *ngFor="let message of messages">
+      {{message}}
+    </label>
+  </div>
+<input id="game_room_chat_text" #chat_text type="text" (keydown.enter) = "onEnter(chat_text.value)" >

@@ -34,7 +34,7 @@ router.post('/', function (req, res) {
     res.json({result: 1});
 
   });
-})
+});
 
 // 로그인 https://devdactic.com/restful-api-user-authentication-1/
 router.post('/login', (req, res) => {
@@ -61,7 +61,7 @@ router.post('/login', (req, res) => {
       });
     }
   });
-})
+});
 // 로그아웃
 router.post('/logout', (req, res) => {
   const sess = req.session;
@@ -77,11 +77,11 @@ router.post('/logout', (req, res) => {
   }else{
     res.redirect('/');
   }
-})
+});
 
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
   const sess = req.session;
   res.send(`my id : ${sess.name}`);
-})
+});
 module.exports = router;
