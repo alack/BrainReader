@@ -5,6 +5,6 @@ export class Room {
     name: string;
     password: string;
     type: string;
-    max: number;
-    user: number
+    maxUser: number;
+    userCount: number
 }

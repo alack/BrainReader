@@ -1,6 +1,18 @@
 mat-grid-tile {
     background: lightblue;
 }
+
 button[mat-raised-button] {
     margin: 15px
+}
+
+app-wait-room-list {
+    overflow: scroll;
+    width: 100%;
+    height: inherit;
+}
+
+app-chatting-component {
+    width: 100%;
+    height: inherit;
 }

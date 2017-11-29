@@ -1,0 +1,15 @@
+div.chat {
+    height: 80%;
+    overflow: scroll;
+}
+
+input {
+    margin-left: 10px;
+    margin-right: 5px;
+    width: 85%;
+    height: 30px;
+    font-size: large;
+}
+
+button {
+}

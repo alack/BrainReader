@@ -48,8 +48,8 @@ export class CreateRoom {
     name: '',
     password: '',
     type: '',
-    max: 8,
-    user: 1
+    maxUser: 8,
+    userCount: 1
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

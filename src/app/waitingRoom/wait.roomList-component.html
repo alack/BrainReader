@@ -1,3 +1,9 @@
-<li *ngFor="let room of rooms">
-    <app-wait-room [room]="room"></app-wait-room>
-</li>
+<div>
+    <p>
+        <input>
+        <button mat-raised-button color="primary" (click)="getRoomList()">Refresh</button>
+    </p>
+    <li *ngFor="let room of rooms">
+        <app-wait-room [room]="room"></app-wait-room>
+    </li>
+</div>

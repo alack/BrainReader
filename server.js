@@ -71,8 +71,8 @@ io.sockets.on('connection', socket => {
       name: data.name,
       password: data.password,
       type: data.type,
-      max: data.max,
-      user: 1
+      maxUser: data.max,
+      userCount: 1
     });
     console.log('createRooooom!!!!',data.name);
     console.log(exports.rooms);
@@ -86,6 +86,7 @@ io.sockets.on('connection', socket => {
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
+
     io.sockets.in('room' + data.roomId).emit('send:message', data.message);
   });
 

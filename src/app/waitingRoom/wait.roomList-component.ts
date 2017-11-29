@@ -43,7 +43,12 @@ export class WaitRoomListComponent implements OnInit {
     }
     ];
 
-
-    console.log('roomlist', this.rooms);
+  }
+  getRoomList() {
+    // Make the HTTP request:
+    this.http.get('/room').subscribe(data => {
+      // Read the result field from the JSON response.
+      this.rooms = data['result'];
+    });
   }
 }

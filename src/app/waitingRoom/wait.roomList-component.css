@@ -3,3 +3,9 @@ li {
     display: inline-block;
     margin:1%;
 }
+p {
+    position: sticky;
+    position: -webkit-sticky;
+    top: 0%;
+    z-index: 1;
+}

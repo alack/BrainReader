@@ -14,7 +14,7 @@ import { Room } from '../../../models/room';
         </mat-card-header>
         <mat-card-content>
             <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-            <p align="right">{{room.type}}</p>
+            <p align="right">{{room.userCount}}/{{room.maxUser}}</p>
         </mat-card-content>
     </mat-card>`
 })

@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="chat">
+    <div *ngFor="let text of messages">
+        {{text}}
+    </div>
+</div>
 
-</body>
-</html>
+<input [(ngModel)]="message"/>
+<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+
