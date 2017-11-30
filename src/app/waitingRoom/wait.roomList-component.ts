@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 
 
@@ -9,7 +9,7 @@ import {Component, OnInit} from '@angular/core';
 })
 
 export class WaitRoomListComponent implements OnInit {
-
+  @Input() session;
   constructor() {
 
   }

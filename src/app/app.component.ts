@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, Input, OnInit, Inject} from '@angular/core';
+import {SessionService} from './service/session.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,17 @@ import { Component } from '@angular/core';
 })
 
 
-export class AppComponent {
-  title = 'Login UI  ';
+export class AppComponent implements OnInit {
+  sessionId: string;
+  sessionCheck: boolean;
+
+  constructor(private sessionService: SessionService) {
+   this.sessionId = sessionService.getSessionId();
+   this.sessionCheck = sessionService.getSessionCheck();
+  }
+
+ ngOnInit(): void {
+
+  }
+
 }

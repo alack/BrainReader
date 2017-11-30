@@ -1,0 +1,16 @@
+<br>
+<form class="example-form">
+  <mat-form-field class="example-full-width">
+    <input [(ngModel)]= "registerId" [ngModelOptions]="{standalone: true}" matInput placeholder="아이디 입력" >
+  </mat-form-field>
+
+  <mat-form-field class="example-full-width">
+    <input [(ngModel)]= "registerPw" [ngModelOptions]="{standalone: true}" matInput  type="password" placeholder="패스워드 입력" >
+  </mat-form-field>
+
+
+  <br><br><br><br>
+  <button style="width: 210px" mat-raised-button color="primary" (click)='userRegister()'>회원가입</button>
+  <button style="width: 210px" mat-raised-button color="primary" (click)='onNoClick()'>취소</button>
+
+</form>
