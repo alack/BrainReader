@@ -1,0 +1,12 @@
+
+<div [ngSwitch]="sessionCheck">
+
+  <div *ngSwitchCase="true">
+    {{sessionId}}  님 입장하셨습니다.
+  </div>
+
+  <div *ngSwitchDefault>
+    <button mat-raised-button (click)="openDialog()" style="height:60px;width:500px" mat-raised-button color="primary" >START</button>
+  </div>
+
+</div>
