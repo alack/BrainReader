@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="chat" #chat [scrollTop]="chat.scrollHeight">
+    <div class="bubble" *ngFor="let data of messages">
+        <b>{{data.name}}</b><br>
+        {{data.message}}
+    </div>
+</div>
 
-</body>
-</html>
+<input [(ngModel)]="message" (keypress)="sendMessage($event.keyCode)">
+<!--<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>-->
+

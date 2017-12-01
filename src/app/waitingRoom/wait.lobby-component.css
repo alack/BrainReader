@@ -1,0 +1,21 @@
+mat-grid-tile {
+    background: azure;
+    border: double;
+    border-color: beige;
+}
+
+button[mat-raised-button] {
+    border-radius: 10px;
+    margin: 15px
+}
+
+app-wait-room-list, app-wait-user-list {
+    overflow: scroll;
+    width: 100%;
+    height: inherit;
+}
+
+app-chatting-component {
+    width: 100%;
+    height: inherit;
+}

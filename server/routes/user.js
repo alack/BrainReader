@@ -104,8 +104,11 @@ router.post('/logout', (req, res) => {
 
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
-  const sess = req.session;
-  res.send(`my id : ${sess.name}`);
+  User.findOne({
+    id: req.session.name
+  }, (err, user) => {
+    res.json(user);
+  });
 })
 
 module.exports = router;
