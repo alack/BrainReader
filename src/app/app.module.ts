@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { AppComponent } from './app.component';
+import { Lobby } from './lobby';
 
-import {AppComponent} from './app.component';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
@@ -27,6 +28,7 @@ import {SessionService} from './service/session.service';
 @NgModule({
   declarations: [
     AppComponent,
+    Lobby,
     WaitUserListComponent,
     WaitChattingComponent,
     WaitRoomListComponent,
