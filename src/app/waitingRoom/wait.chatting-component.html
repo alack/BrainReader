@@ -1,9 +1,10 @@
-<div class="chat">
-    <div *ngFor="let text of messages">
-        {{text}}
+<div class="chat" #chat [scrollTop]="chat.scrollHeight">
+    <div class="bubble" *ngFor="let data of messages">
+        <b>{{data.name}}</b><br>
+        {{data.message}}
     </div>
 </div>
 
-<input [(ngModel)]="message"/>
-<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>
+<input [(ngModel)]="message" (keypress)="sendMessage($event.keyCode)">
+<!--<button mat-raised-button color="primary" (click)="sendMessage()">Send</button>-->
 

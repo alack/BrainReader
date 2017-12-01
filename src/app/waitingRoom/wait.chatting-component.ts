@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ChatService } from './wait.chatting-service';
-import * as io from 'socket.io-client';
 
 @Component({
   selector : 'app-chatting-component',
@@ -13,26 +12,37 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
   messages = [];
   connection;
   message;
-  // private url = 'http://localhost:3000';
-  // private socket = io(this.url);
+  @Input() name;
 
   constructor(private chatService:ChatService) {}
 
-  sendMessage(){
-    this.chatService.sendMessage(this.message);
-    // let data = {
-    //   roomId: '',
-    //   message: this.message
-    // }
-    // this.socket.emit('send:message', )
+  sendMessage(keyCode){
+    if(keyCode == 13) {
+      this.chatService.sendMessage({
+        name: this.name,
+        message: this.message
+      });
+      this.message = '';
+    }
   }
 
   ngOnInit(): void {
     this.chatService.joinRoom();
-    this.connection = this.chatService.getMessages().subscribe( message => {
-      console.log('push',message);
-      // console.log(this.messages)
-      this.messages.push(message);
+    this.connection = this.chatService.getMessages().subscribe( data => {
+      this.messages.push(data);
+    })
+
+    this.messages.push({
+      name: 'ghdekdan21',
+      message: 'hihi nayana'
+    })
+    this.messages.push({
+      name: 'ghdekdan21',
+      message: 'hihi nayanahihi nayanahihi '
+    })
+    this.messages.push({
+      name: 'ghdekdan21',
+      message: 'hihi nayana'
     })
 
     // this.socket.emit('joinroom', { name: '' });
@@ -44,5 +54,4 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.connection.unsubscribe();
   }
-
 }

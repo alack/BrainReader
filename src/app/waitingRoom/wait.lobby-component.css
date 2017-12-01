@@ -1,8 +1,11 @@
 mat-grid-tile {
-    background: lightblue;
+    background: azure;
+    border: double;
+    border-color: beige;
 }
 
 button[mat-raised-button] {
+    border-radius: 10px;
     margin: 15px
 }
 

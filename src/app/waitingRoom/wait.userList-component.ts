@@ -4,7 +4,6 @@ import {Component, OnInit} from '@angular/core';
   selector : 'app-wait-user-list',
   templateUrl: './wait.userList-component.html',
   styleUrls: ['./wait.userList-component.css']
-
 })
 
 export class WaitUserListComponent implements  OnInit {

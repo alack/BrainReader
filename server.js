@@ -77,7 +77,7 @@ io.sockets.on('connection', socket => {
 
   // Broadcast to room
   socket.on('send:message', function(data) {
-    io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+    io.sockets.in('room' + data.roomId).emit('send:message', data);
   });
 
   socket.on('getUserList', () => {

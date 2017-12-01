@@ -24,7 +24,6 @@ export class WaitRoomComponent implements OnInit {
 
     constructor(public dialog: MatDialog) {}
 
-
     ngOnInit(): void {
     }
 

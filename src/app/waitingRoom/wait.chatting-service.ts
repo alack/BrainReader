@@ -13,11 +13,9 @@ export class ChatService {
         let data = {name:''};
         this.socket.emit('joinroom', data);
     }
-    sendMessage(message){
-        let data = {
-            roomId: '',
-            message: message
-        }
+    sendMessage(data){
+        data['roomId'] = '';
+        console.log(data);
         this.socket.emit('send:message', data);
     }
 

@@ -9,6 +9,8 @@ import { HttpClient } from '@angular/common/http';
 
 export class WaitRoomListComponent implements OnInit {
   rooms: Object[];
+  selectedRooms: Object[];
+  input;
 
   constructor(private http: HttpClient) {}
 
@@ -24,8 +26,8 @@ export class WaitRoomListComponent implements OnInit {
       name: 'asdf',
     password: '1234',
     type: 'all',
-    max: 8,
-    user: 1,
+    maxUser: 8,
+    userCount: 1,
      },
     {
       name: 'ho',
@@ -42,13 +44,19 @@ export class WaitRoomListComponent implements OnInit {
       user: 1,
     }
     ];
-
+    this.selectedRooms = this.rooms;
   }
   getRoomList() {
     // Make the HTTP request:
     this.http.get('/room').subscribe(data => {
       // Read the result field from the JSON response.
-      this.rooms = data['result'];
+      this.selectedRooms = this.rooms = data['result'];
     });
+  }
+  onKeyDown() {
+    console.log(this.selectedRooms);
+    this.selectedRooms = this.rooms.filter((room) => {
+      return (room['name'].includes(this.input)) ? true:false;
+    })
   }
 }

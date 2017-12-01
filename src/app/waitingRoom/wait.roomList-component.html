@@ -1,9 +1,13 @@
-<div>
-    <p>
-        <input>
-        <button mat-raised-button color="primary" (click)="getRoomList()">Refresh</button>
-    </p>
-    <li *ngFor="let room of rooms">
-        <app-wait-room [room]="room"></app-wait-room>
-    </li>
-</div>
+<section class="flexbox">
+    <div class="stretch">
+        <input (keyup)="onKeyDown()" [(ngModel)]="input">
+    </div>
+    <div class="normal">
+        <button mat-fab color="primary" (click)="getRoomList()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
+</section>
+<li *ngFor="let room of selectedRooms">
+    <app-wait-room [room]="room"></app-wait-room>
+</li>

@@ -1,15 +1,27 @@
 div.chat {
     height: 80%;
     overflow: scroll;
+    background: ghostwhite;
+}
+
+div.bubble {
+    padding: 8px;
+    margin: 8px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    border: outset 2px;
+    background: white;
+    border-radius: 10px;
+    display: table;
 }
 
 input {
-    margin-left: 10px;
-    margin-right: 5px;
-    width: 85%;
+    position: absolute;
+    bottom:0;
+    width: 100%;
     height: 30px;
     font-size: large;
 }
 
-button {
+input:focus {
+    outline: none;
 }

@@ -12,13 +12,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  server.rooms.push({
-    name: req.body.data.name,
-    password: req.body.password,
-    type: req.body.type,
-    maxUser: req.body.maxUser,
-    userCount: 1
-  });
+  server.rooms.push(req.body.data);
   res.json({ result: 'ok'});
 })
 
