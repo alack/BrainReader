@@ -1,5 +1,6 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from './wait.chatting-service';
+import {SessionService} from '../service/session.service';
 
 @Component({
   selector : 'app-chatting-component',
@@ -12,9 +13,10 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
   messages = [];
   connection;
   message;
-  @Input() name;
+  name;
 
-  constructor(private chatService:ChatService) {}
+  constructor(private chatService:ChatService,
+              private sessionService: SessionService) {}
 
   sendMessage(keyCode){
     if(keyCode == 13) {
@@ -27,28 +29,11 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.name = this.sessionService.getSessionId();
     this.chatService.joinRoom();
     this.connection = this.chatService.getMessages().subscribe( data => {
       this.messages.push(data);
     })
-
-    this.messages.push({
-      name: 'ghdekdan21',
-      message: 'hihi nayana'
-    })
-    this.messages.push({
-      name: 'ghdekdan21',
-      message: 'hihi nayanahihi nayanahihi '
-    })
-    this.messages.push({
-      name: 'ghdekdan21',
-      message: 'hihi nayana'
-    })
-
-    // this.socket.emit('joinroom', { name: '' });
-    // this.socket.on('send:message', (data) => {
-    //   this.messages.push(data)
-    // })
   }
 
   ngOnDestroy() {

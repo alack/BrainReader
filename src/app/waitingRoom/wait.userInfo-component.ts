@@ -14,16 +14,16 @@ export class WaitUserInfoComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    // this.http.get('/user/me', user => {
-    //   this.user = user;
-    // })
-
     this.user = {
       id: 'hibria',
       correct: 251,
       attempt: 512,
       points: 1442
     }
+
+    this.http.get('/user/me').subscribe( user => {
+      this.user = user;
+    })
   }
 
 }

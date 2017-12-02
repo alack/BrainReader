@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
@@ -44,7 +45,7 @@ import {MatListModule} from '@angular/material/list';
 
     CreateRoom,
     WaitRoomComponent,
-    InputPassword
+    InputPassword,
 
     StartComponent,
     DialogComponent,
@@ -57,6 +58,7 @@ import {MatListModule} from '@angular/material/list';
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    CommonModule,
     BrowserAnimationsModule,
     MatButtonModule,
     MatCheckboxModule,

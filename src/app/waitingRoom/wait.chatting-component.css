@@ -12,6 +12,7 @@ div.bubble {
     background: white;
     border-radius: 10px;
     display: table;
+    height: 0px;
 }
 
 input {
