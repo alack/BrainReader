@@ -55,3 +55,56 @@ const server = http.createServer(app);
 server.listen(port, function () {
   console.log(`Express running on localhost:${port}`);
 });
+
+const io = require('socket.io').listen(server);
+
+exports.rooms = [];
+
+io.sockets.on('connection', socket => {
+  // join lobby
+  const roomid = '0';
+  socket.on('createroom', data => {
+    exports.rooms.push({
+      name: data.name,
+      password: data.password,
+      type: data.type,
+      maxUser: data.max,
+      userCount: 1
+    });
+    console.log('createRooooom!!!!', data.name);
+    console.log(exports.rooms);
+  });
+  // Join Room
+  socket.on('joinroom', data => {
+    socket.join('room' + data.name);
+    socket.roomname = data.name;
+    console.log('roomjoin::roomid : ', data['roomId']);
+    // io.sockets.clients(socket.roomname);
+    // console.log('my room users : ', io.sockets.clients(socket.roomname));
+    io.sockets.in('room' + data.roomId).emit('broadcast_msg', {msg: 'coming'});
+  });
+  // Broadcast to room
+  socket.on('send:message', function(data) {
+    console.log('send:message:: : ', 'room' + data.roomId);
+     io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+  });
+  socket.on('startline', function (data) {
+    console.log('startline::roomid : ', 'room' + data.roomId);
+    console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('startpath', data);
+  });
+  socket.on('moveline', function (data) {
+    console.log('moveline::roomid : ','room' + data.roomId);
+    console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('movepath', data);
+  });
+  socket.on('finishline', function (data) {
+    console.log('finishline::roomid : ','room' + data.roomId);
+    console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('finishpath', data);
+  });
+
+  socket.on('disconnect', data => {
+    // socket.leave
+  });
+});

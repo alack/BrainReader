@@ -1,5 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-// import io from 'socket.io-client';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {GameIoService} from '../game-io.service';
 
 @Component({
   selector: 'app-game-canvas',
@@ -9,26 +9,31 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 
 
 
-export class GameCanvasComponent implements OnInit {
+export class GameCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('cv') c;
   // socket;
   ctx;
   click;
-  constructor( ) {
-  }
+  roomId = 1;
+  con_startPath;
+  con_movePath;
+  con_finishPath;
+  constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
-    // this.socket = io('http://localhost:4200');
     this.c  = document.getElementById('cv');
     this.c.width = 560;
     this.c.height = 450;
     this.ctx = this.c.getContext('2d');
     this.click = false;
-    // this.socket.on('startpath', this.startPath);
-    // this.socket.on('movepath', this.movePath);
-    // this.socket.on('finishpath', this.finishPath);
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 2;
+  }
+
+  ngOnDestroy() {
+    this.con_startPath.unsubscribe();
+    this.con_movePath.unsubscribe();
+    this.con_finishPath.unsubscribe();
   }
 
   startPath(e) {
@@ -56,22 +61,19 @@ export class GameCanvasComponent implements OnInit {
 
   mouseDown(e: MouseEvent) {
     const abPos = this.getAbsoluteMousePos(e);
-    // this.socket.emit('startline', abPos);
-    this.startPath(abPos);
+    this.gameIo.sendStartLine(abPos);
   }
 
   mouseMove(e: MouseEvent) {
-    if ( this.click ) {
+    if (this.click) {
       const abPos = this.getAbsoluteMousePos(e);
-      // this.socket.emit('moveline', abPos);
-      this.movePath(abPos);
+      this.gameIo.sendMoveLine(abPos);
     }
   }
 
   mouseUp(e: MouseEvent) {
     const abPos = this.getAbsoluteMousePos(e);
-    // this.socket.emit('finishline', abPos);
-    this.finishPath(abPos);
+    this.gameIo.sendFinishLine(abPos);
   }
 
   getSangDaeMousePos(e) {
@@ -86,6 +88,24 @@ export class GameCanvasComponent implements OnInit {
       x: (e.clientX - rect.left) / (rect.right - rect.left),
       y: (e.clientY - rect.top) / (rect.bottom - rect.top)
     };
+  }
+
+  injectColor(color: string) {
+    this.ctx.lineWidth = (color === 'white') ? 5 : 1;
+    this.ctx.strokeStyle = color;
+  }
+
+  gameStart() {
+    this.con_startPath = this.gameIo.getStartPath().subscribe(data => {
+      this.startPath(data);
+    });
+    this.con_movePath = this.gameIo.getMovePath().subscribe( data => {
+      this.movePath(data);
+    });
+    this.con_finishPath = this.gameIo.getFinishPath().subscribe( data => {
+      this.finishPath(data);
+    });
+
   }
 
 }

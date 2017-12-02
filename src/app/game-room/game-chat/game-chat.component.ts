@@ -1,18 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { GameIoService } from '../game-io.service';
 
 @Component({
   selector: 'app-game-chat',
   templateUrl: './game-chat.component.html',
   styleUrls: ['./game-chat.component.css']
 })
-export class GameChatComponent implements OnInit {
+
+export class GameChatComponent implements OnInit, OnDestroy {
   messages = [];
-  constructor() { }
+  con_chat;
+  constructor(private gameIo: GameIoService) { }
 
   ngOnInit() {
+    this.gameIo.joinRoom();
+    this.con_chat = this.gameIo.getMessages().subscribe(message => {
+      this.pushMessages(message);
+    });
+  }
+
+  ngOnDestroy() {
+    this.con_chat.unsubscribe();
   }
 
   onEnter(value: string) {
+    this.gameIo.sendMessage(value);
+  }
+
+  pushMessages(value) {
     this.messages.push(value);
     if (this.messages.length > 50) {
       this.messages.splice(0, 1);

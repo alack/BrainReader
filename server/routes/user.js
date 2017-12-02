@@ -67,14 +67,14 @@ router.post('/logout', (req, res) => {
   const sess = req.session;
 
   if(sess.name){
-    req.session.destroy(function(err){
+    req.session.destroy((err) => {
       if(err){
         console.log(err);
-      }else{
+      } else {
         res.redirect('/');
       }
     })
-  }else{
+  } else {
     res.redirect('/');
   }
 });
@@ -84,4 +84,5 @@ router.get('/me', (req, res) => {
   const sess = req.session;
   res.send(`my id : ${sess.name}`);
 });
+
 module.exports = router;

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { OverlayModule } from '@angular/cdk/overlay';
 import {
   MatCardModule,
   MatGridListModule,
@@ -22,6 +23,7 @@ import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.compone
 import { GameUserRightComponent } from './game-room/game-user-right/game-user-right.component';
 import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left.component';
 import { GameComponent } from './game-room/game/game.component';
+import { GameIoService } from './game-room/game-io.service';
 
 import { HttpClientModule} from '@angular/common/http';
 import { FormsModule} from '@angular/forms';
@@ -54,7 +56,10 @@ import { FormsModule} from '@angular/forms';
     MatCardModule,
     MatProgressBarModule
   ],
-  providers: [HttpWaitingRoomService],
+  providers: [
+    HttpWaitingRoomService,
+    GameIoService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
