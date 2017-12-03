@@ -28,6 +28,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.click = false;
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 2;
+    this.gameStart();
   }
 
   ngOnDestroy() {

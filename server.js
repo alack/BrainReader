@@ -76,7 +76,7 @@ io.sockets.on('connection', socket => {
   });
   // Join Room
   socket.on('joinroom', data => {
-    socket.join('room' + data.name);
+    socket.join('room' + data.roomId);
     socket.roomname = data.name;
     console.log('roomjoin::roomid : ', data['roomId']);
     // io.sockets.clients(socket.roomname);
@@ -85,8 +85,8 @@ io.sockets.on('connection', socket => {
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
-    console.log('send:message:: : ', 'room' + data.roomId);
-     io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+    console.log('send:message:: : ', 'room' + data.roomId,' msg : ', data.message);
+     io.sockets.in('room' + data.roomId).emit('message', data.message);
   });
   socket.on('startline', function (data) {
     console.log('startline::roomid : ', 'room' + data.roomId);
