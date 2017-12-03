@@ -103,4 +103,14 @@ export class GameIoService implements OnInit {
     });
     return observable;
   }
+  getNewUser() {
+    // todo : 새로룸에 접속한 유저의정보를 확인하고 일반적으로는 left에 넘겨주되 left, right의 유저수를 고려하여 적은 곳으로 넘김 받은 data에 direction이란 parameter를 추가하여 넘긴다. 그러면 component는 자기에 해당한다면 추가하도 아니라면 하지 않는다. 맡김(이 함수는 waitingroom에도 있어야할 것)
+  }
+  requestWord() {
+    // todo : 게임을 시작하고난 이후 새 단어를 요청함
+  }
+  getWord() {
+    // todo : 새 단어를 받음.
+  }
+
 }
