@@ -80,7 +80,7 @@ io.sockets.on('connection', socket => {
   });
   // Join Room
   socket.on('joinroom', data => {
-    socket.join('room' + data.roomId);
+    socket.join('room' + data.name);
     socket.roomname = data.name;
     console.log('roomjoin::roomid : ', data['roomId']);
     // io.sockets.clients(socket.roomname);
@@ -108,7 +108,19 @@ io.sockets.on('connection', socket => {
     console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
     io.sockets.in('room' + data.roomId).emit('finishpath', data);
   });
+  socket.on('getuserlist', function () {
+    const users = [];
+    io.in('room').clients((err, clients) => {
+      // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
+      // console.log(clients);
+      clients.forEach(client => {
+        users.push(io.sockets.connected[client].name);
+      })
 
+      console.log(users);
+      io.sockets.in('room').emit('getuserlist', users);
+    });
+  })
   socket.on('disconnect', data => {
     // socket.leave
   });
