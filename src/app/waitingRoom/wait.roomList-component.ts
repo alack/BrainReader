@@ -15,46 +15,17 @@ export class WaitRoomListComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Make the HTTP request:
-    // this.http.get('/room').subscribe(data => {
-    //   // Read the result field from the JSON response.
-    //   this.rooms = data['result'];
-    // });
-
-    this.rooms = [
-     {
-      name: 'asdf',
-    password: '1234',
-    type: 'all',
-    maxUser: 8,
-    userCount: 1,
-     },
-    {
-      name: 'ho',
-      password: '',
-      type: 'all',
-      max: 8,
-      user: 1,
-    },
-    {
-      name: 'hi2',
-      password: '2222',
-      type: 'all',
-      max: 8,
-      user: 1,
-    }
-    ];
-    this.selectedRooms = this.rooms;
+    this.getRoomList();
   }
   getRoomList() {
     // Make the HTTP request:
     this.http.get('/room').subscribe(data => {
       // Read the result field from the JSON response.
-      this.selectedRooms = this.rooms = data['result'];
+      this.rooms = data['result'];
+      this.selectedRooms = this.rooms;
     });
   }
   onKeyDown() {
-    console.log(this.selectedRooms);
     this.selectedRooms = this.rooms.filter((room) => {
       return (room['name'].includes(this.input)) ? true:false;
     })

@@ -1,9 +1,9 @@
-<div [ngSwitch]="sessionCheck">
+<div [ngSwitch]="sessionCheck" class="container">
   <div *ngSwitchCase="true">
     <lobby></lobby>
   </div>
-  <div *ngSwitchDefault>
-    <div style="display: flex; justify-content: center; align-items: center;">
+  <div *ngSwitchDefault class="container">
+    <div style="display: flex; justify-content: center; align-items: center;" class="container">
       <button mat-raised-button (click)="openDialog()" style="height:60px;width:500px" mat-raised-button color="primary" >START</button>
     </div>
   </div>
