@@ -10,6 +10,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
+const room = require('./server/routes/room');
+
 const app = express();
 // express-session
 const session = require('express-session');
@@ -37,6 +39,8 @@ app.use(session({
 }));
 // user
 app.use('/user', user);
+
+app.use('/room', room);
 
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {

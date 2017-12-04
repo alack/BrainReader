@@ -1,21 +1,36 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+
 import { OverlayModule } from '@angular/cdk/overlay';
 import {
   MatCardModule,
   MatGridListModule,
   MatButtonModule,
   MatCheckboxModule,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatDialogModule,
+  MatInputModule,
+  MatSelectModule,
+  MatIconModule,
+  MatTabsModule,
+  MatFormFieldModule
 } from '@angular/material';
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
+import {HttpClientModule} from '@angular/common/http';
+import {FormsModule} from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 
-import { WaitUserListComponent } from './waitingRoom/wait.userList-component';
-import { WaitChattingComponent } from './waitingRoom/wait.chatting-component';
-import { WaitRoomListComponent } from './waitingRoom/wait.roomList-component';
-import { WaitUserInfoComponent } from './waitingRoom/wait.userInfo-component';
-import { HttpWaitingRoomService } from './service/http.waitingRoom.service';
+import {HttpWaitingRoomService} from './service/http.waitingRoom.service';
+import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
+import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
+import {WaitChattingComponent} from './waitingRoom/wait.chatting-component';
+import {WaitRoomListComponent} from './waitingRoom/wait.roomList-component';
+import {WaitUserInfoComponent} from './waitingRoom/wait.userInfo-component';
+import { WaitRoomComponent, InputPassword } from './waitingRoom/wait.room-component';
 
 import { GameRoomComponent } from './game-room/game-room.component';
 import { GameChatComponent } from './game-room/game-chat/game-chat.component';
@@ -25,41 +40,75 @@ import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left
 import { GameComponent } from './game-room/game/game.component';
 import { GameIoService } from './game-room/game-io.service';
 
-import { HttpClientModule} from '@angular/common/http';
-import { FormsModule} from '@angular/forms';
+import {DialogComponent, StartComponent} from './loginRoom/startComponent';
+import {TabsOverviewComponent} from './loginRoom/tabs-overview';
+import {RegisterComponent} from './loginRoom/registerComponent';
+import {LoginComponent} from './loginRoom/loginComponent';
+
+import {HttpUserService} from './service/http.user.service';
+
+import {SessionService} from './service/session.service';
 
 
-
-
+// import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
     AppComponent,
+    WaitLobbyComponent,
     WaitUserListComponent,
     WaitChattingComponent,
     WaitRoomListComponent,
     WaitUserInfoComponent,
+
     GameRoomComponent,
     GameChatComponent,
     GameCanvasComponent,
     GameUserRightComponent,
     GameUserLeftComponent,
-    GameComponent
+    GameComponent,
+
+    CreateRoom,
+    WaitRoomComponent,
+    InputPassword,
+
+    StartComponent,
+    DialogComponent,
+    TabsOverviewComponent,
+    RegisterComponent,
+    LoginComponent,
+
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    CommonModule,
+    BrowserAnimationsModule,
     MatButtonModule,
     MatCheckboxModule,
     MatGridListModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     MatCardModule,
+    MatListModule,
+    MatIconModule,
+    MatTabsModule,
     MatProgressBarModule
   ],
   providers: [
     HttpWaitingRoomService,
+    HttpUserService,
+    SessionService,
     GameIoService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    CreateRoom,
+    InputPassword,
+    DialogComponent
+  ]
 })
 export class AppModule { }

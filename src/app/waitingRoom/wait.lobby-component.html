@@ -1,0 +1,18 @@
+<mat-grid-list cols="4" rowHeight="7:2">
+    <mat-grid-tile [colspan]="1" [rowspan]="1" class="menu">
+        <button mat-raised-button color="primary" (click)="openDialog()">방 만들기</button>
+        <button mat-raised-button color="accent">랭크</button>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="3" [rowspan]="6">
+        <app-wait-room-list></app-wait-room-list>
+    </mat-grid-tile>
+    <mat-grid-tile [rowspan]="5">
+        <app-wait-user-list></app-wait-user-list>
+    </mat-grid-tile>
+    <mat-grid-tile [rowspan]="2">
+        <app-wait-user-info></app-wait-user-info>
+    </mat-grid-tile>
+    <mat-grid-tile [colspan]="3" [rowspan]="2">
+        <app-chatting-component></app-chatting-component>
+    </mat-grid-tile>
+</mat-grid-list>

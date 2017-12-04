@@ -1,0 +1,26 @@
+<h1 mat-dialog-title>Create a Room</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <input matInput [(ngModel)]="room.name" placeholder="Name">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [(ngModel)]="room.password" placeholder="Password">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-select [(ngModel)]="room.type" placeholder="Type">
+            <mat-option value="1">1</mat-option>
+            <mat-option value="2">2</mat-option>
+            <mat-option value="3">3</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [(ngModel)]="room.maxUser" type="number" placeholder="2~8" min="2" max="8">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="room" tabindex="2">Create</button>
+    <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+</div>
+
+
+

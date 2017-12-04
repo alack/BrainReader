@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
 
@@ -7,13 +8,22 @@ import {Component, OnInit} from '@angular/core';
   styleUrls: ['./wait.userInfo-component.css']
 })
 
-export  class WaitUserInfoComponent implements OnInit {
+export class WaitUserInfoComponent implements OnInit {
+  user;
 
-  constructor() {
-
-  }
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+    this.user = {
+      id: 'hibria',
+      correct: 251,
+      attempt: 512,
+      points: 1442
+    }
+
+    this.http.get('/user/me').subscribe( user => {
+      this.user = user;
+    })
   }
 
 }
