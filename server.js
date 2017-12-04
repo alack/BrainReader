@@ -80,7 +80,7 @@ io.sockets.on('connection', socket => {
   });
   // Join Room
   socket.on('joinroom', data => {
-    socket.join('room' + data.name);
+    socket.join('room' + data.roomId);
     socket.roomname = data.name;
     console.log('roomjoin::roomid : ', data['roomId']);
     // io.sockets.clients(socket.roomname);

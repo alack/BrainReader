@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   user = {
     sessionId: '',
-    currentPage: 'login'
+    currentPage: ''
   };
 
   constructor(private httpUserService: HttpUserService,

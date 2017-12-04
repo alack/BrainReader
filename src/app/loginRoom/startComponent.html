@@ -1,11 +1,11 @@
 <div [ngSwitch]="currentPage" class="container">
-  <div *ngSwitchCase="game">
+  <div *ngSwitchCase="'game'">
     <app-game-room></app-game-room>
   </div>
-  <div *ngSwitchCase="waiting">
+  <div *ngSwitchCase="'waiting'">
     <lobby></lobby>
   </div>
-  <div *ngSwitchCase="login" class="container">
+  <div *ngSwitchDefault class="container">
     <div style="display: flex; justify-content: center; align-items: center;" class="container">
       <button mat-raised-button (click)="openDialog()" style="height:60px;width:500px" mat-raised-button color="primary" >START</button>
     </div>
