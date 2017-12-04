@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 export class SessionService {
 
   sessionId: string;
-  sessionCheck: boolean;
+  currentPage: string;
 
   constructor() {
 
@@ -19,10 +19,10 @@ export class SessionService {
     return this.sessionId;
   }
 
-  setSessionCheck(sbool) {
-    this.sessionCheck = sbool;
+  setCurrentPage(s) {
+    this.currentPage = s;
   }
-  getSessionCheck() {
-   return this.sessionCheck;
+  getCurrentPage() {
+   return this.currentPage;
   }
 }

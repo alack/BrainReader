@@ -12,7 +12,7 @@ import {SessionService} from '../service/session.service';
 })
 export class StartComponent {
   sessionId: string;
-  sessionCheck: boolean;
+  sessionCheck;
 
   constructor(public dialog: MatDialog, private sessionService: SessionService) {
 
@@ -28,7 +28,7 @@ export class StartComponent {
     dialogRef.afterClosed().subscribe(result => {
 
       this.sessionId = this.sessionService.getSessionId();
-      this.sessionCheck = this.sessionService.getSessionCheck();
+      this.currentPage = this.sessionService.getSessionCheck();
 
     });
   }

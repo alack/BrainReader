@@ -10,11 +10,11 @@ import { SessionService } from './service/session.service';
 
 export class AppComponent implements OnInit {
   sessionId: string;
-  sessionCheck: boolean;
+  currentPage;
 
   constructor(private sessionService: SessionService) {
    this.sessionId = sessionService.getSessionId();
-   this.sessionCheck = sessionService.getSessionCheck();
+   this.currentPage = sessionService.getCurrentPage();
   }
 
  ngOnInit(): void {

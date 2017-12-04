@@ -15,7 +15,5 @@ export class WaitUserListComponent implements  OnInit {
 
   ngOnInit(): void {
     // 서버에서 가져오는 걸로 수정하기
-    for(let a = 1;a<50;a++)
-      this.users.push('a'+ a);
   }
 }

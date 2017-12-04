@@ -85,7 +85,7 @@ io.sockets.on('connection', socket => {
     console.log('roomjoin::roomid : ', data['roomId']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in('room' + data.roomId).emit('message', {msg: user.id+' coming'});
+    io.sockets.in('room' + data.roomId).emit('message', user.id+' coming');
     io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room

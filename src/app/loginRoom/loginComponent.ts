@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 
   user = {
     sessionId: '',
-    sessionCheck: false
+    currentPage: 'login'
   };
 
   constructor(private httpUserService: HttpUserService,
@@ -42,9 +42,9 @@ export class LoginComponent implements OnInit {
 
         alert('로그인 성공');
         this.user.sessionId = this.sessId;
-        this.user.sessionCheck = this.session;
+        this.user.currentPage = 'waiting';
         this.sessionService.setSessionId(this.user.sessionId);
-        this.sessionService.setSessionCheck(this.user.sessionCheck);
+        this.sessionService.setCurrentPage(this.user.currentPage);
 
         this.dialogRef.close();
       } else {

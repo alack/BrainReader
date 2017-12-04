@@ -17,6 +17,15 @@ export class GameIoService implements OnInit {
   ngOnInit() {
     console.log('game-io service ngOnInit!!');
   }
+
+  setRoomId(id) {
+    this.roomId = id;
+  }
+
+  getRoomId(id) {
+    return this.roomId;
+  }
+
   joinRoom() {
     console.log('joinRoom.service function');
     const data = { name : '',
