@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from './wait.chatting-service';
-import {SessionService} from '../service/session.service';
+import { SessionService } from '../service/session.service';
 
 @Component({
   selector : 'app-chatting-component',
