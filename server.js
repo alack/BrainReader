@@ -62,33 +62,54 @@ server.listen(port, function () {
 
 const io = require('socket.io').listen(server);
 
-exports.rooms = [ { room:1}, {room:2}];
+exports.rooms = [];
 
 io.sockets.on('connection', socket => {
   // join lobby
+  const roomid = '0';
   socket.on('createroom', data => {
-    exports.rooms[data.name] = {
+    exports.rooms.push({
       name: data.name,
       password: data.password,
       type: data.type,
-      max: data.maxuser,
-      user: 1
-    }
-  })
+      maxUser: data.max,
+      userCount: 1
+    });
+    console.log('createRooooom!!!!', data.name);
+    console.log(exports.rooms);
+  });
   // Join Room
   socket.on('joinroom', data => {
-    socket.join('room' + data.name);
+    socket.join('room' + data.roomId);
     socket.roomname = data.name;
-
-    io.sockets.in('room' + data.roomId).emit('broadcast_msg', {msg: 'coming'});
+    console.log('roomjoin::roomid : ', data['roomId']);
+    // io.sockets.clients(socket.roomname);
+    // console.log('my room users : ', io.sockets.clients(socket.roomname));
+    io.sockets.in('room' + data.roomId).emit('message', {msg: user.id+' coming'});
+    io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
-    io.sockets.in('room' + data.roomId).emit('send:message', data.message);
+    console.log('send:message:: : ', 'room' + data.roomId,' msg : ', data.message);
+     io.sockets.in('room' + data.roomId).emit('message', data.message);
+  });
+  socket.on('startline', function (data) {
+    console.log('startline::roomid : ', 'room' + data.roomId);
+    console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('startpath', data);
+  });
+  socket.on('moveline', function (data) {
+    console.log('moveline::roomid : ','room' + data.roomId);
+    console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('movepath', data);
+  });
+  socket.on('finishline', function (data) {
+    console.log('finishline::roomid : ','room' + data.roomId);
+    console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
+    io.sockets.in('room' + data.roomId).emit('finishpath', data);
   });
 
   socket.on('disconnect', data => {
     // socket.leave
-  })
-})
-
+  });
+});

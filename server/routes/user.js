@@ -15,8 +15,30 @@ router.get('/', function (req, res) {
   });
 });
 
+router.get('/admin', (req, res) => {
+  const user = new User();
+
+  user.id = 'admin';
+  user.password = '1234';
+  user.attempt = 0;
+  user.correct = 0;
+  user.points = 0;
+
+  user.save(function(err){
+    if(err){
+      console.error(err);
+      res.json({result: 0});
+      return true;
+    }
+    res.json({result: 1});
+
+  });
+})
+
 // 회원가입
 router.post('/', function (req, res) {
+
+  console.log('user register node');
   const user = new User();
 
   user.id = req.body.id;
@@ -34,12 +56,12 @@ router.post('/', function (req, res) {
     res.json({result: 1});
 
   });
-})
+});
 
 // 로그인 https://devdactic.com/restful-api-user-authentication-1/
 router.post('/login', (req, res) => {
   const sess = req.session;
-
+  console.log(req.body);
   User.findOne({
     id: req.body.id
   }, (err, user) => {
@@ -54,14 +76,15 @@ router.post('/login', (req, res) => {
 
           sess.name = req.body.id;
 
-          res.json({success: true });
+          res.json({success: true, session: sess.name});
+
         } else {
           res.send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
       });
     }
   });
-})
+});
 // 로그아웃
 router.post('/logout', (req, res) => {
   const sess = req.session;
@@ -77,12 +100,15 @@ router.post('/logout', (req, res) => {
   } else {
     res.redirect('/');
   }
-})
+});
 
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
-  const sess = req.session;
-  res.send(`my id : ${sess.name}`);
+  User.findOne({
+    id: req.session.name
+  }, (err, user) => {
+    res.json(user);
+  });
 })
 
 module.exports = router;
