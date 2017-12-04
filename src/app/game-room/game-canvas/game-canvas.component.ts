@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
-import {GameIoService} from '../game-io.service';
+import {GameIoService} from '../../service/game-io.service';
 
 @Component({
   selector: 'app-game-canvas',

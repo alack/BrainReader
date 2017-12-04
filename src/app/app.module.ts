@@ -13,7 +13,8 @@ import {
   MatSelectModule,
   MatIconModule,
   MatTabsModule,
-  MatFormFieldModule
+  MatFormFieldModule,
+  MatListModule
 } from '@angular/material';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -38,7 +39,7 @@ import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.compone
 import { GameUserRightComponent } from './game-room/game-user-right/game-user-right.component';
 import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left.component';
 import { GameComponent } from './game-room/game/game.component';
-import { GameIoService } from './game-room/game-io.service';
+import { GameIoService } from './service/game-io.service';
 
 import {DialogComponent, StartComponent} from './loginRoom/startComponent';
 import {TabsOverviewComponent} from './loginRoom/tabs-overview';
