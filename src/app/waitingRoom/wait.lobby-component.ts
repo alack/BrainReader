@@ -24,7 +24,7 @@ export class WaitLobbyComponent implements OnInit {
   }
 
   openDialog(): void {
-    let dialogRef = this.dialog.open(CreateRoom, {
+    const dialogRef = this.dialog.open(CreateRoom, {
       width: '250px'
     });
 

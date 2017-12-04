@@ -5,5 +5,5 @@
     </div>
 </div>
 
-<input [(ngModel)]="message" (keypress)="sendMessage($event.keyCode)">
+<input #input (keyup.enter)="sendMessage(input.value)">
 

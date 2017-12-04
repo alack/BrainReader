@@ -28,7 +28,7 @@ export class WaitRoomComponent implements OnInit {
     }
 
     enterPassword(): void {
-        (this.room.password == '' ? this.correctPassword():this.openDialog());
+        (this.room.password == '' ? this.correctPassword() : this.openDialog());
     }
 
     openDialog(): void {
@@ -66,8 +66,7 @@ export class WaitRoomComponent implements OnInit {
     <div mat-dialog-actions>
         <button mat-button [mat-dialog-close]="password" tabindex="2">Enter</button>
         <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
-    </div>
-    `
+    </div>`
 })
 export class InputPassword {
     password: string;
