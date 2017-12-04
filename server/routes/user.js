@@ -90,13 +90,14 @@ router.post('/logout', (req, res) => {
   const sess = req.session;
 
   if(sess.name){
-    req.session.destroy((err) => {
-      if(err){
+    req.session.destroy(err => {
+      if(err) {
         console.log(err);
-      } else {
+        }
+        else {
         res.redirect('/');
       }
-    })
+    });
   } else {
     res.redirect('/');
   }

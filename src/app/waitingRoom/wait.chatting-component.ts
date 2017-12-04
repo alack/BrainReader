@@ -1,42 +1,44 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ChatService } from './wait.chatting-service';
-import {SessionService} from '../service/session.service';
+import { GameIoService } from '../service/game-io.service';
+import { SessionService } from '../service/session.service';
 
 @Component({
   selector : 'app-chatting-component',
   templateUrl : './wait.chatting-component.html',
-  styleUrls: ['./wait.chatting-component.css'],
-  providers: [ChatService]
+  styleUrls: ['./wait.chatting-component.css']
 })
 
 export class WaitChattingComponent implements OnInit, OnDestroy {
   messages = [];
-  connection;
-  message;
   name;
+  con_chat;
+  value;
 
-  constructor(private chatService:ChatService,
-              private sessionService: SessionService) {}
+  constructor(private gameIo: GameIoService,
+              private session: SessionService) {}
 
-  sendMessage(keyCode){
-    if(keyCode == 13) {
-      this.chatService.sendMessage({
-        name: this.name,
-        message: this.message
-      });
-      this.message = '';
-    }
-  }
-
-  ngOnInit(): void {
-    this.name = this.sessionService.getSessionId();
-    this.chatService.joinRoom();
-    this.connection = this.chatService.getMessages().subscribe( data => {
-      this.messages.push(data);
-    })
+  ngOnInit() {
+    this.gameIo.joinRoom();
+    this.con_chat = this.gameIo.getMessages().subscribe(message => {
+      this.pushMessages(message);
+    });
   }
 
   ngOnDestroy() {
-    this.connection.unsubscribe();
+    this.con_chat.unsubscribe();
+  }
+
+  onEnter(value: string) {
+    this.gameIo.sendMessage(value);
+    this.value = '';
+  }
+
+  pushMessages(value)  {
+    this.messages.push(value);
+    if (this.messages.length > 50) {
+      this.messages.splice(0, 1);
+    }
+    const chat_window = document.getElementById('game_room_chat_window');
+    chat_window.scrollTop = chat_window.scrollHeight;
   }
 }
