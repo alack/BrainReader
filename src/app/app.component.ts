@@ -1,10 +1,10 @@
-import {Component, Input, OnInit, Inject} from '@angular/core';
-import {SessionService} from './service/session.service';
+import { Component, OnInit } from '@angular/core';
+import { SessionService } from './service/session.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 
 
@@ -19,6 +19,6 @@ export class AppComponent implements OnInit {
 
  ngOnInit(): void {
 
-  }
+ }
 
 }

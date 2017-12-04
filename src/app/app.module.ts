@@ -1,35 +1,56 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+
+import { OverlayModule } from '@angular/cdk/overlay';
+import {
+  MatCardModule,
+  MatGridListModule,
+  MatButtonModule,
+  MatCheckboxModule,
+  MatProgressBarModule,
+  MatDialogModule,
+  MatInputModule,
+  MatSelectModule,
+  MatIconModule,
+  MatTabsModule,
+  MatFormFieldModule
+} from '@angular/material';
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
-import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
-
-import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 
 import {HttpWaitingRoomService} from './service/http.waitingRoom.service';
+import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
+import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {WaitChattingComponent} from './waitingRoom/wait.chatting-component';
 import {WaitRoomListComponent} from './waitingRoom/wait.roomList-component';
 import {WaitUserInfoComponent} from './waitingRoom/wait.userInfo-component';
-import {GameUserListComponent} from './gameRoom/game.userList-component';
-import {GameChattingComponent} from './gameRoom/game.chatting-component';
-import {GameCanvasComponent} from './gameRoom/game.canvas-component';
 import { WaitRoomComponent, InputPassword } from './waitingRoom/wait.room-component';
-import {HttpUserService} from './service/http.user.service';
+
+import { GameRoomComponent } from './game-room/game-room.component';
+import { GameChatComponent } from './game-room/game-chat/game-chat.component';
+import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.component';
+import { GameUserRightComponent } from './game-room/game-user-right/game-user-right.component';
+import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left.component';
+import { GameComponent } from './game-room/game/game.component';
+import { GameIoService } from './game-room/game-io.service';
+
 import {DialogComponent, StartComponent} from './loginRoom/startComponent';
 import {TabsOverviewComponent} from './loginRoom/tabs-overview';
 import {RegisterComponent} from './loginRoom/registerComponent';
 import {LoginComponent} from './loginRoom/loginComponent';
+
+import {HttpUserService} from './service/http.user.service';
+
 import {SessionService} from './service/session.service';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule, MatDialogModule, MatInputModule, MatSelectModule, MatIconModule, MatTabsModule } from '@angular/material';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatGridListModule} from '@angular/material/grid-list';
-import {MatCardModule} from '@angular/material/card';
-import {MatListModule} from '@angular/material/list';
+
+// import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -39,9 +60,13 @@ import {MatListModule} from '@angular/material/list';
     WaitChattingComponent,
     WaitRoomListComponent,
     WaitUserInfoComponent,
-    GameUserListComponent,
-    GameChattingComponent,
+
+    GameRoomComponent,
+    GameChatComponent,
     GameCanvasComponent,
+    GameUserRightComponent,
+    GameUserLeftComponent,
+    GameComponent,
 
     CreateRoom,
     WaitRoomComponent,
@@ -70,9 +95,15 @@ import {MatListModule} from '@angular/material/list';
     MatCardModule,
     MatListModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatProgressBarModule
   ],
-  providers: [HttpWaitingRoomService, HttpUserService, SessionService],
+  providers: [
+    HttpWaitingRoomService,
+    HttpUserService,
+    SessionService,
+    GameIoService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [
     CreateRoom,

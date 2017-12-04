@@ -1,0 +1,18 @@
+
+<mat-grid-list cols="5" rowHeight="150px">
+  <mat-grid-tile role="listitem" [colspan] = "1" [rowspan] = "5">
+    <app-game-user-left>User-Left</app-game-user-left>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="3" [rowspan]="1">
+    <app-game>Game</app-game>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="1" [rowspan]="5">
+    <app-game-user-right>User-Right</app-game-user-right>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="3" [rowspan]="3">
+    <app-game-canvas>Canvas</app-game-canvas>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="3" [rowspan]="1">
+    <app-game-chat>Chat</app-game-chat>
+  </mat-grid-tile>
+</mat-grid-list>

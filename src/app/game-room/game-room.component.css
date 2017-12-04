@@ -1,0 +1,55 @@
+
+mat-grid-tile {
+  background-color: lightgrey;
+  display: flex;
+  flex-direction: column;
+}
+div {
+  display: flex;
+  flex-direction: column;
+
+}
+
+mat-card {
+  background-color: white;
+}
+
+.example-h2 {
+  margin: 10px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.example-margin {
+  margin: 0 10px;
+}
+
+app-game {
+  width: 100%;
+  height: 100%;
+}
+
+app-game-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+app-game-user-left {
+  width: 100%;
+  height: 100%;
+}
+
+app-game-user-right {
+  width: 100%;
+  height: 100%;
+}
+
+app-game-chat {
+  width: 100%;
+  height: 100%;
+}

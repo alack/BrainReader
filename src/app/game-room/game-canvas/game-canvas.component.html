@@ -1,0 +1,12 @@
+<canvas #cv id='cv'
+(mousemove)="mouseMove($event)" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" ></canvas>
+<div id="colors">
+  <div id="yellow" class="div_color" (click)="injectColor('yellow')"></div>
+  <div id="cyan" class="div_color" (click)="injectColor('cyan')"></div>
+  <div id="blue" class="div_color" (click)="injectColor('blue')"></div>
+  <div id="magenta" class="div_color" (click)="injectColor('magenta')"></div>
+  <div id="red" class="div_color" (click)="injectColor('red')"></div>
+  <div id="green" class="div_color" (click)="injectColor('green')"></div>
+  <div id="black" class="div_color" (click)="injectColor('black')"></div>
+  <div id="white" class="div_color" (click)="injectColor('white')"></div>
+</div>
