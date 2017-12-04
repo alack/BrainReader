@@ -3,4 +3,4 @@
       {{message}}
     </label>
   </div>
-<input id="game_room_chat_text" #chat_text type="text" (keydown.enter) = "onEnter(chat_text.value)" >
+<input id="game_room_chat_text" #chat_text type="text" [(ngModel)]="value" (keydown.enter) = "onEnter(chat_text.value)" >

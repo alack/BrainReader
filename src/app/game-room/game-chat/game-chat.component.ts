@@ -10,6 +10,7 @@ import { GameIoService } from '../game-io.service';
 export class GameChatComponent implements OnInit, OnDestroy {
   messages = [];
   con_chat;
+  value;
   constructor(private gameIo: GameIoService) { }
 
   ngOnInit() {
@@ -25,9 +26,10 @@ export class GameChatComponent implements OnInit, OnDestroy {
 
   onEnter(value: string) {
     this.gameIo.sendMessage(value);
+    this.value = '';
   }
 
-  pushMessages(value) {
+  pushMessages(value)  {
     this.messages.push(value);
     if (this.messages.length > 50) {
       this.messages.splice(0, 1);

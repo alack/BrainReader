@@ -106,7 +106,10 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.con_finishPath = this.gameIo.getFinishPath().subscribe( data => {
       this.finishPath(data);
     });
+  }
 
+  sendimage() {
+    // todo 정답을 맞출 시, 정답의 그림을 mediacapture하여 서버에 저장. 방법은 고민, mediacpature를 통해 할건지 트래킹을 통해 할건지.
   }
 
 }

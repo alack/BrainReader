@@ -81,9 +81,8 @@ io.sockets.on('connection', socket => {
     console.log('roomjoin::roomid : ', data['roomId']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in('room' + data.roomId).emit('broadcast_msg', {msg: 'coming'});
-
-    // todo: 유저가 룸에 조인하면 알림말을 띄우는 이벤트를 발생시키고 다른 이들에게 전파.
+    io.sockets.in('room' + data.roomId).emit('message', {msg: user.id+' coming'});
+    io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
