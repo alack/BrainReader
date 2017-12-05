@@ -1,0 +1,7 @@
+<div class="chat" #chat [scrollTop]="chat.scrollHeight">
+    <div class="bubble" *ngFor="let data of messages">
+        <b>ppap</b><br>
+        {{data}}
+    </div>
+</div>
+<input #input  [(ngModel)]="value" (keydown.enter)="onEnter(input.value)">
