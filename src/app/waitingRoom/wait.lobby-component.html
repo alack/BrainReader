@@ -1,7 +1,7 @@
 <mat-grid-list cols="4" rowHeight="7:2">
     <mat-grid-tile [colspan]="1" [rowspan]="1" class="menu">
         <button mat-raised-button color="primary" (click)="openDialog()">방 만들기</button>
-        <button mat-raised-button color="accent">랭크</button>
+        <button mat-raised-button color="accent" (click)="openRank()">랭크</button>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" [rowspan]="6">
         <app-wait-room-list></app-wait-room-list>

@@ -18,7 +18,7 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
               private session: SessionService) {}
 
   ngOnInit() {
-    this.gameIo.joinRoom();
+    // this.gameIo.joinRoom();
     this.con_chat = this.gameIo.getMessages().subscribe(message => {
       this.pushMessages(message);
     });

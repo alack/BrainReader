@@ -1,6 +1,7 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
+import {SessionService} from '../service/session.service';
 
 @Injectable()
 export class GameIoService implements OnInit {
@@ -9,7 +10,7 @@ export class GameIoService implements OnInit {
   roomId = '0';
   roomLeftCnt = 0;
   roomRightCnt = 0;
-  constructor() {
+  constructor(private sessionService: SessionService) {
     this.socket = io(this.url);
     // this.joinRoom();
   }
@@ -18,19 +19,39 @@ export class GameIoService implements OnInit {
     console.log('game-io service ngOnInit!!');
   }
 
-  setRoomId(id) {
+  getUserList() {
+    const observable = new Observable(observer => {
+      this.socket.on('getuserlist', (data) => {
+        console.log('getUserList.service::getuserlist event coming');
+        observer.next(data);
+      });
+      return () => {
+        // this.socket.leave();
+        this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+
+  requestUserList() {
+    this.socket.emit('getuserlist',this.roomId);
+    console.log('requestuserlist to room'+this.roomId)
+  }
+
+  setRoomId(id){
     this.roomId = id;
   }
 
   getRoomId(id) {
     return this.roomId;
-  }
+  };
 
   joinRoom() {
     console.log('joinRoom.service function');
-    const data = { name : '',
+    const data = { userName : this.sessionService.getSessionId(),
                     roomId : this.roomId };
     this.socket.emit('joinroom', data);
+    this.requestUserList();
   }
   sendMessage(message) {
     console.log('sendMessage.service function');
@@ -48,7 +69,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -68,7 +89,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -88,7 +109,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -108,7 +129,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -136,5 +157,4 @@ export class GameIoService implements OnInit {
   getWord() {
     // todo : 새 단어를 받음.
   }
-
 }

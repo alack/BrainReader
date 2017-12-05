@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Room } from '../../../models/room';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { GameIoService } from '../service/game-io.service';
+import {SessionService} from '../service/session.service';
 
 @Component({
   selector: 'lobby',
@@ -9,18 +11,27 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['wait.lobby-component.css']
 })
 
-export class WaitLobbyComponent implements OnInit {
-  title = 'app';
+export class WaitLobbyComponent implements OnInit, OnDestroy {
   rooms: Object[];
 
-  constructor(private http: HttpClient, public dialog: MatDialog) {}
+  constructor(private http: HttpClient,
+              public dialog: MatDialog,
+              private gameIo: GameIoService,
+              private sessionService: SessionService) {}
 
   ngOnInit(): void {
+    console.log('lobby init')
+    this.gameIo.joinRoom();
     // Make the HTTP request:
     this.http.get('/room').subscribe(data => {
       // Read the result field from the JSON response.
       this.rooms = data['result'];
     });
+  }
+
+  ngOnDestroy() {
+    console.log('lobby destroyed');
+    this.gameIo.requestUserList();
   }
 
   openDialog(): void {
@@ -34,6 +45,11 @@ export class WaitLobbyComponent implements OnInit {
       });
       console.log('The dialog was closed');
     });
+  }
+
+  openRank() {
+    console.log(this.sessionService.getCurrentPage());
+    this.sessionService.setCurrentPage('game');
   }
 }
 
