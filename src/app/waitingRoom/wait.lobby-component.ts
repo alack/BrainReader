@@ -41,7 +41,14 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       this.http.post('/room', {data: result}).subscribe(data => {
-        console.log(data);
+        this.http.post('/room/' + result['name'],{
+          data: this.sessionService.getSessionId()
+        }).subscribe(dat => {
+          console.log('create room', result);
+
+          this.gameIo.setRoomId(result['name']);
+          this.sessionService.setCurrentPage('game');
+        })
       });
       console.log('The dialog was closed');
     });
@@ -63,7 +70,8 @@ export class CreateRoom {
     password: '',
     type: '',
     maxUser: 8,
-    userCount: 1
+    userCount: 0,
+    users: []
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }
