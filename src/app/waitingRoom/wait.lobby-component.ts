@@ -31,7 +31,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.log('lobby destroyed');
-    this.gameIo.requestUserList();
+    // this.gameIo.requestUserList();
   }
 
   openDialog(): void {

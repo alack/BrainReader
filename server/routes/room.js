@@ -30,7 +30,7 @@ router.post('/:id', (req, res) => {
     res.json({result: true});
   } else res.json({result: false});
 
-  console.log(room, req.body.data);
+  console.log('router/post/room/:id',room);
 
 })
 

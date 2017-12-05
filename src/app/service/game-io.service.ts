@@ -27,7 +27,7 @@ export class GameIoService implements OnInit {
       });
       return () => {
         // this.socket.leave();
-        this.socket.disconnect();
+        // this.socket.disconnect();
       };
     });
     return observable;
@@ -48,29 +48,35 @@ export class GameIoService implements OnInit {
 
   joinRoom() {
     console.log('joinRoom.service function');
+    console.log(this.socket);
     const data = { userName : this.sessionService.getSessionId(),
                     roomId : this.roomId };
+
     this.socket.emit('joinroom', data);
-    this.requestUserList();
+    console.log('joinRoom to ', data);
+    // this.requestUserList();
   }
+
+
   sendMessage(message) {
     console.log('sendMessage.service function');
     const data = {
       roomId: this.roomId,
       message: message
     };
+    console.log(data);
     this.socket.emit('send:message', data);
   }
   getMessages() {
      const observable = new Observable(observer => {
 
       this.socket.on('message', (data) => {
-        console.log('getMessages.service::send:message event coming');
+        console.log('getMessages.service::send:message event coming', data);
         observer.next(data);
       });
       return () => {
         // this.socket.leave();
-        this.socket.disconnect();
+        // this.socket.disconnect();
       };
     });
     return observable;

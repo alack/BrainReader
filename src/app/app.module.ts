@@ -25,6 +25,8 @@ import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 
+import { ChatComponent } from './common/common-chat.component';
+
 import {HttpWaitingRoomService} from './service/http.waitingRoom.service';
 import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
@@ -56,6 +58,8 @@ import {SessionService} from './service/session.service';
 @NgModule({
   declarations: [
     AppComponent,
+    ChatComponent,
+
     WaitLobbyComponent,
     WaitUserListComponent,
     WaitChattingComponent,

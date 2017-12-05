@@ -49,7 +49,7 @@ app-game-user-right {
   height: 100%;
 }
 
-app-game-chat {
+common-chat {
   width: 100%;
-  height: 100%;
+  height: inherit;
 }

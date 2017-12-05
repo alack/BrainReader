@@ -67,6 +67,11 @@ exports.rooms = [];
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
+    console.log('come join event');
+    if(socket.room)
+      socket.leave(socket.room);
+
+    socket.room = data.roomId;
     socket.join('room' + data.roomId);
     socket.userName = data.userName;
     console.log('roomjoin::roomid : ', data['roomId']);
@@ -101,7 +106,7 @@ io.sockets.on('connection', socket => {
     io.in('room'+id).clients((err, clients) => {
       // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
       clients.forEach(client => {
-        console.log(io.sockets.connected[client].userName);
+        // console.log(io.sockets.connected[client].userName);
         users.push(io.sockets.connected[client].userName);
       })
       console.log('getuserlist from room' + id, users);
@@ -109,16 +114,6 @@ io.sockets.on('connection', socket => {
     })
   })
   socket.on('disconnect', data => {
-    // const users = [];
-    // io.in('room0').clients((err, clients) => {
-    //   // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
-    //   clients.forEach(client => {
-    //     console.log(io.sockets.connected[client].userName);
-    //     users.push(io.sockets.connected[client].userName);
-    //   })
-    //   console.log('getuserlist from room' + users);
-    //   io.sockets.in('room0').emit('getuserlist', {users: users });
-    // })
     // socket.leave
   });
 });
