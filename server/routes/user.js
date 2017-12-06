@@ -35,6 +35,14 @@ router.get('/admin', (req, res) => {
   });
 })
 
+router.get('/rank', (req, res) => {
+  // 포인트 상위 20명 가져 옴
+   const query = User.find().sort('-points').limit(20);
+   query.exec((err, users) => {
+     res.json({result: users});
+   })
+})
+
 // 회원가입
 router.post('/', function (req, res) {
 

@@ -56,8 +56,13 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
   }
 
   openRank() {
-    console.log(this.sessionService.getCurrentPage());
-    this.sessionService.setCurrentPage('game');
+    const dialogRef = this.dialog.open(Rank, {
+      width: '250px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }
 
@@ -76,6 +81,35 @@ export class CreateRoom {
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+}
+
+@Component({
+  selector: 'rank',
+  template: `
+      <mat-list dense>
+          <mat-list-item *ngFor="let user of users">
+              {{user.id}} - {{user.points}}
+          </mat-list-item>
+      </mat-list>`
+})
+
+export class Rank implements OnInit {
+  users: Object[];
+
+  constructor(private http: HttpClient,
+              public dialogRef: MatDialogRef<Rank>) { }
+
+  ngOnInit() {
+    this.http.get('/user/rank').subscribe(data => {
+      // Read the result field from the JSON response.
+      this.users = data['result'];
+    });
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
