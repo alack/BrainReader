@@ -64,7 +64,6 @@ const io = require('socket.io').listen(server);
 exports.rooms = [];
 exports.truewords = {};
 
-const preroom = 'room';
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
@@ -73,61 +72,64 @@ io.sockets.on('connection', socket => {
       socket.leave(socket.room);
 
     socket.room = data.roomId;
-    socket.join(preroom + data.roomId);
+    socket.join(socket.room);
     socket.userName = data.userName;
-    console.log('roomjoin::roomid : ', data['roomId']);
-    console.log('roomjoin::userName : ', data['userName']);
+    console.log('roomjoin::roomid : ', socket['room']);
+    console.log('roomjoin::userName : ', socket['userName']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
-    io.sockets.in(preroom + data.roomId).emit('person_join', {user: user});
+    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
+    io.sockets.in(socket.room).emit('person_join', {user: socket.userName});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
-    console.log('send:message:: : ', preroom + data.roomId,' msg : ', data.message);
-    io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: data.message});
-    if(exports.truewords[preroom+data.roomId] === data.message){
-      // broadcast로는 드로잉 권한 삭제 trigger
-      socket.broadcast.emit('drawingauthremove', {body:'empty'});
-      // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
-      socket.emit('nexthuman', {body:'empty'});
-      // io.sockets.in('room'...)으로는 정답자 알림
-      io.sockets.in(preroom+data.roomId).emit('message', {name: 'system', msg: socket.userName+'님이 정답을 맞추셨습니다.'});
+    console.log('send:message:: : ', socket.room,' msg : ', data.message);
+    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
+    if(exports.truewords[socket.room] === data.message) {
       // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
-      const room = exports.rooms.find(o => o.name === 'room'+socket.room);
-      io.sockets.in(preroom+data.roomId).emit('jeongdab', {dangchum: room.users[Math.floor(room.userCount+Math.random())]});
+      const room = exports.rooms.find(o => o.name === socket.room);
+      const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
+      console.log('send:message::dangchum : ', dangchumUser);
+      io.sockets.in(socket.room).emit('PICremove', {dangchum: dangchumUser});
+      // broadcast로는 드로잉 권한 삭제 trigger
+      socket.broadcast.emit('drawingauthremove');
+      // io.sockets.in('room'...)으로는 정답자 알림
+      io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
+      // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+      socket.emit('nexthuman');
+      io.sockets.in(socket.room).emit('wordremove');
     }
   });
   socket.on('startline', function (data) {
-    console.log('startline::roomid : ', preroom + data.roomId);
+    console.log('startline::roomid : ', socket.room);
     console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
-    io.sockets.in(preroom + data.roomId).emit('startpath', data);
+    io.sockets.in(socket.room).emit('startpath', data);
   });
   socket.on('moveline', function (data) {
-    console.log('moveline::roomid : ',preroom + data.roomId);
+    console.log('moveline::roomid : ',socket.room);
     console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
-    io.sockets.in(preroom + data.roomId).emit('movepath', data);
+    io.sockets.in(socket.room).emit('movepath', data);
   });
   socket.on('finishline', function (data) {
-    console.log('finishline::roomid : ',preroom + data.roomId);
+    console.log('finishline::roomid : ',socket.room);
     console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
-    io.sockets.in(preroom + data.roomId).emit('finishpath', data);
+    io.sockets.in(socket.room).emit('finishpath', data);
   });
   socket.on('getuserlist', function (id) {
     const users = [];
-    io.in(preroom+id).clients((err, clients) => {
+    io.in(id).clients((err, clients) => {
       // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
       clients.forEach(client => {
         // console.log(io.sockets.connected[client].userName);
         users.push(io.sockets.connected[client].userName);
       });
-      console.log('getuserlist from room' + id, users);
-      io.sockets.in(preroom+id).emit('getuserlist', {users: users });
+      console.log('getuserlist from room ' + id, users);
+      io.sockets.in(id).emit('getuserlist', {users: users });
     });
   });
   socket.on('serverready', function(){
     const user = {};
-    io.sockets.in(preroom+roomId).emit('ioready',user);
+    io.sockets.in(socket.room).emit('ioready',user);
   });
   socket.on('disconnect', data => {
     // socket.leave

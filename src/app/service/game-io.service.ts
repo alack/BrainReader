@@ -75,7 +75,7 @@ export class GameIoService implements OnInit {
      const observable = new Observable(observer => {
 
       this.socket.on('message', (data) => {
-        console.log('gameIoService::send:message event coming');
+        console.log('gameIoService::message event coming');
         observer.next(data);
       });
       return () => {
@@ -191,9 +191,9 @@ export class GameIoService implements OnInit {
       // 드로잉 권한 삭제 trigger
     const observable = new Observable(observer => {
 
-      this.socket.on('drawingauthremove', (data) => {
+      this.socket.on('drawingauthremove', () => {
         console.log('gameIoService::drawingauthremove event coming');
-        observer.next(data);
+        observer.next();
       });
       return () => {
         // this.socket.leave();
@@ -202,12 +202,13 @@ export class GameIoService implements OnInit {
     });
     return observable;
   }
-  jeongDab() {
+  picRemove() {
       // 그림 삭제
     const observable = new Observable(observer => {
 
-      this.socket.on('jeongdab', (data) => {
-        console.log('gameIoService::jeongdab event coming');
+      this.socket.on('PICremove', (data) => {
+        console.log('gameIoService::picremove event coming currentUser : ', this.sessionService.getSessionId(),
+          'picture capture User : ', data.dangchum);
         if (this.sessionService.getSessionId() === data.dangchum) {
           data.dangchum = true;
         } else {
@@ -222,14 +223,29 @@ export class GameIoService implements OnInit {
     });
     return observable;
   }
+  wordRemove() {
+    // 단어 삭제
+    const observable = new Observable(observer => {
+
+      this.socket.on('wordremove', () => {
+        console.log('gameIoService::wordremove event coming');
+        observer.next();
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
   nextHuman() {
       // 드로잉 권한 부여, 단어 불러오기 트리거 발동
     const observable = new Observable(observer => {
 
-      this.socket.on('nexthuman', (data) => {
+      this.socket.on('nexthuman', () => {
         console.log('gameIoService::nexthuman event coming');
         this.getWord();
-        observer.next(data);
+        observer.next();
       });
       return () => {
         // this.socket.leave();

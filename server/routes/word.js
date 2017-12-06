@@ -14,7 +14,7 @@ router.get('/word', (req, res) => {
     models_word.findOne().skip(random).exec(function (err, documents) {
       console.log('room::/word return word : %s', documents.word);
       if (!err) {
-        server.truewords['room'+req.query.roomId] = documents.word;
+        server.truewords[req.query.roomId] = documents.word;
         console.log('room::/word roomId : %s word : %s', req.query.roomId, documents.word);
         res.json({result: "success", word: documents.word});
       }

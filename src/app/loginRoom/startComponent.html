@@ -1,14 +1,15 @@
 <div [ngSwitch]="sessionService.currentPage" class="container">
-  <!--<ng-container *ngSwitchCase="'game'">-->
-  <ng-container *ngSwitchDefault>
+  <ng-container *ngSwitchCase="'game'">
+  <!--<ng-container *ngSwitchDefault>-->
     <app-game-room></app-game-room>
   </ng-container>
   <ng-container *ngSwitchCase="'waiting'">
     <lobby></lobby>
   </ng-container>
   <ng-container *ngSwitchDefault class="container">
-    <div style="display: flex; justify-content: center; align-items: center;" class="container">
-      <button mat-raised-button (click)="openDialog()" style="height:60px;width:500px" mat-raised-button color="primary" >START</button>
-    </div>
+    <!--<ng-container *ngSwitchCase="'ppap'">-->
+      <div style="display: flex; justify-content: center; align-items: center;" class="container">
+        <button mat-raised-button (click)="openDialog()" style="height:60px;width:500px" mat-raised-button color="primary" >START</button>
+      </div>
   </ng-container>
 </div>

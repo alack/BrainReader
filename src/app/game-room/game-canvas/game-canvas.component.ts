@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy, Input} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({
@@ -11,17 +11,17 @@ import {GameIoService} from '../../service/game-io.service';
 
 export class GameCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('cv') c;
-  // socket;
   ctx;
   click;
-  roomId = 1;
   con_startPath;
   con_movePath;
   con_finishPath;
-  drawingauth = false; // 그림 허가
+  drawingauth; // 그림 허가
   drawoff;
   drawon;
   drawremove;
+  nexthuman;
+  sweeper = -0.5;
   constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
@@ -120,10 +120,8 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.con_finishPath = this.gameIo.getFinishPath().subscribe( data => {
       this.finishPath(data);
     });
-  }
-
-  jeongDab() {
-    this.drawremove = this.gameIo.jeongDab().subscribe(data => {
+    this.drawremove = this.gameIo.picRemove().subscribe(data => {
+      console.log('chungseong chungseong!!  ', data);
       if ( data['dangchum'] ) {
         // 이미지 떠서
         const pixel = this.ctx.getImageData( 0, 0, this.c.width, this.c.height);
