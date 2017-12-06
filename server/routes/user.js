@@ -34,6 +34,14 @@ router.get('/admin', (req, res) => {
   });
 })
 
+router.get('/rank', (req, res) => {
+  // 포인트 상위 20명 가져 옴
+   const query = User.find().sort('-points').limit(20);
+   query.exec((err, users) => {
+     res.json({result: users});
+   })
+})
+
 // 회원가입
 router.post('/', function (req, res) {
 
@@ -90,17 +98,18 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
   const sess = req.session;
 
+
   if(sess.name){
     req.session.destroy(err => {
       if(err) {
-        console.log(err);
+          console.log(err);
         }
         else {
-        res.redirect('/');
+        res.json({result: true});
       }
     });
   } else {
-    res.redirect('/');
+    res.redirect({result: true});
   }
 });
 
@@ -114,19 +123,9 @@ router.get('/me', (req, res) => {
 })
 
 
+
 router.put('/:id',(req,res) => {
   console.log('server part update');
-// console.log(req.body.imageUrl);
-/*User.findByIdAndUpdate(req.params.id, {image: req.body.imageUrl},function (err,doc) {
-      if(err){
-        return console.log(err);
-      }
-      console.log(doc);
-      console.log('success update profile');
-      res.send(doc);
-    });*/
-
-
   User.update({id: req.params.id}, {image: req.body.image}, function (err, doc) {
     if (err) {
       console.log(err);

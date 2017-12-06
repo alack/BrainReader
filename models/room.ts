@@ -4,4 +4,5 @@ export class Room {
   type: string;
   maxUser: number;
   userCount: number;
+  users: string[];
 }

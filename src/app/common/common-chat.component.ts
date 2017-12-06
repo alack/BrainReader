@@ -3,12 +3,12 @@ import { GameIoService } from '../service/game-io.service';
 import { SessionService } from '../service/session.service';
 
 @Component({
-  selector : 'app-chatting-component',
-  templateUrl : './wait.chatting-component.html',
-  styleUrls: ['./wait.chatting-component.css']
+  selector : 'common-chat',
+  templateUrl : './common-chat.component.html',
+  styleUrls: ['./common-chat.component.css']
 })
 
-export class WaitChattingComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy {
   messages = [];
   name;
   con_chat;
@@ -18,6 +18,7 @@ export class WaitChattingComponent implements OnInit, OnDestroy {
               private session: SessionService) {}
 
   ngOnInit() {
+    // body component 에서 하는게 좋을듯??
     // this.gameIo.joinRoom();
     this.con_chat = this.gameIo.getMessages().subscribe(message => {
       this.pushMessages(message);

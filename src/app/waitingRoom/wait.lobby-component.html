@@ -1,7 +1,7 @@
 <mat-grid-list cols="4" rowHeight="7:2">
     <mat-grid-tile [colspan]="1" [rowspan]="1" class="menu">
-        <button mat-raised-button color="basic" (click)="openDialog()">방 만들기</button>
-        <button mat-raised-button color="basic">랭크</button>
+        <button mat-raised-button color="primary" (click)="openDialog()">방 만들기</button>
+        <button mat-raised-button color="accent" (click)="openRank()">랭크</button>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" [rowspan]="6">
         <app-wait-room-list></app-wait-room-list>
@@ -13,6 +13,7 @@
         <app-wait-user-info></app-wait-user-info>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" [rowspan]="2">
-        <app-chatting-component></app-chatting-component>
+        <!--<app-chatting-component></app-chatting-component>-->
+        <common-chat></common-chat>
     </mat-grid-tile>
 </mat-grid-list>

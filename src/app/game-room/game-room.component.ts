@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { GameIoService } from '../service/game-io.service';
 
 @Component({
   selector: 'app-game-room',
@@ -8,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class GameRoomComponent implements OnInit {
 
 
-  constructor() {  }
+  constructor(private gameIo: GameIoService) {  }
 
   ngOnInit() {
+    this.gameIo.joinRoom();
   }
 
 

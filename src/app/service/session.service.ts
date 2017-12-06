@@ -6,11 +6,12 @@ import {HttpClient} from '@angular/common/http';
 export class SessionService {
 
   sessionId: string;
-  currentPage= 'login';
+
   image: string;
   attempt: number;
   correct: number;
   points: number;
+  public currentPage='login';
 
   constructor(private http: HttpClient) {
 

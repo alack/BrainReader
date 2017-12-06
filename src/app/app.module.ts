@@ -16,6 +16,7 @@ import {
   MatFormFieldModule,
   MatListModule,
 } from '@angular/material';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -24,9 +25,13 @@ import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { Header } from './header.component';
+import { Footer } from './footer.component';
+
+import { ChatComponent } from './common/common-chat.component';
 
 import {HttpWaitingRoomService} from './service/http.waitingRoom.service';
-import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
+import { WaitLobbyComponent, CreateRoom, Rank } from './waitingRoom/wait.lobby-component';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {WaitChattingComponent} from './waitingRoom/wait.chatting-component';
 import {WaitRoomListComponent} from './waitingRoom/wait.roomList-component';
@@ -57,6 +62,10 @@ import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
 @NgModule({
   declarations: [
     AppComponent,
+    ChatComponent,
+    Header,
+    Footer,
+
     WaitLobbyComponent,
     WaitUserListComponent,
     WaitChattingComponent,
@@ -71,6 +80,7 @@ import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
     GameComponent,
 
     CreateRoom,
+    Rank,
     WaitRoomComponent,
     InputPassword,
 
@@ -98,7 +108,8 @@ import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
     MatListModule,
     MatIconModule,
     MatTabsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatToolbarModule
   ],
   providers: [
     HttpWaitingRoomService,
@@ -110,7 +121,8 @@ import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
   entryComponents: [
     CreateRoom,
     InputPassword,
-    DialogComponent
+    DialogComponent,
+    Rank
   ]
 })
 export class AppModule { }
