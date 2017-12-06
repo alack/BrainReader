@@ -14,7 +14,8 @@ import {
   MatIconModule,
   MatTabsModule,
   MatFormFieldModule,
-  MatListModule
+  MatListModule,
+  MatButtonToggleModule
 } from '@angular/material';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -36,7 +37,6 @@ import {WaitUserInfoComponent} from './waitingRoom/wait.userInfo-component';
 import { WaitRoomComponent, InputPassword } from './waitingRoom/wait.room-component';
 
 import { GameRoomComponent } from './game-room/game-room.component';
-import { GameChatComponent } from './game-room/game-chat/game-chat.component';
 import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.component';
 import { GameUserRightComponent } from './game-room/game-user-right/game-user-right.component';
 import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left.component';
@@ -52,9 +52,6 @@ import {HttpUserService} from './service/http.user.service';
 
 import {SessionService} from './service/session.service';
 
-
-// import {MatFormFieldModule} from '@angular/material/form-field';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,7 +64,6 @@ import {SessionService} from './service/session.service';
     WaitUserInfoComponent,
 
     GameRoomComponent,
-    GameChatComponent,
     GameCanvasComponent,
     GameUserRightComponent,
     GameUserLeftComponent,
@@ -91,6 +87,7 @@ import {SessionService} from './service/session.service';
     FormsModule,
     CommonModule,
     BrowserAnimationsModule,
+
     MatButtonModule,
     MatCheckboxModule,
     MatGridListModule,
@@ -102,7 +99,8 @@ import {SessionService} from './service/session.service';
     MatListModule,
     MatIconModule,
     MatTabsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatButtonToggleModule
   ],
   providers: [
     HttpWaitingRoomService,

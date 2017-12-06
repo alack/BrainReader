@@ -33,6 +33,6 @@ router.post('/:id', (req, res) => {
 
   console.log('router/post/room/:id',room);
 
-})
+});
 
 module.exports = router;

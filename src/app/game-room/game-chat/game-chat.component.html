@@ -1,6 +1,0 @@
-<div id="game_room_chat_window" #chat [scrollTop]="chat.scrollHeight">
-  <div class="bubble" *ngFor="let data of messages">
-    <b>{{data.name}}</b> : {{data.message}}
-  </div>
-</div>
-<input id="game_room_chat_text" #chat_text type="text" [(ngModel)]="value" (keydown.enter) = "onEnter(chat_text.value)" >

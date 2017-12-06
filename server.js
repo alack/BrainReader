@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
 const room = require('./server/routes/room');
+const word = require('./server/routes/word');
 const app = express();
 // express-session
 const session = require('express-session');
@@ -38,7 +39,7 @@ app.use(session({
 }));
 // user
 app.use('/user', user);
-
+app.use('/word', word);
 app.use('/room', room);
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {
@@ -61,7 +62,8 @@ server.listen(port, function () {
 const io = require('socket.io').listen(server);
 
 exports.rooms = [];
-
+exports.truewords = {};
+const preroom = 'room';
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
@@ -70,47 +72,59 @@ io.sockets.on('connection', socket => {
       socket.leave(socket.room);
 
     socket.room = data.roomId;
-    socket.join('room' + data.roomId);
+    socket.join(preroom + data.roomId);
     socket.userName = data.userName;
     console.log('roomjoin::roomid : ', data['roomId']);
     console.log('roomjoin::userName : ', data['userName']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
-    io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
+    io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
+    io.sockets.in(preroom + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
-    console.log('send:message:: : ', 'room' + data.roomId,' msg : ', data.message);
-     io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: data.message});
+    console.log('send:message:: : ', preroom + data.roomId,' msg : ', data.message);
+    io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: data.message});
+    if(truewords[preroom+data.roomId] === data.message){
+      // todo broadcast로는 드로잉 권한 삭제 trigger
+      socket.broadcast.emit('drawingauthremove', {body:'empty'});
+      // todo socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+      socket.emit('nexthuman', {body:'empty'});
+      // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제, 정답자 알림
+      io.sockets.in(preroom+data.roomId).emit('jeongdab', {name: socket.userName});
+    }
   });
   socket.on('startline', function (data) {
-    console.log('startline::roomid : ', 'room' + data.roomId);
+    console.log('startline::roomid : ', preroom + data.roomId);
     console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
-    io.sockets.in('room' + data.roomId).emit('startpath', data);
+    io.sockets.in(preroom + data.roomId).emit('startpath', data);
   });
   socket.on('moveline', function (data) {
-    console.log('moveline::roomid : ','room' + data.roomId);
+    console.log('moveline::roomid : ',preroom + data.roomId);
     console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
-    io.sockets.in('room' + data.roomId).emit('movepath', data);
+    io.sockets.in(preroom + data.roomId).emit('movepath', data);
   });
   socket.on('finishline', function (data) {
-    console.log('finishline::roomid : ','room' + data.roomId);
+    console.log('finishline::roomid : ',preroom + data.roomId);
     console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
-    io.sockets.in('room' + data.roomId).emit('finishpath', data);
+    io.sockets.in(preroom + data.roomId).emit('finishpath', data);
   });
   socket.on('getuserlist', function (id) {
     const users = [];
-    io.in('room'+id).clients((err, clients) => {
+    io.in(preroom+id).clients((err, clients) => {
       // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
       clients.forEach(client => {
         // console.log(io.sockets.connected[client].userName);
         users.push(io.sockets.connected[client].userName);
-      })
+      });
       console.log('getuserlist from room' + id, users);
-      io.sockets.in('room'+id).emit('getuserlist', {users: users });
-    })
-  })
+      io.sockets.in(preroom+id).emit('getuserlist', {users: users });
+    });
+  });
+  socket.on('serverready', function(){
+    const user = {};
+    io.sockets.in(preroom+roomId).emit('ioready',user);
+  });
   socket.on('disconnect', data => {
     // socket.leave
   });

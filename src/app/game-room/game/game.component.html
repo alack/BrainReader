@@ -1,18 +1,29 @@
-<mat-card>
-  {{problem_word}}
-</mat-card>
-  <mat-progress-bar
-    class="example-margin"
-    [color]="color"
-    [mode]="mode"
-    [value]="progress_value"
-    [bufferValue]="bufferValue">
-  </mat-progress-bar>
-<mat-card>
-  <div>
-
-  </div>
-  <div>
-
-  </div>
-</mat-card>
+<mat-grid-list cols="3" rowHeight="50px">
+  <mat-grid-tile [rowspan]="1" [colspan]="1" [style.background] = "'lightblue'">
+    <div>
+      <mat-button-toggle width="100%" height="100%" (Change)="ready()" [checked]="chk">
+        Start/Ready
+      </mat-button-toggle>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1" [colspan]="1" [style.background]="'lightgreen'">
+    digital time
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1" [colspan]="1" [style.background]="'lightpink'">
+    exit
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1" [colspan]="3" [style.background]="'grey'">
+    <mat-progress-bar
+      class="example-margin"
+      [color]="color"
+      [mode]="mode"
+      [value]="progress_value"
+      [bufferValue]="bufferValue">
+    </mat-progress-bar>
+  </mat-grid-tile>
+  <mat-grid-tile [rowspan]="1" [colspan]="3" [style.background]="'#DDBDF1'">
+    <mat-card>
+    {{problem_word}}
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

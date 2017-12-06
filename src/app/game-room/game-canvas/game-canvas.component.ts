@@ -18,6 +18,9 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   con_startPath;
   con_movePath;
   con_finishPath;
+  drawingauth = false; // 그림 허가
+  drawoff;
+  drawon;
   constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
@@ -29,6 +32,12 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 2;
     this.gameStart();
+    this.drawoff = this.gameIo.drawingAuthRemove().subscribe(data => {
+      this.drawingauth = false;
+    });
+    this.drawon = this.gameIo.nextHuman().subscribe(data => {
+      this.drawingauth = true;
+    });
   }
 
   ngOnDestroy() {
@@ -40,7 +49,6 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   startPath(e) {
     const ev = this.getSangDaeMousePos(e);
     this.ctx.beginPath();
-    this.ctx.stroke();
     this.click = true;
     console.log('x', ev.x, ' y', ev.y, ' 마우스 클릭');
   }
@@ -62,20 +70,24 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   }
 
   mouseDown(e: MouseEvent) {
-    const abPos = this.getAbsoluteMousePos(e);
-    this.gameIo.sendStartLine(abPos);
+    if (this.drawingauth) {
+      const abPos = this.getAbsoluteMousePos(e);
+      this.gameIo.sendStartLine(abPos);
+    }
   }
 
   mouseMove(e: MouseEvent) {
-    if (this.click) {
+    if (this.drawingauth && this.click) {
       const abPos = this.getAbsoluteMousePos(e);
       this.gameIo.sendMoveLine(abPos);
     }
   }
 
   mouseUp(e: MouseEvent) {
-    const abPos = this.getAbsoluteMousePos(e);
-    this.gameIo.sendFinishLine(abPos);
+    if (this.drawingauth) {
+      const abPos = this.getAbsoluteMousePos(e);
+      this.gameIo.sendFinishLine(abPos);
+    }
   }
 
   getSangDaeMousePos(e) {
