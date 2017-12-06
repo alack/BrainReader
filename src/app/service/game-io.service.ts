@@ -1,7 +1,8 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
+import {SessionService} from '../service/session.service';
 
 @Injectable()
 export class GameIoService implements OnInit {
@@ -10,13 +11,32 @@ export class GameIoService implements OnInit {
   private roomLeftCnt = 0;
   private roomRightCnt = 0;
   public socket;
-  constructor(private http: HttpClient) {
+    constructor(private sessionService: SessionService) {
     this.socket = io(this.url);
     // this.joinRoom();
   }
 
   ngOnInit() {
     console.log('gameIoService::ngOnInit');
+  }
+
+  getUserList() {
+    const observable = new Observable(observer => {
+      this.socket.on('getuserlist', (data) => {
+        console.log('getUserList.service::getuserlist event coming');
+        observer.next(data);
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+
+  requestUserList() {
+    this.socket.emit('getuserlist',this.roomId);
+    console.log('requestuserlist to room'+this.roomId)
   }
 
   setRoomId(id) {
@@ -31,16 +51,23 @@ export class GameIoService implements OnInit {
 
   joinRoom() {
     console.log('gameIoService::joinRoom');
-    const data = { name : '',
+    console.log(this.socket);
+    const data = { userName : this.sessionService.getSessionId(),
                     roomId : this.roomId };
+
     this.socket.emit('joinroom', data);
+    console.log('joinRoom to ', data);
+    this.requestUserList();
   }
+
+
   sendMessage(message) {
     console.log('gameIoService::sendMessage');
     const data = {
       roomId: this.roomId,
       message: message
     };
+    console.log(data);
     this.socket.emit('send:message', data);
   }
   getMessages() {
@@ -51,7 +78,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -71,7 +98,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -91,7 +118,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });
@@ -111,7 +138,7 @@ export class GameIoService implements OnInit {
         observer.next(data);
       });
       return () => {
-        this.socket.leave();
+        // this.socket.leave();
         this.socket.disconnect();
       };
     });

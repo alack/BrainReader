@@ -15,7 +15,7 @@ app-wait-room-list, app-wait-user-list {
     height: inherit;
 }
 
-app-chatting-component {
+common-chat {
     width: 100%;
     height: inherit;
 }

@@ -25,8 +25,10 @@ import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
 
+import { ChatComponent } from './common/common-chat.component';
+
 import {HttpWaitingRoomService} from './service/http.waitingRoom.service';
-import { WaitLobbyComponent, CreateRoom } from './waitingRoom/wait.lobby-component';
+import { WaitLobbyComponent, CreateRoom, Rank } from './waitingRoom/wait.lobby-component';
 import {WaitUserListComponent} from './waitingRoom/wait.userList-component';
 import {WaitChattingComponent} from './waitingRoom/wait.chatting-component';
 import {WaitRoomListComponent} from './waitingRoom/wait.roomList-component';
@@ -56,6 +58,8 @@ import {SessionService} from './service/session.service';
 @NgModule({
   declarations: [
     AppComponent,
+    ChatComponent,
+
     WaitLobbyComponent,
     WaitUserListComponent,
     WaitChattingComponent,
@@ -70,6 +74,7 @@ import {SessionService} from './service/session.service';
     GameComponent,
 
     CreateRoom,
+    Rank,
     WaitRoomComponent,
     InputPassword,
 
@@ -109,7 +114,8 @@ import {SessionService} from './service/session.service';
   entryComponents: [
     CreateRoom,
     InputPassword,
-    DialogComponent
+    DialogComponent,
+    Rank
   ]
 })
 export class AppModule { }

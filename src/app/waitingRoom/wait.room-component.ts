@@ -2,8 +2,11 @@
  * Created by jaehong on 2017. 11. 29..
  */
 import { Component, OnInit, Input } from '@angular/core';
-import { MatDialog, MatDialogRef, MatDialogClose } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Room } from '../../../models/room';
+import { GameIoService } from '../service/game-io.service';
+import { HttpClient } from '@angular/common/http';
+import {SessionService} from '../service/session.service';
 
 @Component({
     selector : 'app-wait-room',
@@ -22,7 +25,10 @@ import { Room } from '../../../models/room';
 export class WaitRoomComponent implements OnInit {
     @Input() room: Room;
 
-    constructor(public dialog: MatDialog) {}
+    constructor(private http: HttpClient,
+                public dialog: MatDialog,
+                private gameIo: GameIoService,
+                private sessionService: SessionService) {}
 
     ngOnInit(): void {
     }
@@ -41,16 +47,21 @@ export class WaitRoomComponent implements OnInit {
             (result == this.room.password? this.correctPassword():alert('nono'));
         });
 
-        // dialogRef.keydownEvents().subscribe(result => {
-        //     console.log(dialogRef.password,'how to ok when enter key input');
-        //     if(result.key == 'Enter') {
-        //         dialogRef.close(dialogRef.password);
-        //     }
-        // })
+
     }
 
     correctPassword(): void {
-        alert('gogo');
+        // joinRoom using REST if ok run below
+        this.http.post('/room/' + this.room['name'], {
+            data: this.sessionService.getSessionId()
+        }).subscribe(data => {
+            if(data['result']) {
+                this.gameIo.setRoomId(this.room['name']);
+                this.sessionService.setCurrentPage('game');
+            } else {
+                alert('사람 꽉찼어. 다른방 찾아봐!');
+            }
+        });
     }
 }
 
