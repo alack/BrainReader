@@ -23,7 +23,6 @@ router.get('/admin', (req, res) => {
   user.attempt = 0;
   user.correct = 0;
   user.points = 0;
-
   user.save(function(err){
     if(err){
       console.error(err);
@@ -54,7 +53,9 @@ router.post('/', function (req, res) {
   user.attempt = 0;
   user.correct = 0;
   user.points = 0;
+  user.image ='default';
 
+  // 회원가입 시 default 이미지 받는다.
   user.save(function(err){
     if(err){
       console.error(err);
@@ -96,17 +97,18 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
   const sess = req.session;
 
+
   if(sess.name){
     req.session.destroy(err => {
       if(err) {
-        console.log(err);
+          console.log(err);
         }
         else {
-        res.redirect('/');
+        res.json({result: true});
       }
     });
   } else {
-    res.redirect('/');
+    res.redirect({result: true});
   }
 });
 
@@ -117,6 +119,19 @@ router.get('/me', (req, res) => {
   }, (err, user) => {
     res.json(user);
   });
+});
+
+
+
+router.put('/:id',(req,res) => {
+  console.log('server part update');
+  User.update({id: req.params.id}, {image: req.body.image}, function (err, doc) {
+    if (err) {
+      console.log(err);
+    }
+    console.log('update success');
+    res.send(doc);
+  })
 });
 
 

@@ -80,7 +80,7 @@ export class GameIoService implements OnInit {
       });
       return () => {
         // this.socket.leave();
-        this.socket.disconnect();
+        // this.socket.disconnect();
       };
     });
     return observable;

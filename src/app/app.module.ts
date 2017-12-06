@@ -15,7 +15,8 @@ import {
   MatTabsModule,
   MatFormFieldModule,
   MatListModule,
-  MatButtonToggleModule
+  MatButtonToggleModule,
+  MatToolbarModule
 } from '@angular/material';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -25,6 +26,8 @@ import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { Header } from './header.component';
+import { Footer } from './footer.component';
 
 import { ChatComponent } from './common/common-chat.component';
 
@@ -51,11 +54,14 @@ import {LoginComponent} from './loginRoom/loginComponent';
 import {HttpUserService} from './service/http.user.service';
 
 import {SessionService} from './service/session.service';
+import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
 
 @NgModule({
   declarations: [
     AppComponent,
     ChatComponent,
+    Header,
+    Footer,
 
     WaitLobbyComponent,
     WaitUserListComponent,
@@ -79,7 +85,7 @@ import {SessionService} from './service/session.service';
     TabsOverviewComponent,
     RegisterComponent,
     LoginComponent,
-
+    UserImageComponent
   ],
   imports: [
     BrowserModule,
@@ -100,7 +106,8 @@ import {SessionService} from './service/session.service';
     MatIconModule,
     MatTabsModule,
     MatProgressBarModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatToolbarModule
   ],
   providers: [
     HttpWaitingRoomService,
