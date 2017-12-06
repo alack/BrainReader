@@ -19,4 +19,6 @@ export class HttpUserService {
     console.log('userRegister service');
     return this.http.post( '/user/', {id: userId, password: userPw});
   }
+
+
 }

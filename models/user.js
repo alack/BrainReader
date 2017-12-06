@@ -17,7 +17,8 @@ const userSchema = new Schema({
   },
   attempt: Number,
   correct: Number,
-  points: Number
+  points: Number,
+  image : String
 });
 
 userSchema.pre('save', function (next) {

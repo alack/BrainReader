@@ -1,11 +1,12 @@
 <div>
     <p>
-        {{user.id}}
-    </p>
+  {{user.id}}
+</p>
+  <p>
+    {{user.points}}
+  </p>
     <p>
-        {{user.points}}
-    </p>
-    <p>
-        {{user.correct}}/{{user.attempt}}
-    </p>
+      <app-user-image-update [user]="user"></app-user-image-update>
 </div>
+
+

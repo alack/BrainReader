@@ -14,7 +14,7 @@ import {
   MatIconModule,
   MatTabsModule,
   MatFormFieldModule,
-  MatListModule
+  MatListModule,
 } from '@angular/material';
 import {MatToolbarModule} from '@angular/material/toolbar';
 
@@ -54,6 +54,7 @@ import {LoginComponent} from './loginRoom/loginComponent';
 import {HttpUserService} from './service/http.user.service';
 
 import {SessionService} from './service/session.service';
+import {UserImageComponent} from "./waitingRoom/userImage/userImage-component";
 
 
 // import {MatFormFieldModule} from '@angular/material/form-field';
@@ -88,7 +89,7 @@ import {SessionService} from './service/session.service';
     TabsOverviewComponent,
     RegisterComponent,
     LoginComponent,
-
+    UserImageComponent
   ],
   imports: [
     BrowserModule,
