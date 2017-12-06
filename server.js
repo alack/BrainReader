@@ -65,33 +65,26 @@ const io = require('socket.io').listen(server);
 exports.rooms = [];
 
 io.sockets.on('connection', socket => {
-  // join lobby
-  const roomid = '0';
-  socket.on('createroom', data => {
-    exports.rooms.push({
-      name: data.name,
-      password: data.password,
-      type: data.type,
-      maxUser: data.max,
-      userCount: 1
-    });
-    console.log('createRooooom!!!!', data.name);
-    console.log(exports.rooms);
-  });
-  // Join Room
+    // Join Room
   socket.on('joinroom', data => {
+    console.log('come join event');
+    if(socket.room)
+      socket.leave(socket.room);
+
+    socket.room = data.roomId;
     socket.join('room' + data.roomId);
-    socket.roomname = data.name;
+    socket.userName = data.userName;
     console.log('roomjoin::roomid : ', data['roomId']);
+    console.log('roomjoin::userName : ', data['userName']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in('room' + data.roomId).emit('message', user.id+' coming');
+    io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
     io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', 'room' + data.roomId,' msg : ', data.message);
-     io.sockets.in('room' + data.roomId).emit('message', data.message);
+     io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: data.message});
   });
   socket.on('startline', function (data) {
     console.log('startline::roomid : ', 'room' + data.roomId);
@@ -108,18 +101,17 @@ io.sockets.on('connection', socket => {
     console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
     io.sockets.in('room' + data.roomId).emit('finishpath', data);
   });
-  socket.on('getuserlist', function () {
+  socket.on('getuserlist', function (id) {
     const users = [];
-    io.in('room').clients((err, clients) => {
+    io.in('room'+id).clients((err, clients) => {
       // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
-      // console.log(clients);
       clients.forEach(client => {
-        users.push(io.sockets.connected[client].name);
+        // console.log(io.sockets.connected[client].userName);
+        users.push(io.sockets.connected[client].userName);
       })
-
-      console.log(users);
-      io.sockets.in('room').emit('getuserlist', users);
-    });
+      console.log('getuserlist from room' + id, users);
+      io.sockets.in('room'+id).emit('getuserlist', {users: users });
+    })
   })
   socket.on('disconnect', data => {
     // socket.leave

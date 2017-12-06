@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {SessionService} from '../service/session.service';
 
@@ -14,7 +14,8 @@ export class StartComponent {
   sessionId: string;
   currentPage;
 
-  constructor(public dialog: MatDialog, private sessionService: SessionService) {
+  constructor(public dialog: MatDialog,
+              public sessionService: SessionService) {
 
   }
 
