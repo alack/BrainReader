@@ -203,7 +203,7 @@ export class GameIoService implements OnInit {
     return observable;
   }
   jeongDab() {
-      // todo 그림 삭제
+      // 그림 삭제
     const observable = new Observable(observer => {
 
       this.socket.on('jeongdab', (data) => {

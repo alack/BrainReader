@@ -63,6 +63,7 @@ const io = require('socket.io').listen(server);
 
 exports.rooms = [];
 exports.truewords = {};
+
 const preroom = 'room';
 io.sockets.on('connection', socket => {
     // Join Room
@@ -85,7 +86,7 @@ io.sockets.on('connection', socket => {
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', preroom + data.roomId,' msg : ', data.message);
     io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: data.message});
-    if(truewords[preroom+data.roomId] === data.message){
+    if(exports.truewords[preroom+data.roomId] === data.message){
       // broadcast로는 드로잉 권한 삭제 trigger
       socket.broadcast.emit('drawingauthremove', {body:'empty'});
       // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
@@ -93,7 +94,7 @@ io.sockets.on('connection', socket => {
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(preroom+data.roomId).emit('message', {name: 'system', msg: socket.userName+'님이 정답을 맞추셨습니다.'});
       // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
-      const room = rooms.find(o => o.name === data.roomId);
+      const room = exports.rooms.find(o => o.name === 'room'+socket.room);
       io.sockets.in(preroom+data.roomId).emit('jeongdab', {dangchum: room.users[Math.floor(room.userCount+Math.random())]});
     }
   });

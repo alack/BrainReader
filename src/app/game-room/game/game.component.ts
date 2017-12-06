@@ -32,6 +32,7 @@ export class GameComponent implements OnInit {
   }
 
   // todo 게임 시작, 한 문제 시간이 끝나거나 문제를 맞추거나 하면 작동하는 것으로 바꿀 예정 이것은 어떻게 구현할지 생각중.
+  // todo 정답을 맞췄다는 알림은 가는데 유저가 아니라서 안됨.
   getWord() {
     this.gameIo.getWord().subscribe(data => {
       console.log('game.ts::getWord::getWord subscribe event data[result] : ', data['result'], ' data[word] ', data['word']);
