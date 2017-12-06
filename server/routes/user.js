@@ -97,17 +97,18 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
   const sess = req.session;
 
+
   if(sess.name){
     req.session.destroy(err => {
       if(err) {
-        console.log(err);
+          console.log(err);
         }
         else {
-        res.redirect('/');
+        res.json({result: true});
       }
     });
   } else {
-    res.redirect('/');
+    res.redirect({result: true});
   }
 });
 
