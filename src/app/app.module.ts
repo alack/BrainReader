@@ -16,6 +16,7 @@ import {
   MatFormFieldModule,
   MatListModule
 } from '@angular/material';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
@@ -24,6 +25,8 @@ import {FormsModule} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AppComponent } from './app.component';
+import { Header } from './header.component';
+import { Footer } from './footer.component';
 
 import { ChatComponent } from './common/common-chat.component';
 
@@ -59,6 +62,8 @@ import {SessionService} from './service/session.service';
   declarations: [
     AppComponent,
     ChatComponent,
+    Header,
+    Footer,
 
     WaitLobbyComponent,
     WaitUserListComponent,
@@ -102,7 +107,8 @@ import {SessionService} from './service/session.service';
     MatListModule,
     MatIconModule,
     MatTabsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatToolbarModule
   ],
   providers: [
     HttpWaitingRoomService,
