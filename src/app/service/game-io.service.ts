@@ -54,7 +54,7 @@ export class GameIoService implements OnInit {
 
     this.socket.emit('joinroom', data);
     console.log('joinRoom to ', data);
-    // this.requestUserList();
+    this.requestUserList();
   }
 
 

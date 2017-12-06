@@ -78,13 +78,13 @@ io.sockets.on('connection', socket => {
     console.log('roomjoin::userName : ', data['userName']);
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in('room' + data.roomId).emit('message', user.id+' coming');
+    io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
     io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', 'room' + data.roomId,' msg : ', data.message);
-     io.sockets.in('room' + data.roomId).emit('message', data.message);
+     io.sockets.in('room' + data.roomId).emit('message', {name: socket.userName, msg: data.message});
   });
   socket.on('startline', function (data) {
     console.log('startline::roomid : ', 'room' + data.roomId);
