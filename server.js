@@ -86,12 +86,15 @@ io.sockets.on('connection', socket => {
     console.log('send:message:: : ', preroom + data.roomId,' msg : ', data.message);
     io.sockets.in(preroom + data.roomId).emit('message', {name: socket.userName, msg: data.message});
     if(truewords[preroom+data.roomId] === data.message){
-      // todo broadcast로는 드로잉 권한 삭제 trigger
+      // broadcast로는 드로잉 권한 삭제 trigger
       socket.broadcast.emit('drawingauthremove', {body:'empty'});
-      // todo socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+      // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
       socket.emit('nexthuman', {body:'empty'});
-      // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제, 정답자 알림
-      io.sockets.in(preroom+data.roomId).emit('jeongdab', {name: socket.userName});
+      // io.sockets.in('room'...)으로는 정답자 알림
+      io.sockets.in(preroom+data.roomId).emit('message', {name: 'system', msg: socket.userName+'님이 정답을 맞추셨습니다.'});
+      // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
+      const room = rooms.find(o => o.name === data.roomId);
+      io.sockets.in(preroom+data.roomId).emit('jeongdab', {dangchum: room.users[Math.floor(room.userCount+Math.random())]});
     }
   });
   socket.on('startline', function (data) {

@@ -40,4 +40,5 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.messages.splice(0, 1);
     }
   }
+
 }

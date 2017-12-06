@@ -2,7 +2,7 @@ import { Injectable, OnInit, OnDestroy } from '@angular/core';
 import io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
-import {SessionService} from '../service/session.service';
+import { SessionService } from '../service/session.service';
 
 @Injectable()
 export class GameIoService implements OnInit {
@@ -152,8 +152,7 @@ export class GameIoService implements OnInit {
         if (this.roomLeftUser.length > this.roomRightUser.length) {
           this.roomRightUser.push(data);
           data.dir = 1;
-        }
-        else {
+        } else {
           this.roomLeftUser.push(data);
           data.dir = 0;
         }
@@ -204,11 +203,16 @@ export class GameIoService implements OnInit {
     return observable;
   }
   jeongDab() {
-      // todo 그림 삭제, 단어 삭제, 정답자 알림
+      // todo 그림 삭제
     const observable = new Observable(observer => {
 
       this.socket.on('jeongdab', (data) => {
         console.log('gameIoService::jeongdab event coming');
+        if (this.sessionService.getSessionId() === data.dangchum) {
+          data.dangchum = true;
+        } else {
+          data.dangchum = false;
+        }
         observer.next(data);
       });
       return () => {

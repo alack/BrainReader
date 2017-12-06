@@ -21,6 +21,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   drawingauth = false; // 그림 허가
   drawoff;
   drawon;
+  drawremove;
   constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
@@ -121,8 +122,15 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     });
   }
 
-  sendimage() {
-    // todo 정답을 맞출 시, 정답의 그림을 mediacapture하여 서버에 저장. 방법은 고민, mediacpature를 통해 할건지 트래킹을 통해 할건지.
+  jeongDab() {
+    this.drawremove = this.gameIo.jeongDab().subscribe(data => {
+      if ( data['dangchum'] ) {
+        // 이미지 떠서
+        const pixel = this.ctx.getImageData( 0, 0, this.c.width, this.c.height);
+        // todo 보낸다!!!
+      }
+      // 이미지 삭제한다!!!
+      this.ctx.clearRect( 0, 0, this.c.width, this.c.height);
+    });
   }
-
 }
