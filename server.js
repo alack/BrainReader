@@ -94,7 +94,7 @@ io.sockets.on('connection', socket => {
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(preroom+data.roomId).emit('message', {name: 'system', msg: socket.userName+'님이 정답을 맞추셨습니다.'});
       // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
-      const room = exports.rooms.find(o => o.name === 'room'+socket.room);
+      const room = exports.rooms.find(o => o.name === socket.room);
       io.sockets.in(preroom+data.roomId).emit('jeongdab', {dangchum: room.users[Math.floor(room.userCount+Math.random())]});
     }
   });

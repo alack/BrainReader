@@ -1,6 +1,5 @@
 <div [ngSwitch]="sessionService.currentPage" class="container">
-  <!--<ng-container *ngSwitchCase="'game'">-->
-  <ng-container *ngSwitchDefault>
+  <ng-container *ngSwitchCase="'game'">
     <app-game-room></app-game-room>
   </ng-container>
   <ng-container *ngSwitchCase="'waiting'">
