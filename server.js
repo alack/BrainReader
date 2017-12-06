@@ -11,7 +11,6 @@ const mongoose = require('mongoose');
 // 라우트를 받아온다.
 const user = require('./server/routes/user');
 const room = require('./server/routes/room');
-
 const app = express();
 // express-session
 const session = require('express-session');
@@ -41,7 +40,6 @@ app.use(session({
 app.use('/user', user);
 
 app.use('/room', room);
-
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
@@ -82,8 +80,7 @@ io.sockets.on('connection', socket => {
   socket.on('joinroom', data => {
     socket.join('room' + data.roomId);
     socket.roomname = data.name;
-    console.log('roomjoin::roomid : ', data['roomId']);
-    // io.sockets.clients(socket.roomname);
+    console.log('joinroom::roomid : ', data['roomId']);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
     io.sockets.in('room' + data.roomId).emit('message', user.id+' coming');
     io.sockets.in('room' + data.roomId).emit('person_join', {user: user});
@@ -115,12 +112,12 @@ io.sockets.on('connection', socket => {
       // console.log(clients);
       clients.forEach(client => {
         users.push(io.sockets.connected[client].name);
-      })
+      });
 
       console.log(users);
       io.sockets.in('room').emit('getuserlist', users);
     });
-  })
+  });
   socket.on('disconnect', data => {
     // socket.leave
   });

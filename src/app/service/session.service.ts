@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 export class SessionService {
 
   sessionId: string;
-  currentPage='login';
+  currentPage = 'login';
 
   constructor() {
 

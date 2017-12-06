@@ -4,6 +4,7 @@ import {HttpUserService} from '../service/http.user.service';
 import {DialogComponent} from './startComponent';
 import {MatDialogRef} from '@angular/material';
 import {SessionService} from '../service/session.service';
+import { GameIoService } from '../service/game-io.service';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private httpUserService: HttpUserService,
               public dialogRef: MatDialogRef<DialogComponent>,
-              private sessionService: SessionService) {
+              private sessionService: SessionService,
+              private gameIo: GameIoService) {
 
   }
 
@@ -45,6 +47,8 @@ export class LoginComponent implements OnInit {
         this.user.currentPage = 'waiting';
         this.sessionService.setSessionId(this.user.sessionId);
         this.sessionService.setCurrentPage(this.user.currentPage);
+
+        this.gameIo.setRoomId('0');
 
         this.dialogRef.close();
       } else {

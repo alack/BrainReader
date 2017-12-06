@@ -33,7 +33,7 @@ router.get('/admin', (req, res) => {
     res.json({result: 1});
 
   });
-})
+});
 
 // 회원가입
 router.post('/', function (req, res) {
@@ -54,7 +54,6 @@ router.post('/', function (req, res) {
       return true;
     }
     res.json({result: 1});
-
   });
 });
 
@@ -110,6 +109,6 @@ router.get('/me', (req, res) => {
   }, (err, user) => {
     res.json(user);
   });
-})
+});
 
 module.exports = router;

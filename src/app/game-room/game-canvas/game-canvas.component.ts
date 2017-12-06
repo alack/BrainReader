@@ -40,6 +40,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   startPath(e) {
     const ev = this.getSangDaeMousePos(e);
     this.ctx.beginPath();
+    this.ctx.stroke();
     this.click = true;
     console.log('x', ev.x, ' y', ev.y, ' 마우스 클릭');
   }
