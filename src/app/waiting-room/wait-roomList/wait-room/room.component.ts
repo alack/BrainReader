@@ -3,10 +3,10 @@
  */
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Room } from '../../../models/room';
-import { GameIoService } from '../service/game-io.service';
+import { Room } from '../../../../../models/room';
+import { GameIoService } from '../../../service/game-io.service'
 import { HttpClient } from '@angular/common/http';
-import {SessionService} from '../service/session.service';
+import {SessionService} from '../../../service/session.service';
 
 @Component({
     selector : 'app-wait-room',

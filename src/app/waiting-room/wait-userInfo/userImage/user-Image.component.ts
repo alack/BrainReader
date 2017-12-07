@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {SessionService} from '../../service/session.service';
+import {SessionService} from '../../../service/session.service';
 
 @Component({
   selector: 'app-user-image-update',
