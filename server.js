@@ -28,7 +28,7 @@ mongoose.connect('mongodb://localhost/web-system-design', { useMongoClient: true
 
 // POST 데이터 파싱 설정
 app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb', extended: true}));
 // ng build 명령 실행시 생성되는 static 리소스 폴더 경로 및 이름 설정
 app.use(express.static(path.join(__dirname, 'dist')));
 // session 설정
