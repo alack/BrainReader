@@ -3,8 +3,8 @@ import {SessionService} from '../../service/session.service';
 
 @Component({
   selector: 'app-user-image-update',
-  templateUrl: './userImage-component.html',
-  styleUrls: ['./userImage-component.css']
+  templateUrl: './user-Image.component.html',
+  styleUrls: ['./user-Image.component.css']
 })
 export class UserImageComponent implements OnInit {
   @Input() user;

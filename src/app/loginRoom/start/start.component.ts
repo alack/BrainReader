@@ -1,13 +1,13 @@
 import {Component, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import {SessionService} from '../service/session.service';
+import {SessionService} from '../../service/session.service';
 
 /**
  * @title Dialog Overview
  */
 @Component({
   selector: 'app-start-page',
-  templateUrl: './startComponent.html',
+  templateUrl: './start.component.html',
 
 })
 export class StartComponent {
@@ -38,7 +38,7 @@ export class StartComponent {
 
 @Component({
   selector: 'app-start-dialog',
-  templateUrl: './start-dialog.html',
+  templateUrl: './start-dialog.component.html',
 })
 export class DialogComponent {
 

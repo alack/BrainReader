@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import { GameIoService } from '../service/game-io.service';
+import { GameIoService } from '../../service/game-io.service';
 
 @Component({
   selector : 'app-wait-user-list',
-  templateUrl: './wait.userList-component.html',
-  styleUrls: ['./wait.userList-component.css']
+  templateUrl: './wait-userList.component.html',
+  styleUrls: ['./wait-userList.component.css']
 })
 
 export class WaitUserListComponent implements  OnInit {

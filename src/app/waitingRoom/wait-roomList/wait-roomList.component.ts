@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector : 'app-wait-room-list',
-  templateUrl: './wait.roomList-component.html',
-  styleUrls: ['./wait.roomList-component.css']
+  templateUrl: './wait-roomList.component.html',
+  styleUrls: ['./wait-roomList.component.css']
 })
 
 export class WaitRoomListComponent implements OnInit {

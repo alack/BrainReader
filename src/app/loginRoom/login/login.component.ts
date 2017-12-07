@@ -1,15 +1,15 @@
 
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {HttpUserService} from '../service/http.user.service';
-import {DialogComponent} from './startComponent';
+import {HttpUserService} from '../../service/http-user.service';
+import {DialogComponent} from '../start/start.component';
 import {MatDialogRef} from '@angular/material';
-import {SessionService} from '../service/session.service';
-import { GameIoService } from '../service/game-io.service';
+import {SessionService} from '../../service/session.service';
+import { GameIoService } from '../../service/game-io.service';
 
 @Component({
   selector: 'app-login',
-  templateUrl: './loginComponent.html',
-  styleUrls: ['./loginComponent.css']
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   sendUser: EventEmitter<void> = new EventEmitter<void>();

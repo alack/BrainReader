@@ -1,13 +1,13 @@
 
 import {Component, OnInit} from '@angular/core';
-import {HttpUserService} from '../service/http.user.service';
-import {DialogComponent} from './startComponent';
+import {HttpUserService} from '../../service/http-user.service';
+import {DialogComponent} from '../start/start.component';
 import {MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-register',
-  templateUrl: './registerComponent.html',
-  styleUrls: ['./registerComponent.css']
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
 

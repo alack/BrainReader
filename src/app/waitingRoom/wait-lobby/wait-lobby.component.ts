@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Room } from '../../../models/room';
+import { Room } from '../../../../models/room';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { GameIoService } from '../service/game-io.service';
-import {SessionService} from '../service/session.service';
+import { GameIoService } from '../../service/game-io.service';
+import {SessionService} from '../../service/session.service';
 
 @Component({
   selector: 'lobby',
-  templateUrl: 'wait.lobby-component.html',
-  styleUrls: ['wait.lobby-component.css']
+  templateUrl: 'wait-lobby/wait-lobby.component.html',
+  styleUrls: ['wait-lobby/wait-lobby.component.css']
 })
 
 export class WaitLobbyComponent implements OnInit, OnDestroy {
@@ -68,7 +68,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
 @Component({
   selector: 'create-room',
-  templateUrl: './wait.createRoom-dialog.html'
+  templateUrl: '../wait-createRoom.dialog.html'
 })
 export class CreateRoom {
   room: Room = {
