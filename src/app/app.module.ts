@@ -32,11 +32,11 @@ import { Footer } from './footer.component';
 import { ChatComponent } from './common/common-chat.component';
 
 import { HttpWaitingRoomService } from './service/http-waitingRoom.service';
-import { WaitLobbyComponent, CreateRoom, Rank } from './waitingRoom/wait-lobby/wait-lobby.component';
-import { WaitUserListComponent } from './waitingRoom/wait-userList/wait-userList.component';
-import { WaitRoomListComponent } from './waitingRoom/wait-roomList/wait-roomList.component';
-import { WaitUserInfoComponent } from './waitingRoom/wait-userInfo/wait-userInfo.component';
-import { WaitRoomComponent, InputPassword } from './waitingRoom/wait-room.component';
+import { WaitLobbyComponent, CreateRoom, Rank } from './waiting-room/waiting-room.component';
+import { WaitUserListComponent } from './waiting-room/wait-userList/wait-userList.component';
+import { WaitRoomListComponent } from './waiting-room/wait-roomList/wait-roomList.component';
+import { WaitUserInfoComponent } from './waiting-room/wait-userInfo/wait-userInfo.component';
+import { WaitRoomComponent, InputPassword } from './waiting-room/wait-roomList/wait-room/room.component';
 
 import { GameRoomComponent } from './game-room/game-room.component';
 import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.component';
@@ -53,7 +53,8 @@ import { LoginComponent } from './loginRoom/login/login.component';
 import { HttpUserService } from './service/http-user.service';
 
 import { SessionService } from './service/session.service';
-import { UserImageComponent } from './waitingRoom/userImage/user-Image.component';
+import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-Image.component';
+
 
 @NgModule({
   declarations: [
