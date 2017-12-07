@@ -1,6 +1,3 @@
-# title
-
-[TOC]
 ## subtitle
 
 content
