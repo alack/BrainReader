@@ -5,4 +5,5 @@ export class Room {
   maxUser: number;
   userCount: number;
   users: string[];
+  painter: string;
 }

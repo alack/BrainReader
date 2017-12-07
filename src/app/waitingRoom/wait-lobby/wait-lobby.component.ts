@@ -20,7 +20,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
               private sessionService: SessionService) {}
 
   ngOnInit(): void {
-    console.log('lobby init')
+    console.log('lobby init');
     this.gameIo.joinRoom();
     // Make the HTTP request:
     this.http.get('/room').subscribe(data => {
@@ -42,14 +42,14 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(result => {
       this.http.post('/room', {data: result}).subscribe(data => {
-        this.http.post('/room/' + result['name'],{
+        this.http.post('/room/' + result['name'], {
           data: this.sessionService.getSessionId()
         }).subscribe(dat => {
           console.log('create room', result);
 
           this.gameIo.setRoomId(result['name']);
           this.sessionService.setCurrentPage('game');
-        })
+        });
       });
       console.log('The dialog was closed');
     });
@@ -77,7 +77,8 @@ export class CreateRoom {
     type: '',
     maxUser: 8,
     userCount: 0,
-    users: []
+    users: [],
+    painter: ''
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

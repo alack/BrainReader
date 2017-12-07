@@ -4,7 +4,7 @@ import {Component} from '@angular/core';
  */
 @Component({
   selector: 'app-tabs-overview',
-  templateUrl: './tabs-overview.html',
+  templateUrl: './tabs-overview.component.html',
 })
 export class TabsOverviewComponent {
 

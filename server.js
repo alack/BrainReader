@@ -85,7 +85,8 @@ io.sockets.on('connection', socket => {
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
-    if(exports.truewords[socket.room] === data.message) {
+    const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
+    if(exports.truewords[socket.room] === data.message && socket.userName !== exports.rooms[roomnum].painter) {
       // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
@@ -96,6 +97,7 @@ io.sockets.on('connection', socket => {
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
       // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+      exports.rooms[roomnum].painter = socket.userName;
       socket.emit('nexthuman');
       io.sockets.in(socket.room).emit('wordremove');
     }
