@@ -27,7 +27,7 @@ export class WaitRoomListComponent implements OnInit {
   }
   onKeyDown() {
     this.selectedRooms = this.rooms.filter((room) => {
-      return (room['name'].includes(this.input)) ? true:false;
-    })
+      return !!(room['name'].includes(this.input));
+    });
   }
 }

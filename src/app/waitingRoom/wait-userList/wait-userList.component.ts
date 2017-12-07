@@ -7,7 +7,7 @@ import { GameIoService } from '../../service/game-io.service';
   styleUrls: ['./wait-userList.component.css']
 })
 
-export class WaitUserListComponent implements  OnInit {
+export class WaitUserListComponent implements  OnInit, OnDestroy {
   users = [];
   connection;
   constructor(private gameIo: GameIoService) {
@@ -19,7 +19,7 @@ export class WaitUserListComponent implements  OnInit {
     this.users.push('test');
     this.connection = this.gameIo.getUserList().subscribe(result => {
       this.users = result['users'];
-    })
+    });
   }
 
   ngOnDestroy() {
