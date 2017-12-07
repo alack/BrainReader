@@ -7,8 +7,8 @@ import {SessionService} from '../service/session.service';
 
 @Component({
   selector: 'lobby',
-  templateUrl: 'waiting-room.component.html',
-  styleUrls: ['waiting-room.component.css']
+  templateUrl: './waiting-room.component.html',
+  styleUrls: ['./waiting-room.component.css']
 })
 
 export class WaitLobbyComponent implements OnInit, OnDestroy {
