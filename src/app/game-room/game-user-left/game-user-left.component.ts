@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game-user-left.component.css']
 })
 export class GameUserLeftComponent implements OnInit {
-
+  leftusers = [];
   constructor() { }
 
   ngOnInit() {

@@ -31,7 +31,7 @@ import { Footer } from './footer.component';
 
 import { ChatComponent } from './common/common-chat.component';
 
-import { HttpWaitingRoomService } from './service/http-waitingRoom.service';
+
 import { WaitLobbyComponent, CreateRoom, Rank } from './waiting-room/waiting-room.component';
 import { WaitUserListComponent } from './waiting-room/wait-userList/wait-userList.component';
 import { WaitRoomListComponent } from './waiting-room/wait-roomList/wait-roomList.component';
@@ -43,15 +43,16 @@ import { GameCanvasComponent } from './game-room/game-canvas/game-canvas.compone
 import { GameUserRightComponent } from './game-room/game-user-right/game-user-right.component';
 import { GameUserLeftComponent } from './game-room/game-user-left/game-user-left.component';
 import { GameComponent } from './game-room/game/game.component';
-import { GameIoService } from './service/game-io.service';
+
 
 import { DialogComponent, StartComponent } from './loginRoom/start/start.component';
 import { TabsOverviewComponent } from './loginRoom/start/tabs-overview.component';
 import { RegisterComponent } from './loginRoom/register/register.component';
 import { LoginComponent } from './loginRoom/login/login.component';
 
+import { HttpWaitingRoomService } from './service/http-waitingRoom.service';
 import { HttpUserService } from './service/http-user.service';
-
+import { GameIoService } from './service/game-io.service';
 import { SessionService } from './service/session.service';
 import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-Image.component';
 

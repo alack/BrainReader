@@ -1,4 +1,5 @@
-<mat-card class = "usercard">jisoo.gim</mat-card>
-<mat-card class = "usercard">jisoo.kim</mat-card>
-<mat-card class = "usercard">cruser</mat-card>
-<mat-card class = "usercard">ppap</mat-card>
+<mat-card class = "usercard" *ngFor="let rightuser of rightusers">
+  <mat-card-header>
+    <mat-card-title>{{rightuser.id}}</mat-card-title>
+  </mat-card-header>
+</mat-card>

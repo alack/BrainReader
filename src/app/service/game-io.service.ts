@@ -10,6 +10,12 @@ export class GameIoService implements OnInit {
   private roomId = '0';
   private roomLeftUser = [];
   private roomRightUser = [];
+  private room = {
+    id: this.roomId,
+    leftUser: this.roomLeftUser,
+    rightUser: this.roomRightUser,
+    mode: 'human'
+  };
   public socket;
     constructor(private sessionService: SessionService,
                 private http: HttpClient) {
@@ -19,6 +25,22 @@ export class GameIoService implements OnInit {
 
   ngOnInit() {
     console.log('gameIoService::ngOnInit');
+  }
+
+  getRoom() {
+      return this.room;
+  }
+
+  sendDraw(data) {
+      data = {
+        roomId : this.roomId,
+        IMGbase64: data
+      };
+      return this.http.post('/draw', data);
+  }
+
+  getDraw() {
+      return this.http.get('/draw?roomId=' + this.roomId);
   }
 
   getUserList() {

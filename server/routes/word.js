@@ -14,7 +14,7 @@ router.get('/word', (req, res) => {
     models_word.findOne().skip(random).exec(function (err, documents) {
       console.log('room::/word return word : %s', documents.word);
       if (!err) {
-        server.truewords[req.query.roomId] = documents.word;
+        server.truewords[req.query.roomId] = documents;
         console.log('room::/word roomId : %s word : %s', req.query.roomId, documents.word);
         res.json({result: "success", word: documents.word});
       }
@@ -27,6 +27,7 @@ router.get('/word', (req, res) => {
 router.post('/addWord', (req, res) => {
   const words = new models_word();
   words.word = req.body['word'];
+  words.category = req.body['category'];
   words.description = 'ppap';
   models_word.find({ word: req.body['word'] },function(err) {
     if(err) {

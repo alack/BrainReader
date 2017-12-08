@@ -21,6 +21,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   drawon;
   drawremove;
   nexthuman;
+  commode;
   sweeper = -0.5;
   constructor(private gameIo: GameIoService ) {}
 
@@ -124,11 +125,27 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       console.log('chungseong chungseong!!  ', data);
       if ( data['dangchum'] ) {
         // 이미지 떠서
-        const pixel = this.ctx.getImageData( 0, 0, this.c.width, this.c.height);
-        // todo 보낸다!!!
+        const imgstring = this.c.toDataURL();
+        // 보낸다!!!
+        // 성공했다는 알림을 받아서 콘솔로 출력
+        this.gameIo.sendDraw(imgstring).subscribe(back => {
+          if (back['result']) {
+            console.log(back['obj']);
+          } else {
+            console.log('save failed');
+          }
+        });
       }
       // 이미지 삭제한다!!!
       this.ctx.clearRect( 0, 0, this.c.width, this.c.height);
     });
+    // todo 컴모드일경우 그림을 불러와서 넣는다.
+    if (this.gameIo.getRoom().mode === 'com') {
+      this.commode = this.gameIo.getDraw().subscribe(data => {
+        const img = new Image;
+        img.src = data['image'];
+        this.ctx.drawImage(img, 0, 0);
+      });
+    }
   }
 }

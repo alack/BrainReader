@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const user = require('./server/routes/user');
 const room = require('./server/routes/room');
 const word = require('./server/routes/word');
+const draw = require('./server/routes/draw');
 const app = express();
 // express-session
 const session = require('express-session');
@@ -41,6 +42,7 @@ app.use(session({
 app.use('/user', user);
 app.use('/word', word);
 app.use('/room', room);
+app.use('/draw', draw);
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
@@ -87,10 +89,13 @@ io.sockets.on('connection', socket => {
   // Broadcast to room
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
-    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
     const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
-    if(exports.truewords[socket.room] === data.message && socket.userName !== exports.rooms[roomnum].painter) {
-      // todo io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
+    // 그리는 사람은 어떤 대화를 대화를 쳐도 말을 할 수 없음.
+    if (socket.userName === exports.rooms[roomnum].painter)
+      data.message = '저는 말을 할 수 없습니다.';
+    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
+    if(exports.truewords[socket.room].word === data.message) {
+      // io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
       console.log('send:message::dangchum : ', dangchumUser);
