@@ -6,4 +6,5 @@ export class Room {
   userCount: number;
   users: string[];
   painter: string;
+  mode: boolean; // false : human, true : com
 }

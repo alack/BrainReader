@@ -140,7 +140,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       this.ctx.clearRect( 0, 0, this.c.width, this.c.height);
     });
     // todo 컴모드일경우 그림을 불러와서 넣는다.
-    if (this.gameIo.getRoom().mode === 'com') {
+    if (this.gameIo.getRoom().mode === true) {
       this.commode = this.gameIo.getDraw().subscribe(data => {
         const img = new Image;
         img.src = data['image'];

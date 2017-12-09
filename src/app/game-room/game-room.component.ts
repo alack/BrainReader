@@ -7,12 +7,19 @@ import { GameIoService } from '../service/game-io.service';
   styleUrls: ['./game-room.component.css']
 })
 export class GameRoomComponent implements OnInit {
-
-
-  constructor(private gameIo: GameIoService) {  }
+  leftusers = [];
+  rightusers = [];
+  constructor(public gameIo: GameIoService) {  }
 
   ngOnInit() {
     this.gameIo.joinRoom();
+    this.gameIo.getNewUser().subscribe((data) => {
+      console.log('both users push push!!' +
+        'left : ', data['left'],
+        'right : ', data['right']);
+      this.leftusers = data['left'];
+      this.rightusers = data['right'];
+    });
   }
 
 

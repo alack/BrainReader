@@ -72,8 +72,7 @@ io.sockets.on('connection', socket => {
     console.log('come join event');
     if(socket.room) {
       socket.leave(socket.room);
-      if(socket.room == 0)
-        getUserList();
+      getUserList(socket.room);
     }
 
     socket.room = data.roomId;
@@ -84,7 +83,7 @@ io.sockets.on('connection', socket => {
     // io.sockets.clients(socket.roomname);
     // console.log('my room users : ', io.sockets.clients(socket.roomname));
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
-    io.sockets.in(socket.room).emit('person_join', {user: socket.userName});
+    getUserList(socket.room);
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
@@ -125,7 +124,6 @@ io.sockets.on('connection', socket => {
     console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
     io.sockets.in(socket.room).emit('finishpath', data);
   });
-
   socket.on('getuserlist', function (id) {
     getUserList(id);
   });
@@ -148,6 +146,9 @@ function getUserList(id = 0) {
         users.push(io.sockets.connected[client].userName);
       });
       console.log('getuserlist from room ' + id, users);
+      if(id==0)
       io.sockets.in(id).emit('getuserlist', {users: users });
+      else
+        io.sockets.in(id).emit('gameroomuserlist', {users: users});
     });
 }

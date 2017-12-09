@@ -1,32 +1,35 @@
-import { Injectable, OnInit, OnDestroy } from '@angular/core';
+import {Injectable, OnInit, OnDestroy, EventEmitter} from '@angular/core';
 import io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
 import { SessionService } from '../service/session.service';
+import {forEach} from '@angular/router/src/utils/collection';
+
 
 @Injectable()
 export class GameIoService implements OnInit {
   private url = 'http://localhost:3000';
   private roomId = '0';
-  private roomLeftUser = [];
-  private roomRightUser = [];
+  public LeftUser;
+  public RightUser;
   private room = {
     id: this.roomId,
-    leftUser: this.roomLeftUser,
-    rightUser: this.roomRightUser,
-    mode: 'human'
+    leftUser: this.LeftUser,
+    rightUser: this.RightUser,
+    mode: false
   };
   public socket;
     constructor(private sessionService: SessionService,
                 private http: HttpClient) {
     this.socket = io(this.url);
+    this.LeftUser = [];
+    this.RightUser = [];
     // this.joinRoom();
   }
 
   ngOnInit() {
     console.log('gameIoService::ngOnInit');
   }
-
   getRoom() {
       return this.room;
   }
@@ -44,7 +47,7 @@ export class GameIoService implements OnInit {
   }
 
   getUserList() {
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
       this.socket.on('getuserlist', (data) => {
         console.log('getUserList.service::getuserlist event coming');
         observer.next(data);
@@ -80,7 +83,7 @@ export class GameIoService implements OnInit {
 
     this.socket.emit('joinroom', data);
     console.log('joinRoom to ', data);
-    this.requestUserList();
+    // this.requestUserList();
   }
 
 
@@ -94,7 +97,7 @@ export class GameIoService implements OnInit {
     this.socket.emit('send:message', data);
   }
   getMessages() {
-     const observable = new Observable(observer => {
+     let observable = new Observable(observer => {
 
       this.socket.on('message', (data) => {
         console.log('gameIoService::message event coming');
@@ -114,7 +117,7 @@ export class GameIoService implements OnInit {
     y : data.y });
   }
   getStartPath() {
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('startpath', (data) => {
         console.log('gameIoService::startpath event coming');
@@ -134,7 +137,7 @@ export class GameIoService implements OnInit {
       y : data.y });
   }
   getMovePath() {
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('movepath', (data) => {
         console.log('gameIoService::movepath event coming');
@@ -154,7 +157,7 @@ export class GameIoService implements OnInit {
       y : data.y });
   }
   getFinishPath() {
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('finishpath', (data) => {
         console.log('gameIoService::finishpath event coming');
@@ -168,17 +171,24 @@ export class GameIoService implements OnInit {
     return observable;
   }
   getNewUser() {
-    const observable = new Observable(observer => {
-      this.socket.on('person_join', function (data){
-        console.log('gameIoService::person_join event coming');
-        if (this.roomLeftUser.length > this.roomRightUser.length) {
-          this.roomRightUser.push(data);
-          data.dir = 1;
-        } else {
-          this.roomLeftUser.push(data);
-          data.dir = 0;
-        }
-        observer.next(data);
+    let observable = new Observable(observer => {
+      this.socket.on('gameroomuserlist', function (data) {
+        console.log('gameIoService::gameroomuserlist event coming  ', data); // data가 이상한게 들어온다!!!
+        if (data['users'] !== undefined) {
+          const left = new Array(), right = new Array();
+          data['users'].forEach(
+            (user, idx) => {
+              if (idx % 2 == 0) {
+                left.push(user);
+                  console.log('roomLeftUser push!! idx : ', idx);
+              } else {
+                right.push(user);
+                  console.log('roomRightUser push!! idx : ', idx);
+              }
+            });
+          console.log({left: left, right: right});
+          observer.next({ left: left, right: right });
+          }
       });
     });
     return observable;
@@ -187,7 +197,7 @@ export class GameIoService implements OnInit {
     return this.http.get('/word/word?roomId=' + this.roomId);
   }
   getReady() {
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('ioready', (data) => {
         console.log('gameIoService::ready event coming');
@@ -211,7 +221,7 @@ export class GameIoService implements OnInit {
 
   drawingAuthRemove() {
       // 드로잉 권한 삭제 trigger
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('drawingauthremove', () => {
         console.log('gameIoService::drawingauthremove event coming');
@@ -226,7 +236,7 @@ export class GameIoService implements OnInit {
   }
   picRemove() {
       // 그림 삭제
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('PICremove', (data) => {
         console.log('gameIoService::picremove event coming currentUser : ', this.sessionService.getSessionId(),
@@ -247,7 +257,7 @@ export class GameIoService implements OnInit {
   }
   wordRemove() {
     // 단어 삭제
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('wordremove', () => {
         console.log('gameIoService::wordremove event coming');
@@ -262,7 +272,7 @@ export class GameIoService implements OnInit {
   }
   nextHuman() {
       // 드로잉 권한 부여, 단어 불러오기 트리거 발동
-    const observable = new Observable(observer => {
+    let observable = new Observable(observer => {
 
       this.socket.on('nexthuman', () => {
         console.log('gameIoService::nexthuman event coming');

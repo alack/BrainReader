@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import { GameIoService } from '../../service/game-io.service';
 
 @Component({
   selector: 'app-game-user-left',
@@ -6,8 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./game-user-left.component.css']
 })
 export class GameUserLeftComponent implements OnInit {
-  leftusers = [];
-  constructor() { }
+  @Input() leftusers = [];
+  constructor(private gameIo: GameIoService) {}
 
   ngOnInit() {
   }

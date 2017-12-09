@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import { GameIoService } from '../../service/game-io.service';
 
 @Component({
   selector: 'app-game-user-right',
@@ -6,10 +7,9 @@ import {Component, Input, OnInit} from '@angular/core';
   styleUrls: ['./game-user-right.component.css']
 })
 export class GameUserRightComponent implements OnInit {
-
-  constructor() { }
+  @Input() rightusers = [];
+  constructor(private gameIo: GameIoService) {}
 
   ngOnInit() {
   }
-
 }

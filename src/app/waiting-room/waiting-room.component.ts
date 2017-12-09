@@ -32,7 +32,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     console.log('lobby destroyed');
     // TODO 전에 있던 방 ID 로 해야함
-    this.gameIo.requestUserList();
+    this.gameIo.requestUserList(); // todo 이거 뭐임?? 무슨의도??
   }
 
   openDialog(): void {
@@ -78,7 +78,8 @@ export class CreateRoom {
     maxUser: 8,
     userCount: 0,
     users: [],
-    painter: ''
+    painter: '',
+    mode: false
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

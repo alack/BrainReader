@@ -42,7 +42,7 @@ export class Header implements OnInit {
                 this.sessionService.setCurrentPage('login');
                 this.gameio.setRoomId(-1);
                 this.gameio.joinRoom();
-                this.gameio.requestUserList();
+                this.gameio.requestUserList(); // todo joinroom에서 자동으로 시키지 않나??
             }
         });
     }
