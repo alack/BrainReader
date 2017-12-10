@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({
@@ -27,8 +27,8 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.c  = document.getElementById('cv');
-    this.c.width = 560;
-    this.c.height = 450;
+    this.c.width = 626;
+    this.c.height = 400;
     this.ctx = this.c.getContext('2d');
     this.click = false;
     this.ctx.strokeStyle = 'red';
@@ -42,6 +42,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.drawon = this.gameIo.nextHuman().subscribe(() => {
       this.drawingauth = true;
     });
+
   }
 
   ngOnDestroy() {
@@ -108,7 +109,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     };
   }
 
-  injectColor(color: string) {
+  injectColor(color) {
     this.ctx.lineWidth = (color === 'white') ? 5 : 1;
     this.ctx.strokeStyle = color;
   }

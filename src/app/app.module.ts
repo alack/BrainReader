@@ -55,7 +55,7 @@ import { HttpUserService } from './service/http-user.service';
 import { GameIoService } from './service/game-io.service';
 import { SessionService } from './service/session.service';
 import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-Image.component';
-
+import { ColorsComponent } from './game-room/game-canvas/colors/colors.component';
 
 @NgModule({
   declarations: [
@@ -85,7 +85,8 @@ import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-
     TabsOverviewComponent,
     RegisterComponent,
     LoginComponent,
-    UserImageComponent
+    UserImageComponent,
+    ColorsComponent
   ],
   imports: [
     BrowserModule,

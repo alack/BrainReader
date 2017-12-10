@@ -1,0 +1,11 @@
+#colorlist {
+  height: 52px;
+  width: 560px;
+  display: flex;
+  flex-direction: row;
+}
+
+.div_color {
+  height: 52px;
+  width: 62px;
+}

@@ -1,3 +1,7 @@
 canvas {
-  border: 0 solid black;
+  border: 1px solid black;
+}
+
+app-colors {
+  /* todo app-color가 가장 오른쪽 한자리를 먹고 자리를 안내준다. 이를 해결할 방법을 찾아라!!!*/
 }
