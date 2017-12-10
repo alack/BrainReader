@@ -105,7 +105,7 @@ io.sockets.on('connection', socket => {
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
       // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
-      exports.rooms[roomnum].painter = dangchumUser;
+      exports.rooms[roomnum].painter = socket.userName;
       socket.emit('nexthuman', socket.userName);
       io.sockets.in(socket.room).emit('wordremove');
     }
