@@ -77,6 +77,7 @@ io.sockets.on('connection', socket => {
 
     socket.room = data.roomId;
     socket.join(socket.room);
+    socket.ready = false;
     socket.userName = data.userName;
     console.log('roomjoin::roomid : ', socket['room']);
     console.log('roomjoin::userName : ', socket['userName']);
@@ -104,8 +105,8 @@ io.sockets.on('connection', socket => {
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
       // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
-      exports.rooms[roomnum].painter = socket.userName;
-      socket.emit('nexthuman');
+      exports.rooms[roomnum].painter = dangchumUser;
+      socket.emit('nexthuman', socket.userName);
       io.sockets.in(socket.room).emit('wordremove');
     }
   });
@@ -128,27 +129,62 @@ io.sockets.on('connection', socket => {
     getUserList(id);
   });
   socket.on('serverready', function(){
-    const user = {};
-    io.sockets.in(socket.room).emit('ioready',user);
+    console.log('serverready from room ' + socket.room, 'socket.ready : ', socket.ready);
+    socket.ready = !(socket.ready);
+    console.log('serverready from room ' + socket.room, 'socket.ready : ', socket.ready);
+    getUserList(socket.room);
   });
   socket.on('disconnect', data => {
     // socket.leave
     getUserList();
   });
-});
 
+});
+function chkStart(id, roomusers) {
+  var chk = true;
+  roomusers.forEach(roomuser => {
+    if(roomuser.ready == false)
+      chk = false;
+    console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
+  });
+  exports.rooms.findIndex((room, roomidx) => {
+    console.log('chkstart chk result : ', chk, 'room gaming : ', exports.rooms[roomidx].gaming);
+    if(chk && !exports.rooms[roomidx].gaming) {
+      console.log('gamestart event result : ', chk);
+      exports.rooms[roomidx].gaming = true;
+      io.sockets.in(id).emit('gamestart');
+      holdPainter(id);
+    }
+  });
+}
+function holdPainter(id) {
+  exports.rooms.find((room, roomidx) => {
+    console.log('holdPainter result room name : ', id, 'room painter : ', exports.rooms[roomidx].painter);
+    if( room.name === id && exports.rooms[roomidx].painter === '') {
+      const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
+      exports.rooms[roomidx].painter = dangchumUser;
+      io.sockets.in(id).emit('nexthuman', dangchumUser);
+    }
+  });
+};
 function getUserList(id = 0) {
-    const users = [];
+    const users = [], roomusers = [];
     io.in(id).clients((err, clients) => {
       // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
       clients.forEach(client => {
         // console.log(io.sockets.connected[client].userName);
         users.push(io.sockets.connected[client].userName);
+        roomusers.push({userName : io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
       });
-      console.log('getuserlist from room ' + id, users);
-      if(id==0)
-      io.sockets.in(id).emit('getuserlist', {users: users });
-      else
-        io.sockets.in(id).emit('gameroomuserlist', {users: users});
+      if(id==0) {
+        console.log('getuserlist from room ' + id, users);
+        io.sockets.in(id).emit('getuserlist', {users: users});
+      }
+      else {
+        console.log('gameroomuserlist from room ' + id, roomusers);
+        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+        // game start chk trigger
+        chkStart(id, roomusers);
+      }
     });
 }

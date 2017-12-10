@@ -7,4 +7,5 @@ export class Room {
   users: string[];
   painter: string;
   mode: boolean; // false : human, true : com
+  gaming: boolean;
 }

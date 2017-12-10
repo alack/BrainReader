@@ -1,9 +1,8 @@
-import {Injectable, OnInit, OnDestroy, EventEmitter} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import io from 'socket.io-client';
 import { Observable } from 'rxjs/Observable';
 import { HttpClient } from '@angular/common/http';
-import { SessionService } from '../service/session.service';
-import {forEach} from '@angular/router/src/utils/collection';
+import { SessionService } from './session.service';
 
 
 @Injectable()
@@ -70,7 +69,7 @@ export class GameIoService implements OnInit {
     this.roomId = id;
   }
 
-  getRoomId(id) {
+  getRoomId() {
     console.log('gameIoService::getRoomId');
     return this.roomId;
   }
@@ -175,7 +174,7 @@ export class GameIoService implements OnInit {
       this.socket.on('gameroomuserlist', function (data) {
         console.log('gameIoService::gameroomuserlist event coming  ', data); // data가 이상한게 들어온다!!!
         if (data['users'] !== undefined) {
-          const left = new Array(), right = new Array();
+          const left = [], right = [];
           data['users'].forEach(
             (user, idx) => {
               if (idx % 2 == 0) {
@@ -196,12 +195,18 @@ export class GameIoService implements OnInit {
   getWord() {
     return this.http.get('/word/word?roomId=' + this.roomId);
   }
-  getReady() {
+  sendReady() {
+    console.log('gameIoService::sendReady');
+    const data = {};
+    this.socket.emit('serverready', data);
+    // 해당 유저가 ㄹㄷ했다는 신호를 보내는 곳이다. 딱히 변경할 필요가 있는가....?
+  }
+  gameStart() {
     let observable = new Observable(observer => {
 
-      this.socket.on('ioready', (data) => {
-        console.log('gameIoService::ready event coming');
-        observer.next(data);
+      this.socket.on('gamestart', () => {
+        console.log('gameIoService::gamestart event coming');
+        observer.next();
       });
       return () => {
         // this.socket.leave();
@@ -209,16 +214,7 @@ export class GameIoService implements OnInit {
       };
     });
     return observable;
-    // todo 다른사람이 ㄹㄷ하면 여기서 수신받아서 해당하는 id를 가진 사람의 card의 색을 바꾼다.
-    // todo 모두가 ㄹㄷ하면 시작하는 것으로 생각했는데 이걸 어떻게 판단해야 모두가 레디하면 바로 시작할까?
   }
-  sendReady() {
-    console.log('gameIoService::sendReady');
-    const data = {};
-    this.socket.emit('serverready', data);
-    // 해당 유저가 ㄹㄷ했다는 신호를 보내는 곳이다. 딱히 변경할 필요가 있는가....?
-  }
-
   drawingAuthRemove() {
       // 드로잉 권한 삭제 trigger
     let observable = new Observable(observer => {
@@ -241,11 +237,7 @@ export class GameIoService implements OnInit {
       this.socket.on('PICremove', (data) => {
         console.log('gameIoService::picremove event coming currentUser : ', this.sessionService.getSessionId(),
           'picture capture User : ', data.dangchum);
-        if (this.sessionService.getSessionId() === data.dangchum) {
-          data.dangchum = true;
-        } else {
-          data.dangchum = false;
-        }
+        data.dangchum = this.sessionService.getSessionId() === data.dangchum;
         observer.next(data);
       });
       return () => {
@@ -274,10 +266,11 @@ export class GameIoService implements OnInit {
       // 드로잉 권한 부여, 단어 불러오기 트리거 발동
     let observable = new Observable(observer => {
 
-      this.socket.on('nexthuman', () => {
+      this.socket.on('nexthuman', (data) => {
         console.log('gameIoService::nexthuman event coming');
-        this.getWord();
-        observer.next();
+        if (data === this.sessionService.getSessionId()) {
+          observer.next();
+        }
       });
       return () => {
         // this.socket.leave();

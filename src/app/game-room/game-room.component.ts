@@ -9,6 +9,9 @@ import { GameIoService } from '../service/game-io.service';
 export class GameRoomComponent implements OnInit {
   leftusers = [];
   rightusers = [];
+  start;
+  startflag = false;
+
   constructor(public gameIo: GameIoService) {  }
 
   ngOnInit() {
@@ -19,6 +22,9 @@ export class GameRoomComponent implements OnInit {
         'right : ', data['right']);
       this.leftusers = data['left'];
       this.rightusers = data['right'];
+    });
+    this.gameIo.gameStart().subscribe( () => {
+      this.startflag = true;
     });
   }
 

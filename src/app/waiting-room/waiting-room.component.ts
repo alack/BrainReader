@@ -32,7 +32,9 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     console.log('lobby destroyed');
     // TODO 전에 있던 방 ID 로 해야함
-    this.gameIo.requestUserList(); // todo 이거 뭐임?? 무슨의도??
+    // 방 접속할때 들어간거 나간거 다 request 해주게 했음.
+    // 문제는 갑자기 방 나갈때가 이젠 문제 그걸 처리 하려고 여기서 한 것 아닌가?
+    // this.gameIo.requestUserList();
   }
 
   openDialog(): void {
@@ -79,7 +81,8 @@ export class CreateRoom {
     userCount: 0,
     users: [],
     painter: '',
-    mode: false
+    mode: false,
+    gaming: false
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

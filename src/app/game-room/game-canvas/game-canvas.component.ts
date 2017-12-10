@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Input} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   drawremove;
   nexthuman;
   commode;
-  sweeper = -0.5;
+  start;
   constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
@@ -33,11 +33,13 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.click = false;
     this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 2;
-    this.gameStart();
-    this.drawoff = this.gameIo.drawingAuthRemove().subscribe(data => {
+    this.start = this.gameIo.gameStart().subscribe(() => {
+      this.gameStart();
+    });
+    this.drawoff = this.gameIo.drawingAuthRemove().subscribe(() => {
       this.drawingauth = false;
     });
-    this.drawon = this.gameIo.nextHuman().subscribe(data => {
+    this.drawon = this.gameIo.nextHuman().subscribe(() => {
       this.drawingauth = true;
     });
   }
@@ -112,39 +114,40 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   }
 
   gameStart() {
-    this.con_startPath = this.gameIo.getStartPath().subscribe(data => {
-      this.startPath(data);
-    });
-    this.con_movePath = this.gameIo.getMovePath().subscribe( data => {
-      this.movePath(data);
-    });
-    this.con_finishPath = this.gameIo.getFinishPath().subscribe( data => {
-      this.finishPath(data);
-    });
-    this.drawremove = this.gameIo.picRemove().subscribe(data => {
-      console.log('chungseong chungseong!!  ', data);
-      if ( data['dangchum'] ) {
-        // 이미지 떠서
-        const imgstring = this.c.toDataURL();
-        // 보낸다!!!
-        // 성공했다는 알림을 받아서 콘솔로 출력
-        this.gameIo.sendDraw(imgstring).subscribe(back => {
-          if (back['result']) {
-            console.log(back['obj']);
-          } else {
-            console.log('save failed');
-          }
-        });
-      }
-      // 이미지 삭제한다!!!
-      this.ctx.clearRect( 0, 0, this.c.width, this.c.height);
-    });
     // todo 컴모드일경우 그림을 불러와서 넣는다.
     if (this.gameIo.getRoom().mode === true) {
       this.commode = this.gameIo.getDraw().subscribe(data => {
         const img = new Image;
         img.src = data['image'];
         this.ctx.drawImage(img, 0, 0);
+      });
+    } else {
+      this.con_startPath = this.gameIo.getStartPath().subscribe(data => {
+        this.startPath(data);
+      });
+      this.con_movePath = this.gameIo.getMovePath().subscribe(data => {
+        this.movePath(data);
+      });
+      this.con_finishPath = this.gameIo.getFinishPath().subscribe(data => {
+        this.finishPath(data);
+      });
+      this.drawremove = this.gameIo.picRemove().subscribe(data => {
+        console.log('chungseong chungseong!!  ', data);
+        if (data['dangchum']) {
+          // 이미지 떠서
+          const imgstring = this.c.toDataURL();
+          // 보낸다!!!
+          // 성공했다는 알림을 받아서 콘솔로 출력
+          this.gameIo.sendDraw(imgstring).subscribe(back => {
+            if (back['result']) {
+              console.log(back['obj']);
+            } else {
+              console.log('save failed');
+            }
+          });
+        }
+        // 이미지 삭제한다!!!
+        this.ctx.clearRect(0, 0, this.c.width, this.c.height);
       });
     }
   }

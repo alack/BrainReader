@@ -1,13 +1,13 @@
 
 <mat-grid-list cols="5" rowHeight="150px">
   <mat-grid-tile role="listitem" [colspan] = "1" [rowspan] = "5">
-    <app-game-user-left [leftusers]="leftusers">User-Left</app-game-user-left>
+    <app-game-user-left [leftusers]="leftusers" [startflag]="startflag">User-Left</app-game-user-left>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="3" [rowspan]="1">
     <app-game>Game</app-game>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="1" [rowspan]="5">
-    <app-game-user-right [rightusers] = "rightusers">User-Right</app-game-user-right>
+    <app-game-user-right [rightusers] = "rightusers" [startflag]="startflag">User-Right</app-game-user-right>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="3" [rowspan]="3">
     <app-game-canvas>Canvas</app-game-canvas>
