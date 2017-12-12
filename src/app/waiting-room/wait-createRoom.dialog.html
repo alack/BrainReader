@@ -6,19 +6,16 @@
     <mat-form-field>
         <input matInput [(ngModel)]="room.password" placeholder="Password">
     </mat-form-field>
-    <!--<mat-form-field>-->
-<!-- todo mode 선택 부분(human : false, com : true) 넣고, 선택안하면 안넘어가게 하기 -->
         <label>Mode: </label>
         <mat-radio-group [(ngModel)]="room.mode">
             <mat-radio-button [value]=false>Human</mat-radio-button>
             <mat-radio-button [value]=true>Com</mat-radio-button>
         </mat-radio-group>
-    <!--</mat-form-field>-->
     <mat-form-field>
-        <mat-select [(ngModel)]="room.type" placeholder="Type">
-            <mat-option value="All">All</mat-option>
-            <mat-option value="Animal">Animal</mat-option>
-            <mat-option value="Fruits">Fruits</mat-option>
+        <mat-select [(ngModel)]="room.type">
+            <mat-option value="All" selected>All</mat-option>
+            <mat-option value="Animals">Animals</mat-option>
+            <mat-option value="Plants">Plants</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field>

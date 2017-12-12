@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameIoService } from '../service/game-io.service';
 
 @Component({
@@ -6,7 +6,7 @@ import { GameIoService } from '../service/game-io.service';
   templateUrl: './game-room.component.html',
   styleUrls: ['./game-room.component.css']
 })
-export class GameRoomComponent implements OnInit {
+export class GameRoomComponent implements OnInit, OnDestroy {
   leftusers = [];
   rightusers = [];
   start;
@@ -29,5 +29,9 @@ export class GameRoomComponent implements OnInit {
     this.gameIo.gameEnd().subscribe( () => {
       this.startflag = false;
     });
+  }
+
+  ngOnDestroy() {
+    this.gameIo.leaveRoom();
   }
 }

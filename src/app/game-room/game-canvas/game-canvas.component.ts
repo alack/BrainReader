@@ -51,19 +51,13 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.gameIo.getRoom().mode === true) {
-      if(this.commode)
-        this.commode.unsubscribe();
+      if (this.commode) { this.commode.unsubscribe(); }
     } else {
-      if(this.clear)
-        this.clear.unsubscribe();
-      if(this.con_startPath)
-        this.con_startPath.unsubscribe();
-      if(this.con_movePath)
-        this.con_movePath.unsubscribe();
-      if(this.con_finishPath)
-        this.con_finishPath.unsubscribe();
-      if(this.drawremove)
-        this.drawremove.unsubscribe();
+      if (this.clear) { this.clear.unsubscribe(); }
+      if (this.con_startPath) { this.con_startPath.unsubscribe(); }
+      if (this.con_movePath) { this.con_movePath.unsubscribe(); }
+      if (this.con_finishPath) { this.con_finishPath.unsubscribe(); }
+      if (this.drawremove) { this.drawremove.unsubscribe(); }
     }
   }
 

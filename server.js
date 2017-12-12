@@ -69,7 +69,6 @@ exports.truewords = {};
 setInterval(function () {
   if(exports.rooms){
     for(let room of exports.rooms) {
-      if(room.name === "0") continue;
       console.log('setTimeout::room.curcnt : ', room.curcnt);
       if (room.curcnt) {
         console.log(room.name, ' room.remainSec ', room.remainSec)
@@ -87,12 +86,8 @@ setInterval(function () {
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
-    console.log('come join event');
-    if ( socket.room ) {
-      socket.leave( socket.room );
-      getUserList( socket.room );
-    }
-    if ( data.roomId === '0' || (exports.rooms && exports.rooms.find(o => o.name === data.roomId)) ) {
+    console.log('come join event ', data);
+    if ( data.roomId == '0' || (exports.rooms && exports.rooms.find(o => o.name === data.roomId)) ) {
       socket.room = data.roomId;
       socket.join( socket.room );
       socket.ready = false;
@@ -103,7 +98,13 @@ io.sockets.on('connection', socket => {
       // console.log('my room users : ', io.sockets.clients(socket.roomname));
       io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
       getUserList(socket.room);
+      if(socket.room != '0')
+        getUserList();
     }
+  });
+  socket.on('leaveroom', () => {
+    userRemove( socket.room, socket.userName );
+    socket.leave( socket.room , getUserList( socket.room ));
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
@@ -119,7 +120,7 @@ io.sockets.on('connection', socket => {
     if(socket.room != '0' && exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
       // io.sockets.in(socket.room)으로는 그림 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
-      const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
+      const dangchumUser = room.users[Math.floor(room.users.length * Math.random())];
       console.log('send:message::dangchum : ', dangchumUser);
       io.sockets.in(socket.room).emit('PICremove', {dangchum: dangchumUser});
       // broadcast로는 드로잉 권한 삭제 trigger
@@ -183,22 +184,65 @@ io.sockets.on('connection', socket => {
     io.sockets.in(socket.room).emit('getcolor', {color: data})
   });
   socket.on('disconnect', data => {
-    // socket.leave
-    getUserList();
+    userRemove( socket.room, socket.userName );
+    socket.leave( socket.room , getUserList( socket.room ));
   });
 
 });
+
+function userRemove(roomName, userName) {
+  if(roomName=='0') return;
+  const target = exports.rooms.find(o => o.name === roomName);
+  const target_num = target['users'].findIndex(user => user === userName);
+  target['users'].splice(target_num,1);
+  // rooms에서 users목록에서 userName을 찾아 삭제하기
+}
+
+function getUserList(id = 0) {
+  const users = [], roomusers = [];
+  io.in(id).clients((err, clients) => {
+    // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
+    clients.forEach(client => {
+      // console.log(io.sockets.connected[client].userName);
+      users.push(io.sockets.connected[client].userName);
+      roomusers.push({userName: io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
+    });
+    console.log('roomusers : ', roomusers);
+    if (roomusers.length) {
+      if (id == 0) {
+        console.log('getuserlist from room ' + id, ' ', users);
+        io.sockets.in(id).emit('getuserlist', {users: users});
+      } else {
+        console.log('gameroomuserlist from room ' + id, ' ', roomusers);
+        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+        // game start chk trigger
+        chkStart(id, roomusers);
+      }
+    } else {
+      console.log('before : ', exports.rooms);
+      exports.rooms.find((room, roomidx) => {
+        console.log(room);
+        // 빈 list의 경우 unsigned로 취급 하지 않는듯, 빈 list를 확인하고 싶으면 length로 판단하자.
+        if (!room.users.length) {
+          delete exports.truewords[room.name];
+          exports.rooms.splice(roomidx, 1);
+        }
+      });
+      console.log('after : ', exports.rooms);
+    }
+  });
+}
 function chkStart(id, roomusers) {
   var chk = true;
   roomusers.forEach(roomuser => {
     if(roomuser.ready == false)
       chk = false;
-    // console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
+    console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
   });
-  exports.rooms.findIndex((room, roomidx) => {
-    // console.log('chkstart chk result : ', chk, 'room curcnt : ', exports.rooms[roomidx].curcnt);
-    if(chk && exports.rooms[roomidx].curcnt === 0) {
-      // console.log('gamestart event result : ', chk);
+  exports.rooms.find((room, roomidx) => {
+    console.log('chkstart chk result : ', chk, 'room curcnt : ', exports.rooms[roomidx].curcnt);
+    if(chk && room.name === id && exports.rooms[roomidx].curcnt === 0) {
+      console.log('gamestart event result : id : ',id, ' chk : ', chk);
       io.sockets.in(id).emit('gamestart');
       holdPainter(id);
     }
@@ -216,12 +260,13 @@ function holdPainter(id) {
       if(++room.curcnt <= room.gamecnt) {
         // game이 gamecnt에 도달하지 못했으므로 게임은 계속 된다.
         // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
-        const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
+        const dangchumUser = room.users[Math.floor(room.users.length * Math.random())];
         room.painter = dangchumUser;
         console.log('after holdPainter result room name : ', id, 'room painter : ', room.painter);
         io.sockets.in(id).emit('nexthuman', dangchumUser);
       } else {
         // game이 gamecnt를 넘었으므로 게임이 종료되고 상태가 초기화 된다. 어떻게 할까. 고민해보자.
+        console.log('game end room id : ', room.name);
         io.sockets.in(id).emit('gameend');
         exports.truewords[id] = '';
         io.in(id).clients((err, clients) => {
@@ -240,30 +285,3 @@ function holdPainter(id) {
     }
   });
 };
-function getUserList(id = 0) {
-  const users = [], roomusers = [];
-  io.in(id).clients((err, clients) => {
-    // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
-    clients.forEach(client => {
-      // console.log(io.sockets.connected[client].userName);
-      users.push(io.sockets.connected[client].userName);
-      roomusers.push({userName: io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
-    });
-    if( !users ) {
-      exports.rooms.find((room,roomidx) => {
-        if ( !room.userCount )
-          exports.rooms.slice(roomidx,1);
-      });
-    } else {
-      if (id == 0) {
-        // console.log('getuserlist from room ' + id, users);
-        io.sockets.in(id).emit('getuserlist', {users: users});
-      } else {
-        // console.log('gameroomuserlist from room ' + id, roomusers);
-        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
-        // game start chk trigger
-        chkStart(id, roomusers);
-      }
-    }
-  });
-}

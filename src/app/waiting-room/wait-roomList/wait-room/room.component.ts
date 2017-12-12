@@ -4,20 +4,20 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Room } from '../../../../../models/room';
-import { GameIoService } from '../../../service/game-io.service'
+import { GameIoService } from '../../../service/game-io.service';
 import { HttpClient } from '@angular/common/http';
 import {SessionService} from '../../../service/session.service';
 
 @Component({
     selector : 'app-wait-room',
     template: `
-    <mat-card (click)="enterPassword()">
+    <mat-card (click)="enterPassword()" style="width:256px;">
         <mat-card-header style="height: 70px;">
             {{room.name}}
         </mat-card-header>
         <mat-card-content>
-            <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu">
-            <p align="right">{{room.userCount}}/{{room.maxUser}}</p>
+            <img mat-card-image src="../../../../assets/{{room.type}}.png" alt="Photo of a Shiba Inu">
+            <p align="right">{{room.users.length}}/{{room.maxUser}}</p>
         </mat-card-content>
     </mat-card>`
 })
@@ -45,7 +45,7 @@ export class WaitRoomComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             console.log('result', result);
             if(result) {
-                (result == this.room.password? this.correctPassword():alert('nono'));
+                (result == this.room.password ? this.correctPassword() : alert('nono'));
             }
         });
 
@@ -57,7 +57,7 @@ export class WaitRoomComponent implements OnInit {
         this.http.post('/room/' + this.room['name'], {
             data: this.sessionService.getSessionId()
         }).subscribe(data => {
-            if(data['result']) {
+            if (data['result']) {
                 this.gameIo.setRoomId(this.room['name']);
                 this.sessionService.setCurrentPage('game');
             } else {

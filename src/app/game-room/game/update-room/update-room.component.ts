@@ -54,7 +54,6 @@ export class UpdateRoomModalComponent implements OnInit{
     password: '',
     type: '1',
     maxUser: 4,
-    userCount: 0,
     users: [],
     painter: '',
     mode: false,

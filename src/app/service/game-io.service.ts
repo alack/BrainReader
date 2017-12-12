@@ -85,7 +85,7 @@ export class GameIoService implements OnInit {
   }
 
   setRoomId(id) {
-    console.log('gameIoService::setRoomId');
+    console.log('gameIoService::setRoomId ', id);
     this.roomId = id;
   }
 
@@ -346,5 +346,7 @@ export class GameIoService implements OnInit {
   sendColor (color) {
       this.socket.emit('sendcolor', color);
   }
-
+  leaveRoom () {
+      this.socket.emit('leaveroom');
+  }
 }

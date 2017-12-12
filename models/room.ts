@@ -3,7 +3,6 @@ export class Room {
   password: string;
   type: string;
   maxUser: number;
-  userCount: number;
   users: string[];
   painter: string;
   mode: boolean; // false : human, true : com

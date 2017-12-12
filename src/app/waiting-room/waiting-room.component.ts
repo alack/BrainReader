@@ -21,6 +21,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     console.log('lobby init');
+    this.gameIo.setRoomId(0);
     this.gameIo.joinRoom();
     // Make the HTTP request:
     this.http.get('/room').subscribe(data => {
@@ -31,6 +32,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.log('lobby destroyed');
+    this.gameIo.leaveRoom();
     // TODO 전에 있던 방 ID 로 해야함
     // 방 접속할때 들어간거 나간거 다 request 해주게 했음.
     // 문제는 창끌때가 문제, 그걸 처리 하려고 여기서 한 것 아닌가?
@@ -80,7 +82,6 @@ export class CreateRoom {
     password: '',
     type: 'All',
     maxUser: 8,
-    userCount: 0,
     users: [],
     painter: '',
     mode: false,

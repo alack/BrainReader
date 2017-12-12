@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
     selector: 'app-header',
     template: `
         <mat-toolbar color="primary">
-            <button mat-button (click)="onClick()">
+            <button mat-button>
                 Brain Reader
             </button>
             <span style="flex: 1 1 auto;"></span>
@@ -29,20 +29,12 @@ export class Header implements OnInit {
 
     ngOnInit(): void { }
 
-    onClick() {
-        if (this.sessionService.getSessionId()) {
-            this.sessionService.setCurrentPage('waiting');
-            this.gameio.setRoomId(0);
-        }
-    }
-
     onLogout() {
         this.http.post('/user/logout', {}).subscribe(data => {
             if (data['result']) {
                 this.sessionService.setSessionId(null);
                 this.sessionService.setCurrentPage('login');
-                this.gameio.setRoomId(-1);
-                this.gameio.joinRoom();
+                this.gameio.leaveRoom();
                 // this.gameio.requestUserList(); // todo joinroom에서 자동으로 시키지 않나??
             }
         });
@@ -50,7 +42,5 @@ export class Header implements OnInit {
 
     onExit() {
         this.sessionService.setCurrentPage('waiting');
-        this.gameio.setRoomId(0);
-        this.gameio.joinRoom();
     }
 }
