@@ -1,7 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
-import { OverlayModule } from '@angular/cdk/overlay';
 import {
   MatCardModule,
   MatGridListModule,
@@ -58,6 +56,7 @@ import { GameIoService } from './service/game-io.service';
 import { SessionService } from './service/session.service';
 import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-Image.component';
 import { ColorsComponent } from './game-room/game-canvas/colors/colors.component';
+import {UpdateRoomComponent, UpdateRoomModalComponent} from './game-room/game/update-room/update-room.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +87,9 @@ import { ColorsComponent } from './game-room/game-canvas/colors/colors.component
     RegisterComponent,
     LoginComponent,
     UserImageComponent,
-    ColorsComponent
+    ColorsComponent,
+    UpdateRoomComponent,
+    UpdateRoomModalComponent
   ],
   imports: [
     BrowserModule,
@@ -124,7 +125,8 @@ import { ColorsComponent } from './game-room/game-canvas/colors/colors.component
     CreateRoom,
     InputPassword,
     DialogComponent,
-    Rank
+    Rank,
+    UpdateRoomModalComponent
   ]
 })
 export class AppModule { }
