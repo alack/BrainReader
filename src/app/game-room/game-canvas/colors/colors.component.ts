@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-colors',
@@ -6,17 +6,19 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
   styleUrls: ['./colors.component.css']
 })
 export class ColorsComponent implements OnInit {
+  @Input() width;
   @Output()  colorUpdated: EventEmitter<any> = new EventEmitter();
   colors;
   constructor() { }
 
   ngOnInit() {
     this.colors = [
-      'yellow',
-      'cyan',
-      'blue',
-      'magenta',
       'red',
+      'purple',
+      'blue',
+      'cyan',
+      'yellow',
+      'magenta',
       'green',
       'black',
       'grey',

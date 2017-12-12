@@ -64,6 +64,26 @@ export class GameIoService implements OnInit {
     console.log('requestuserlist to room' + this.roomId);
   }
 
+  sendClear() {
+    console.log('gameIoService::clearcanvas event send');
+    this.socket.emit('clearcanvas');
+  }
+
+  getClear() {
+    let observable = new Observable(observer => {
+
+      this.socket.on('clearcanvas', () => {
+        console.log('gameIoService::clearcanvas event coming');
+        observer.next();
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+
   setRoomId(id) {
     console.log('gameIoService::setRoomId');
     this.roomId = id;
@@ -279,4 +299,34 @@ export class GameIoService implements OnInit {
     });
     return observable;
   }
+  updateSec() {
+      // 시간 update 최초 시간은 timeout으로 지정되어 있으며 time은 실제 남은 시간을 말한다.
+    let observable = new Observable(observer => {
+
+      this.socket.on('updatesec', data => {
+        console.log('gameIoService::updatesec event coming');
+          observer.next(data);
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+  gameEnd() {
+    let observable = new Observable(observer => {
+
+      this.socket.on('gameend', () => {
+        console.log('gameIoService::gameend event coming');
+        observer.next();
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter, Input} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({
@@ -23,15 +23,16 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   nexthuman;
   commode;
   start;
+  clear;
+  end;
   constructor(private gameIo: GameIoService ) {}
 
   ngOnInit() {
     this.c  = document.getElementById('cv');
-    this.c.width = 626;
-    this.c.height = 400;
+    this.c.width = 562;
+    this.c.height = 384;
     this.ctx = this.c.getContext('2d');
     this.click = false;
-    this.ctx.strokeStyle = 'red';
     this.ctx.lineWidth = 2;
     this.start = this.gameIo.gameStart().subscribe(() => {
       this.gameStart();
@@ -39,16 +40,24 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     this.drawoff = this.gameIo.drawingAuthRemove().subscribe(() => {
       this.drawingauth = false;
     });
-    this.drawon = this.gameIo.nextHuman().subscribe(() => {
+    this.drawon = this.gameIo.nextHuman().subscribe((data) => {
       this.drawingauth = true;
     });
-
+    this.end = this.gameIo.gameEnd().subscribe( () => {
+      this.gameEnd();
+    });
   }
 
   ngOnDestroy() {
-    this.con_startPath.unsubscribe();
-    this.con_movePath.unsubscribe();
-    this.con_finishPath.unsubscribe();
+    if (this.gameIo.getRoom().mode === true) {
+      this.commode.unsubscribe();
+    } else {
+      this.clear.unsubscribe();
+      this.con_startPath.unsubscribe();
+      this.con_movePath.unsubscribe();
+      this.con_finishPath.unsubscribe();
+      this.drawremove.unsubscribe();
+    }
   }
 
   startPath(e) {
@@ -110,12 +119,16 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   }
 
   injectColor(color) {
-    this.ctx.lineWidth = (color === 'white') ? 5 : 1;
-    this.ctx.strokeStyle = color;
+    if (color === 'white') {
+      this.gameIo.sendClear();
+    } else {
+      this.ctx.strokeStyle = color;
+      this.ctx.lineWidth = 2;
+    }
   }
 
   gameStart() {
-    // todo 컴모드일경우 그림을 불러와서 넣는다.
+    // 컴모드일경우 그림을 불러와서 넣는다.
     if (this.gameIo.getRoom().mode === true) {
       this.commode = this.gameIo.getDraw().subscribe(data => {
         const img = new Image;
@@ -123,6 +136,14 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
         this.ctx.drawImage(img, 0, 0);
       });
     } else {
+      this.clear = this.gameIo.getClear().subscribe(() => {
+        console.log('getClear!!!!');
+        const p = this.ctx.strokeStyle;
+        this.c.width = 563;
+        this.c.width = 562;
+        this.ctx.strokeStyle = p;
+        this.ctx.lineWidth = 2;
+      });
       this.con_startPath = this.gameIo.getStartPath().subscribe(data => {
         this.startPath(data);
       });
@@ -150,6 +171,18 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
         // 이미지 삭제한다!!!
         this.ctx.clearRect(0, 0, this.c.width, this.c.height);
       });
+    }
+  }
+  gameEnd() {
+    if (this.gameIo.getRoom().mode === true) {
+      this.commode.unsubscribe();
+    } else {
+      this.clear.unsubscribe();
+      this.con_startPath.unsubscribe();
+      this.con_movePath.unsubscribe();
+      this.con_finishPath.unsubscribe();
+      this.drawremove.unsubscribe();
+      this.drawingauth = false;
     }
   }
 }

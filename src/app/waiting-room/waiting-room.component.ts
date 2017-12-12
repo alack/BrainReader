@@ -82,7 +82,10 @@ export class CreateRoom {
     users: [],
     painter: '',
     mode: false,
-    gaming: false
+    gamecnt: 1,
+    curcnt: 0,
+    timeOut: 5,
+    remainSec: 5
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

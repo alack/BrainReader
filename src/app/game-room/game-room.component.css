@@ -1,28 +1,12 @@
 
 mat-grid-tile {
-  background-color: lightgrey;
+  background-color: whitesmoke;
   display: flex;
   flex-direction: column;
 }
 div {
-  display: flex;
-  flex-direction: column;
-
-}
-
-mat-card {
-  background-color: white;
-}
-
-.example-h2 {
-  margin: 10px;
-}
-
-.example-section {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  height: 60px;
+  width: 100%;
+  height: 100%;
 }
 
 .example-margin {

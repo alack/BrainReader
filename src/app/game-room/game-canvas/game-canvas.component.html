@@ -1,3 +1,7 @@
-<canvas #cv id='cv'
+<div id="canvas_div">
+<canvas #cv id="cv"
 (mousemove)="mouseMove($event)" (mousedown)="mouseDown($event)" (mouseup)="mouseUp($event)" ></canvas>
-<app-colors (colorUpdated)="injectColor($event)"></app-colors>
+</div>
+<div id="colorlist">
+<app-colors (colorUpdated)="injectColor($event)" [width]="wide"></app-colors>
+</div>

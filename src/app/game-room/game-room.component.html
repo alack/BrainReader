@@ -9,8 +9,10 @@
   <mat-grid-tile [colspan]="1" [rowspan]="5">
     <app-game-user-right [rightusers] = "rightusers" [startflag]="startflag">User-Right</app-game-user-right>
   </mat-grid-tile>
-  <mat-grid-tile [colspan]="3" [rowspan]="3">
-    <app-game-canvas>Canvas</app-game-canvas>
+  <mat-grid-tile id="canvas" [colspan]="3" [rowspan]="3">
+    <div>
+      <app-game-canvas>Canvas</app-game-canvas>
+    </div>
   </mat-grid-tile>
   <mat-grid-tile [colspan]="3" [rowspan]="1">
     <common-chat>Chat</common-chat>

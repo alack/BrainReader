@@ -15,13 +15,15 @@ export class GameComponent implements OnInit {
   readys;
   word;
   nexthuman;
+  updateSec;
+  sec = 0;
   start;
   startflag = false;
   end; // todo 겜이 끝나는 걸 감시할 옵저버 end가 오면 startflag를 false로 바꿈.
   constructor(private gameIo: GameIoService) { }
 
-  // todo 시간 계산해서 표시해줄 곳
-  // todo 시간 표시도 여기서 해줄 것이야. 문자를 보여주는 것과 줄어드는 것을 따로 보여줄거야.
+  // 시간 계산해서 표시해줄 곳
+  // 시간 표시도 여기서 해줄 것이야. 문자를 보여주는 것과 줄어드는 것을 따로 보여줄거야.
   // 단어 최하단, 바 시간바로위, 디지털 시간, 현재 판수, 가장 위에 게임 시작, ready를 함께 두고 방장일경우 시작버튼이 보이게 방장이 아닐경우 ready버튼이 보이게 함.
   // 그래서 모두 ready 상태가 되면 게임이 시작됨.
   ngOnInit() {
@@ -29,7 +31,9 @@ export class GameComponent implements OnInit {
     this.start = this.gameIo.gameStart().subscribe( () => {
       this.gameStart();
     });
-    // this.gameIo
+    this.end = this.gameIo.gameEnd().subscribe( () => {
+      this.gameEnd();
+    });
   }
 
   // 게임 시작, 한 문제 시간이 끝나거나 문제를 맞추거나 하면 작동하는 것으로 바꿀 예정
@@ -41,6 +45,7 @@ export class GameComponent implements OnInit {
       }
     });
   }
+
   gameStart() {
     this.readys = this.gameIo.wordRemove().subscribe(() => {
       this.problem_word = '0 0 0 0 0';
@@ -48,7 +53,17 @@ export class GameComponent implements OnInit {
     this.nexthuman = this.gameIo.nextHuman().subscribe(() => {
       this.getWord();
     });
+    this.updateSec = this.gameIo.updateSec().subscribe( data => {
+      this.sec = data['remainSec'];
+    });
     this.startflag = true;
+  }
+
+  gameEnd() {
+    this.startflag = false;
+    this.readys.unsubscribe();
+    this.nexthuman.unsubscribe();
+    this.updateSec.unsubscribe();
   }
 
   ready() {

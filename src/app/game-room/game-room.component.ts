@@ -26,8 +26,8 @@ export class GameRoomComponent implements OnInit {
     this.gameIo.gameStart().subscribe( () => {
       this.startflag = true;
     });
+    this.gameIo.gameEnd().subscribe( () => {
+      this.startflag = false;
+    });
   }
-
-
-
 }

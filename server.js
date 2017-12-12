@@ -66,6 +66,23 @@ const io = require('socket.io').listen(server);
 exports.rooms = [];
 exports.truewords = {};
 
+setInterval(function () {
+  if(exports.rooms){
+    for(var room of exports.rooms) {
+      console.log('setTimeout::room.curcnt : ', room.curcnt);
+      if (room.curcnt) {
+        console.log(room.name, ' room.remainSec ', room.remainSec)
+        room.remainSec--;
+        io.sockets.in(room.name).emit('updatesec', {remainSec: room.remainSec});
+        if (!room.remainSec) {
+          console.log(room.name, ' remainSec is zero!! ');
+          holdPainter(room.name);
+        }
+      }
+    }
+  }
+}, 1000);
+
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
@@ -91,10 +108,10 @@ io.sockets.on('connection', socket => {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
     const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
     // 그리는 사람은 어떤 대화를 대화를 쳐도 말을 할 수 없음.
-    if (socket.userName === exports.rooms[roomnum].painter)
+    if (socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
       data.message = '저는 말을 할 수 없습니다.';
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
-    if(exports.truewords[socket.room].word === data.message) {
+    if(exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
       // io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
@@ -104,34 +121,57 @@ io.sockets.on('connection', socket => {
       socket.broadcast.emit('drawingauthremove');
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
-      // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
-      exports.rooms[roomnum].painter = socket.userName;
-      socket.emit('nexthuman', socket.userName);
       io.sockets.in(socket.room).emit('wordremove');
+      // 문제를 맞췄으므로 현재 게임수를 하나 증가시킴
+      if(++exports.rooms[roomnum].curcnt <= exports.rooms[roomnum].gamecnt) {
+        // game이 gamecnt에 도달하지 못했으므로 게임은 계속 된다.
+        // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+        exports.rooms[roomnum].painter = socket.userName;
+        socket.emit('nexthuman', socket.userName);
+      } else {
+        // game이 gamecnt를 넘었으므로 게임이 종료되고 상태가 초기화 된다.
+        io.sockets.in(socket.room).emit('gameend');
+        io.in(socket.room).clients((err, clients) => {
+          clients.forEach(client => {
+            io.sockets.connected[client].ready = false;
+          });
+        });
+        // trueword 지우기
+        exports.truewords[socket.room] = '';
+        // todo 뭐가ㅣㅇㅆ을까?
+        // 시간 초기화
+        exports.rooms[roomnum].curcnt = 0;
+        exports.rooms[roomnum].painter='';
+        exports.rooms[roomnum].remainSec = exports.rooms[roomnum].timeOut;
+        getUserList(socket.room);
+      }
     }
   });
   socket.on('startline', function (data) {
-    console.log('startline::roomid : ', socket.room);
-    console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
+    // console.log('startline::roomid : ', socket.room);
+    // console.log('startline::ab.x: %s, ab.y: %s', data.x, data.y);
     io.sockets.in(socket.room).emit('startpath', data);
   });
   socket.on('moveline', function (data) {
-    console.log('moveline::roomid : ',socket.room);
-    console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
+    // console.log('moveline::roomid : ',socket.room);
+    // console.log('moveline::ab.x: %s, ab.y: %s',data.x, data.y);
     io.sockets.in(socket.room).emit('movepath', data);
   });
   socket.on('finishline', function (data) {
-    console.log('finishline::roomid : ',socket.room);
-    console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
+    // console.log('finishline::roomid : ',socket.room);
+    // console.log('finishline::ab.x: %s, ab.y: %s',data.x, data.y);
     io.sockets.in(socket.room).emit('finishpath', data);
   });
-  socket.on('getuserlist', function (id) {
-    getUserList(id);
+  socket.on('clearcanvas', function () {
+    io.sockets.in(socket.room).emit('clearcanvas');
   });
-  socket.on('serverready', function(){
-    console.log('serverready from room ' + socket.room, 'socket.ready : ', socket.ready);
+  socket.on('getuserlist', function (id) {
+    getUserList( id );
+  });
+  socket.on('serverready', function() {
+    // console.log('serverready from room ' + socket.room, ' socket.ready : ', socket.ready);
     socket.ready = !(socket.ready);
-    console.log('serverready from room ' + socket.room, 'socket.ready : ', socket.ready);
+    // console.log('serverready from room ' + socket.room, ' socket.ready : ', socket.ready);
     getUserList(socket.room);
   });
   socket.on('disconnect', data => {
@@ -145,46 +185,70 @@ function chkStart(id, roomusers) {
   roomusers.forEach(roomuser => {
     if(roomuser.ready == false)
       chk = false;
-    console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
+    // console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
   });
   exports.rooms.findIndex((room, roomidx) => {
-    console.log('chkstart chk result : ', chk, 'room gaming : ', exports.rooms[roomidx].gaming);
-    if(chk && !exports.rooms[roomidx].gaming) {
+    console.log('chkstart chk result : ', chk, 'room curcnt : ', exports.rooms[roomidx].curcnt);
+    if(chk && exports.rooms[roomidx].curcnt === 0) {
       console.log('gamestart event result : ', chk);
-      exports.rooms[roomidx].gaming = true;
       io.sockets.in(id).emit('gamestart');
       holdPainter(id);
     }
   });
 }
+// 랜덤으로 그릴사람 정해서 권한 부여하기 (맞춘 사람이 없거나 => 맞춘 사람 없이 시간이 끝난 경우)
 function holdPainter(id) {
-  exports.rooms.find((room, roomidx) => {
-    console.log('holdPainter result room name : ', id, 'room painter : ', exports.rooms[roomidx].painter);
-    if( room.name === id && exports.rooms[roomidx].painter === '') {
-      const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
-      exports.rooms[roomidx].painter = dangchumUser;
-      io.sockets.in(id).emit('nexthuman', dangchumUser);
+  console.log('server.js::holdPainter ');
+  exports.rooms.find((room) => {
+    if( room.name === id ) {
+      // canvas 초기화
+      io.sockets.in(id).emit('clearcanvas');
+      // word 초기화
+      io.sockets.in(id).emit('wordremove');
+      if(++room.curcnt <= room.gamecnt) {
+        // game이 gamecnt에 도달하지 못했으므로 게임은 계속 된다.
+        // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
+        const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
+        room.painter = dangchumUser;
+        console.log('after holdPainter result room name : ', id, 'room painter : ', room.painter);
+        io.sockets.in(id).emit('nexthuman', dangchumUser);
+      } else {
+        // game이 gamecnt를 넘었으므로 게임이 종료되고 상태가 초기화 된다. 어떻게 할까. 고민해보자.
+        io.sockets.in(id).emit('gameend');
+        exports.truewords[id] = '';
+        io.in(id).clients((err, clients) => {
+          clients.forEach(client => {
+              io.sockets.connected[client].ready = false;
+          });
+        });
+        // 시간 초기화
+        room.curcnt = 0;
+        room.painter = '';
+        getUserList(id);
+      }
+      room.remainSec = room.timeOut;
+      io.sockets.in(room.name).emit('updatesec', {remainSec: room.remainSec});
     }
   });
 };
 function getUserList(id = 0) {
-    const users = [], roomusers = [];
-    io.in(id).clients((err, clients) => {
-      // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
-      clients.forEach(client => {
-        // console.log(io.sockets.connected[client].userName);
-        users.push(io.sockets.connected[client].userName);
-        roomusers.push({userName : io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
-      });
-      if(id==0) {
-        console.log('getuserlist from room ' + id, users);
-        io.sockets.in(id).emit('getuserlist', {users: users});
-      }
-      else {
-        console.log('gameroomuserlist from room ' + id, roomusers);
-        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
-        // game start chk trigger
-        chkStart(id, roomusers);
-      }
+  const users = [], roomusers = [];
+  io.in(id).clients((err, clients) => {
+    // console.log(io.sockets.connected[clients[0]]); // an array containing socket ids in 'room3'
+    clients.forEach(client => {
+      // console.log(io.sockets.connected[client].userName);
+      users.push(io.sockets.connected[client].userName);
+      roomusers.push({userName: io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
     });
+    if (id == 0) {
+      // console.log('getuserlist from room ' + id, users);
+      io.sockets.in(id).emit('getuserlist', {users: users});
+    }
+    else {
+      // console.log('gameroomuserlist from room ' + id, roomusers);
+      io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+      // game start chk trigger
+      chkStart(id, roomusers);
+    }
+  });
 }
