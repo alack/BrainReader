@@ -1,7 +1,9 @@
 <div>
-  <div>
-    <input type="file" id="filePicker" (change)="handleFileSelect($event)">
+  <div [ngSwitch] = "user.image">
+    <img src="../../../../assets/default-profile.png" *ngSwitchCase="'default'">
+    <img src={{user.image}} *ngSwitchDefault>
   </div>
   <br>
-  <img src={{user.image}} height="50" width="50">
+  <button mat-button (click)="inputFile.click()">Upload</button>
+  <input #inputFile type="file" [style.display]="'none'" (change)="handleFileSelect($event)">
 </div>

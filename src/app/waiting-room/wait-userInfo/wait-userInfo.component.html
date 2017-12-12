@@ -1,12 +1,12 @@
-<div>
-    <p>
-  {{user.id}}
-</p>
-  <p>
-    {{user.points}}
-  </p>
-    <p>
-      <app-user-image-update [user]="user"></app-user-image-update>
-</div>
-
-
+<mat-grid-list cols="2">
+  <mat-grid-tile>
+    <app-user-image-update [user]="user">
+    </app-user-image-update>
+  </mat-grid-tile>
+  <mat-grid-tile>
+      name : {{user.id}}
+    <br>
+    <br>
+      points : {{user.points}}
+  </mat-grid-tile>
+</mat-grid-list>

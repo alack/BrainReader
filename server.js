@@ -19,7 +19,7 @@ const session = require('express-session');
 // mongodb에 연결
 const db = mongoose.connection;
 db.on('error', console.error);
-db.once('open', function(){
+db.once('open', function() {
   // CONNECTED TO MONGODB SERVER
   console.log("Connected to mongod server");
 });
@@ -50,7 +50,7 @@ app.get('*', function (req, res) {
 
 
 // Port 설정
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '80';
 app.set('port', port);
 
 // HTTP 서버 생성
@@ -68,7 +68,8 @@ exports.truewords = {};
 
 setInterval(function () {
   if(exports.rooms){
-    for(var room of exports.rooms) {
+    for(let room of exports.rooms) {
+      if(room.name === "0") continue;
       console.log('setTimeout::room.curcnt : ', room.curcnt);
       if (room.curcnt) {
         console.log(room.name, ' room.remainSec ', room.remainSec)
@@ -87,32 +88,36 @@ io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
     console.log('come join event');
-    if(socket.room) {
-      socket.leave(socket.room);
+    if ( socket.room ) {
+      socket.leave( socket.room );
+      getUserList( socket.room );
+    }
+    if ( data.roomId === '0' || (exports.rooms && exports.rooms.find(o => o.name === data.roomId)) ) {
+      socket.room = data.roomId;
+      socket.join( socket.room );
+      socket.ready = false;
+      socket.userName = data.userName;
+      console.log('roomjoin::roomid : ', socket['room']);
+      console.log('roomjoin::userName : ', socket['userName']);
+      // io.sockets.clients(socket.roomname);
+      // console.log('my room users : ', io.sockets.clients(socket.roomname));
+      io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
       getUserList(socket.room);
     }
-
-    socket.room = data.roomId;
-    socket.join(socket.room);
-    socket.ready = false;
-    socket.userName = data.userName;
-    console.log('roomjoin::roomid : ', socket['room']);
-    console.log('roomjoin::userName : ', socket['userName']);
-    // io.sockets.clients(socket.roomname);
-    // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
-    getUserList(socket.room);
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
     const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
     // 그리는 사람은 어떤 대화를 대화를 쳐도 말을 할 수 없음.
-    if (socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
+    if (socket.room != '0' && socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
       data.message = '저는 말을 할 수 없습니다.';
+    // 메세지를 전송함
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
-    if(exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
-      // io.sockets.in('room'...)으로는 그림 삭제, 단어 삭제
+    // 방이 가지는 실제 답 단어 목록은 객체라서 방이름으로 접근가능, 실제 답과 현재 메세지가 일치하고
+    // 현재 방의 game stage 회수가 1이상이라면 답을 맞춘 것으로 인정하고 후속 동작을 한다.
+    if(socket.room != '0' && exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
+      // io.sockets.in(socket.room)으로는 그림 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];
       console.log('send:message::dangchum : ', dangchumUser);
@@ -121,6 +126,7 @@ io.sockets.on('connection', socket => {
       socket.broadcast.emit('drawingauthremove');
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
+      // 현재 방안의 단어를 모두 삭제
       io.sockets.in(socket.room).emit('wordremove');
       // 문제를 맞췄으므로 현재 게임수를 하나 증가시킴
       if(++exports.rooms[roomnum].curcnt <= exports.rooms[roomnum].gamecnt) {
@@ -138,7 +144,6 @@ io.sockets.on('connection', socket => {
         });
         // trueword 지우기
         exports.truewords[socket.room] = '';
-        // todo 뭐가ㅣㅇㅆ을까?
         // 시간 초기화
         exports.rooms[roomnum].curcnt = 0;
         exports.rooms[roomnum].painter='';
@@ -174,6 +179,9 @@ io.sockets.on('connection', socket => {
     // console.log('serverready from room ' + socket.room, ' socket.ready : ', socket.ready);
     getUserList(socket.room);
   });
+  socket.on('sendcolor', data => {
+    io.sockets.in(socket.room).emit('getcolor', {color: data})
+  });
   socket.on('disconnect', data => {
     // socket.leave
     getUserList();
@@ -188,9 +196,9 @@ function chkStart(id, roomusers) {
     // console.log('username : ', roomuser.userName, ' userReady : ', roomuser.ready);
   });
   exports.rooms.findIndex((room, roomidx) => {
-    console.log('chkstart chk result : ', chk, 'room curcnt : ', exports.rooms[roomidx].curcnt);
+    // console.log('chkstart chk result : ', chk, 'room curcnt : ', exports.rooms[roomidx].curcnt);
     if(chk && exports.rooms[roomidx].curcnt === 0) {
-      console.log('gamestart event result : ', chk);
+      // console.log('gamestart event result : ', chk);
       io.sockets.in(id).emit('gamestart');
       holdPainter(id);
     }
@@ -227,7 +235,8 @@ function holdPainter(id) {
         getUserList(id);
       }
       room.remainSec = room.timeOut;
-      io.sockets.in(room.name).emit('updatesec', {remainSec: room.remainSec});
+      // 게임을 시작하거나 새로운 시간을 카운트 하게 될 경우 이 함수가 작동한다. 이때 timeOut을 줘서 max_time을 갱신하게 한다.
+      io.sockets.in(room.name).emit('updatesec', { remainSec: room.remainSec, timeOut: room.timeOut });
     }
   });
 };
@@ -240,15 +249,21 @@ function getUserList(id = 0) {
       users.push(io.sockets.connected[client].userName);
       roomusers.push({userName: io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
     });
-    if (id == 0) {
-      // console.log('getuserlist from room ' + id, users);
-      io.sockets.in(id).emit('getuserlist', {users: users});
-    }
-    else {
-      // console.log('gameroomuserlist from room ' + id, roomusers);
-      io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
-      // game start chk trigger
-      chkStart(id, roomusers);
+    if( !users ) {
+      exports.rooms.find((room,roomidx) => {
+        if ( !room.userCount )
+          exports.rooms.slice(roomidx,1);
+      });
+    } else {
+      if (id == 0) {
+        // console.log('getuserlist from room ' + id, users);
+        io.sockets.in(id).emit('getuserlist', {users: users});
+      } else {
+        // console.log('gameroomuserlist from room ' + id, roomusers);
+        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+        // game start chk trigger
+        chkStart(id, roomusers);
+      }
     }
   });
 }

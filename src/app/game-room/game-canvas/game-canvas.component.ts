@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter, Input} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({
@@ -24,6 +24,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   commode;
   start;
   clear;
+  color;
   end;
   constructor(private gameIo: GameIoService ) {}
 
@@ -50,13 +51,19 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.gameIo.getRoom().mode === true) {
-      this.commode.unsubscribe();
+      if(this.commode)
+        this.commode.unsubscribe();
     } else {
-      this.clear.unsubscribe();
-      this.con_startPath.unsubscribe();
-      this.con_movePath.unsubscribe();
-      this.con_finishPath.unsubscribe();
-      this.drawremove.unsubscribe();
+      if(this.clear)
+        this.clear.unsubscribe();
+      if(this.con_startPath)
+        this.con_startPath.unsubscribe();
+      if(this.con_movePath)
+        this.con_movePath.unsubscribe();
+      if(this.con_finishPath)
+        this.con_finishPath.unsubscribe();
+      if(this.drawremove)
+        this.drawremove.unsubscribe();
     }
   }
 
@@ -122,8 +129,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     if (color === 'white') {
       this.gameIo.sendClear();
     } else {
-      this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = 2;
+      this.gameIo.sendColor(color);
     }
   }
 
@@ -152,6 +158,9 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       });
       this.con_finishPath = this.gameIo.getFinishPath().subscribe(data => {
         this.finishPath(data);
+      });
+      this.color = this.gameIo.getColor().subscribe( data => {
+        this.ctx.strokeStyle = data['color'];
       });
       this.drawremove = this.gameIo.picRemove().subscribe(data => {
         console.log('chungseong chungseong!!  ', data);

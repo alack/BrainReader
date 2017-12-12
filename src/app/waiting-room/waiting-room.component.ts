@@ -33,7 +33,7 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
     console.log('lobby destroyed');
     // TODO 전에 있던 방 ID 로 해야함
     // 방 접속할때 들어간거 나간거 다 request 해주게 했음.
-    // 문제는 갑자기 방 나갈때가 이젠 문제 그걸 처리 하려고 여기서 한 것 아닌가?
+    // 문제는 창끌때가 문제, 그걸 처리 하려고 여기서 한 것 아닌가?
     // this.gameIo.requestUserList();
   }
 
@@ -42,7 +42,6 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
       width: '250px'
     });
 
-    // todo cancel 경우도 해결
     dialogRef.afterClosed().subscribe(result => {
       this.http.post('/room', {data: result}).subscribe(data => {
         this.http.post('/room/' + result['name'], {
@@ -77,16 +76,16 @@ export class CreateRoom {
   room: Room = {
     name: '',
     password: '',
-    type: '1',
-    maxUser: 4,
+    type: 'All',
+    maxUser: 8,
     userCount: 0,
     users: [],
     painter: '',
     mode: false,
-    gamecnt: 1, // todo
+    gamecnt: 1,
     curcnt: 0,
-    timeOut: 5, // todo
-    remainSec: 5
+    timeOut: 10, // todo
+    remainSec: 10
   };
 
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }

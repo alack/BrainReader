@@ -14,9 +14,10 @@ import { HttpClient } from '@angular/common/http';
                 Brain Reader
             </button>
             <span style="flex: 1 1 auto;"></span>
-            <button *ngIf="sessionService.getSessionId()" mat-button (click)="onLogout()">
-                Logout
-            </button>
+            <div [ngSwitch]="sessionService.currentPage">
+                <button mat-button (click)="onLogout()" *ngSwitchCase="'waiting'">Logout</button>
+                <button mat-button (click)="onExit()" *ngSwitchCase="'game'">Exit</button>
+            </div>
         </mat-toolbar>
         `
 })
@@ -45,5 +46,11 @@ export class Header implements OnInit {
                 // this.gameio.requestUserList(); // todo joinroom에서 자동으로 시키지 않나??
             }
         });
+    }
+
+    onExit() {
+        this.sessionService.setCurrentPage('waiting');
+        this.gameio.setRoomId(0);
+        this.gameio.joinRoom();
     }
 }
