@@ -8,8 +8,9 @@ import { GameIoService } from '../../service/game-io.service';
 })
 export class GameComponent implements OnInit {
   color = 'primary';
-  progress_value = 50;
-  mode = 'query';
+  progress_value = 100;
+  max_value = 100;
+  mode = 'progress';
   bufferValue = 75;
   problem_word = '0 0 0 0 0';
   readys;
@@ -54,7 +55,12 @@ export class GameComponent implements OnInit {
       this.getWord();
     });
     this.updateSec = this.gameIo.updateSec().subscribe( data => {
+      console.log(data);
       this.sec = data['remainSec'];
+      if ( data['timeOut'] ) {
+        this.max_value = data['timeOut'];
+      }
+      this.progress_value = (this.sec / this.max_value) * 100;
     });
     this.startflag = true;
   }
