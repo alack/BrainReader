@@ -68,7 +68,8 @@ exports.truewords = {};
 
 setInterval(function () {
   if(exports.rooms){
-    for(var room of exports.rooms) {
+    for(let room of exports.rooms) {
+      if(room.name === "0") continue;
       console.log('setTimeout::room.curcnt : ', room.curcnt);
       if (room.curcnt) {
         console.log(room.name, ' room.remainSec ', room.remainSec)
@@ -109,13 +110,13 @@ io.sockets.on('connection', socket => {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
     const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
     // 그리는 사람은 어떤 대화를 대화를 쳐도 말을 할 수 없음.
-    if (socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
+    if (socket.room != '0' && socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
       data.message = '저는 말을 할 수 없습니다.';
     // 메세지를 전송함
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
     // 방이 가지는 실제 답 단어 목록은 객체라서 방이름으로 접근가능, 실제 답과 현재 메세지가 일치하고
     // 현재 방의 game stage 회수가 1이상이라면 답을 맞춘 것으로 인정하고 후속 동작을 한다.
-    if(exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
+    if(socket.room != '0' && exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
       // io.sockets.in(socket.room)으로는 그림 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.userCount * Math.random())];

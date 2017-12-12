@@ -76,7 +76,7 @@ export class CreateRoom {
   room: Room = {
     name: '',
     password: '',
-    type: '',
+    type: 'All',
     maxUser: 8,
     userCount: 0,
     users: [],
