@@ -1,7 +1,6 @@
 div.chat {
     height: 80%;
     overflow: scroll;
-    background: ghostwhite;
 }
 
 div.bubble {
