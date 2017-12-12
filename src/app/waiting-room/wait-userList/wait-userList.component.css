@@ -1,0 +1,7 @@
+mat-list-item:nth-child(even) {
+    background: white;
+}
+
+mat-list-item:nth-child(odd) {
+    background: whitesmoke;
+}
