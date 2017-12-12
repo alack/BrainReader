@@ -1,0 +1,11 @@
+img {
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    display: block;
+}
+
+button {
+    display: block;
+    margin: auto;
+}
