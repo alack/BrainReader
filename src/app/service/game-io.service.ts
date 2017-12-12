@@ -328,5 +328,23 @@ export class GameIoService implements OnInit {
     });
     return observable;
   }
+  getColor() {
+    // 시간 update 최초 시간은 timeout으로 지정되어 있으며 time은 실제 남은 시간을 말한다.
+    let observable = new Observable(observer => {
+
+      this.socket.on('getcolor', data => {
+        console.log('gameIoService::getcolor event coming');
+        observer.next(data);
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+  sendColor (color) {
+      this.socket.emit('sendcolor', color);
+  }
 
 }

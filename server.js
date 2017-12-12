@@ -174,6 +174,9 @@ io.sockets.on('connection', socket => {
     // console.log('serverready from room ' + socket.room, ' socket.ready : ', socket.ready);
     getUserList(socket.room);
   });
+  socket.on('sendcolor', data => {
+    io.sockets.in(socket.room).emit('getcolor', {color: data})
+  });
   socket.on('disconnect', data => {
     // socket.leave
     getUserList();
@@ -243,8 +246,7 @@ function getUserList(id = 0) {
     if (id == 0) {
       // console.log('getuserlist from room ' + id, users);
       io.sockets.in(id).emit('getuserlist', {users: users});
-    }
-    else {
+    } else {
       // console.log('gameroomuserlist from room ' + id, roomusers);
       io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
       // game start chk trigger

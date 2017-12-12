@@ -24,6 +24,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
   commode;
   start;
   clear;
+  color;
   end;
   constructor(private gameIo: GameIoService ) {}
 
@@ -122,8 +123,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
     if (color === 'white') {
       this.gameIo.sendClear();
     } else {
-      this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = 2;
+      this.gameIo.sendColor(color);
     }
   }
 
@@ -152,6 +152,9 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       });
       this.con_finishPath = this.gameIo.getFinishPath().subscribe(data => {
         this.finishPath(data);
+      });
+      this.color = this.gameIo.getColor().subscribe( data => {
+        this.ctx.strokeStyle = data['color'];
       });
       this.drawremove = this.gameIo.picRemove().subscribe(data => {
         console.log('chungseong chungseong!!  ', data);
