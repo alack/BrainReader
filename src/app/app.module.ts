@@ -16,8 +16,10 @@ import {
   MatFormFieldModule,
   MatListModule,
   MatButtonToggleModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatRadioModule
 } from '@angular/material';
+
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -108,7 +110,8 @@ import { ColorsComponent } from './game-room/game-canvas/colors/colors.component
     MatTabsModule,
     MatProgressBarModule,
     MatButtonToggleModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatRadioModule
   ],
   providers: [
     HttpWaitingRoomService,
