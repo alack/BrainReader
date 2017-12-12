@@ -8,16 +8,27 @@
     </mat-form-field>
     <!--<mat-form-field>-->
 <!-- todo mode 선택 부분(human : false, com : true) 넣고, 선택안하면 안넘어가게 하기 -->
+        <label>Mode: </label>
+        <mat-radio-group [(ngModel)]="room.mode">
+            <mat-radio-button [value]=false>Human</mat-radio-button>
+            <mat-radio-button [value]=true>Com</mat-radio-button>
+        </mat-radio-group>
     <!--</mat-form-field>-->
     <mat-form-field>
         <mat-select [(ngModel)]="room.type" placeholder="Type">
-            <mat-option value="1">1</mat-option> <!-- todo value는 그대로 가더라도 표시라도 바꾸기. 적당한 db가 들어가면. -->
-            <mat-option value="2">2</mat-option>
-            <mat-option value="3">3</mat-option>
+            <mat-option value="1">All</mat-option> <!-- todo value는 그대로 가더라도 표시라도 바꾸기. 적당한 db가 들어가면. -->
+            <mat-option value="2">Animal</mat-option>
+            <mat-option value="3">Fruits</mat-option>
         </mat-select>
     </mat-form-field>
     <mat-form-field>
-        <input matInput [(ngModel)]="room.maxUser" type="number" placeholder="2~8" min="2" max="8">
+        <input matInput [(ngModel)]="room.gamecnt" type="number" placeholder="game (1~10)" min="1" max="10">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [(ngModel)]="room.timeOut" type="number" placeholder="time out (5~10)" min="5" max="10">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput [(ngModel)]="room.maxUser" type="number" placeholder="max user (2~8)" min="2" max="8">
     </mat-form-field>
 </div>
 <div mat-dialog-actions>
