@@ -9,7 +9,9 @@ button[mat-raised-button] {
     margin: 15px
 }
 
-app-wait-room-list, app-wait-user-list {
+app-wait-room-list,
+app-wait-user-list,
+app-wait-user-info {
     overflow: scroll;
     width: 100%;
     height: inherit;
