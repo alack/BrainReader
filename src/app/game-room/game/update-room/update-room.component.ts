@@ -1,5 +1,5 @@
 
-import {Component, OnInit} from '@angular/core';
+import {Component, Inject, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {GameIoService} from '../../../service/game-io.service';
@@ -29,15 +29,11 @@ export class UpdateRoomComponent implements OnInit {
 
     // todo cancel 경우도 해결
     dialogRef.afterClosed().subscribe(result => {
-      this.http.post('/room', {data: result}).subscribe(data => {
-        this.http.post('/room/' + result['name'], {
-          data: this.sessionService.getSessionId()
-        }).subscribe(dat => {
-          console.log('create room', result);
+      console.log('result update');
+      console.log(result);
+      this.http.put('/room/', {room: result}).subscribe(data => {
 
-          this.gameIo.setRoomId(result['name']);
-          this.sessionService.setCurrentPage('game');
-        });
+        console.log('room update at the client');
       });
       console.log('The dialog was closed');
     });
@@ -48,7 +44,9 @@ export class UpdateRoomComponent implements OnInit {
   selector: 'app-update-room-modal',
   templateUrl: './updateRoom.dialog.html'
 })
-export class UpdateRoomModalComponent {
+export class UpdateRoomModalComponent implements OnInit{
+
+
   room: Room = {
     name: '',
     password: '',
@@ -58,15 +56,24 @@ export class UpdateRoomModalComponent {
     users: [],
     painter: '',
     mode: false,
-    gamecnt: 1, // todo
+    gamecnt: 1,
     curcnt: 0,
-    timeOut: 5, // todo
+    timeOut: 5,
     remainSec: 5
   };
 
-  constructor(public dialogRef: MatDialogRef<UpdateRoomModalComponent>) { }
+  constructor(public dialogRef: MatDialogRef<UpdateRoomModalComponent>, private httpClient: HttpClient , private gameIo: GameIoService) {
 
-  onNoClick(): void {
+  }
+
+  ngOnInit(): void {
+    console.log('check correct getRoom Name ::  '  + this.gameIo.getRoomId());
+    this.httpClient.get('/room/' + this.gameIo.getRoomId()).subscribe(result => {
+    this.room = result['result'];
+    });
+  }
+
+  onNoClick1(): void {
     this.dialogRef.close();
   }
 
