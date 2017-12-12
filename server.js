@@ -50,7 +50,7 @@ app.get('*', function (req, res) {
 
 
 // Port 설정
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '80';
 app.set('port', port);
 
 // HTTP 서버 생성
@@ -87,21 +87,22 @@ io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
     console.log('come join event');
-    if(socket.room) {
-      socket.leave(socket.room);
+    if ( socket.room ) {
+      socket.leave( socket.room );
+      getUserList( socket.room );
+    }
+    if ( data.roomId === '0' || (exports.rooms && exports.rooms.find(o => o.name === data.roomId)) ) {
+      socket.room = data.roomId;
+      socket.join( socket.room );
+      socket.ready = false;
+      socket.userName = data.userName;
+      console.log('roomjoin::roomid : ', socket['room']);
+      console.log('roomjoin::userName : ', socket['userName']);
+      // io.sockets.clients(socket.roomname);
+      // console.log('my room users : ', io.sockets.clients(socket.roomname));
+      io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
       getUserList(socket.room);
     }
-
-    socket.room = data.roomId;
-    socket.join(socket.room);
-    socket.ready = false;
-    socket.userName = data.userName;
-    console.log('roomjoin::roomid : ', socket['room']);
-    console.log('roomjoin::userName : ', socket['userName']);
-    // io.sockets.clients(socket.roomname);
-    // console.log('my room users : ', io.sockets.clients(socket.roomname));
-    io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: socket.userName + ' is coming'});
-    getUserList(socket.room);
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
@@ -230,7 +231,7 @@ function holdPainter(id) {
         getUserList(id);
       }
       room.remainSec = room.timeOut;
-      io.sockets.in(room.name).emit('updatesec', {remainSec: room.remainSec});
+      io.sockets.in(room.name).emit('updatesec', { remainSec: room.remainSec });
     }
   });
 };
@@ -243,14 +244,20 @@ function getUserList(id = 0) {
       users.push(io.sockets.connected[client].userName);
       roomusers.push({userName: io.sockets.connected[client].userName, ready: io.sockets.connected[client].ready});
     });
-    if (id == 0) {
-      // console.log('getuserlist from room ' + id, users);
-      io.sockets.in(id).emit('getuserlist', {users: users});
+    if( !users ) {
+      exports.rooms.find((room,roomidx) => {
+        exports.rooms.slice(roomidx,1);
+      });
     } else {
-      // console.log('gameroomuserlist from room ' + id, roomusers);
-      io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
-      // game start chk trigger
-      chkStart(id, roomusers);
+      if (id == 0) {
+        // console.log('getuserlist from room ' + id, users);
+        io.sockets.in(id).emit('getuserlist', {users: users});
+      } else {
+        // console.log('gameroomuserlist from room ' + id, roomusers);
+        io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+        // game start chk trigger
+        chkStart(id, roomusers);
+      }
     }
   });
 }

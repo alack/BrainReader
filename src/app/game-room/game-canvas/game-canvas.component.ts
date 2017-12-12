@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild, OnDestroy, Output, EventEmitter, Input} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {GameIoService} from '../../service/game-io.service';
 
 @Component({

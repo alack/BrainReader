@@ -7,7 +7,7 @@ import { SessionService } from './session.service';
 
 @Injectable()
 export class GameIoService implements OnInit {
-  private url = 'http://localhost:3000';
+  private url = 'http://localhost:80';
   private roomId = '0';
   public LeftUser;
   public RightUser;

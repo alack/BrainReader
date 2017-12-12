@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { OverlayModule } from '@angular/cdk/overlay';
 import {
   MatCardModule,
   MatGridListModule,
@@ -34,7 +33,7 @@ import { Footer } from './footer.component';
 import { ChatComponent } from './common/common-chat.component';
 
 
-import { WaitLobbyComponent, CreateRoom, Rank } from './waiting-room/waiting-room.component';
+import {WaitLobbyComponent, Rank, CreateRoom} from './waiting-room/waiting-room.component';
 import { WaitUserListComponent } from './waiting-room/wait-userList/wait-userList.component';
 import { WaitRoomListComponent } from './waiting-room/wait-roomList/wait-roomList.component';
 import { WaitUserInfoComponent } from './waiting-room/wait-userInfo/wait-userInfo.component';
