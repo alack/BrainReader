@@ -27,10 +27,11 @@ export class StartComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-
-      this.sessionId = this.sessionService.getSessionId();
-      this.currentPage = this.sessionService.getCurrentPage();
-
+      console.log('login closed');
+      if(result) {
+        this.sessionId = this.sessionService.getSessionId();
+        this.currentPage = this.sessionService.getCurrentPage();
+      }
     });
   }
 

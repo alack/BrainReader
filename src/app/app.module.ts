@@ -56,7 +56,7 @@ import { GameIoService } from './service/game-io.service';
 import { SessionService } from './service/session.service';
 import { UserImageComponent } from './waiting-room/wait-userInfo/userImage/user-Image.component';
 import { ColorsComponent } from './game-room/game-canvas/colors/colors.component';
-
+import { UpdateRoomComponent, UpdateRoomModalComponent } from "./game-room/game/update-room/update-room.component";
 @NgModule({
   declarations: [
     AppComponent,

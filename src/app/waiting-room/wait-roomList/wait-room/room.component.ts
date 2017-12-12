@@ -44,7 +44,9 @@ export class WaitRoomComponent implements OnInit {
 
         dialogRef.afterClosed().subscribe(result => {
             console.log('result', result);
-            (result == this.room.password? this.correctPassword():alert('nono'));
+            if(result) {
+                (result == this.room.password? this.correctPassword():alert('nono'));
+            }
         });
 
 

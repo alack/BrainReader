@@ -31,10 +31,12 @@ export class UpdateRoomComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('result update');
       console.log(result);
-      this.http.put('/room/', {room: result}).subscribe(data => {
+      if(result) {
+        this.http.put('/room/', {room: result}).subscribe(data => {
 
-        console.log('room update at the client');
-      });
+          console.log('room update at the client');
+        });
+      }
       console.log('The dialog was closed');
     });
   }

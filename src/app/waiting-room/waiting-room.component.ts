@@ -43,16 +43,18 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.http.post('/room', {data: result}).subscribe(data => {
-        this.http.post('/room/' + result['name'], {
-          data: this.sessionService.getSessionId()
-        }).subscribe(dat => {
-          console.log('create room', result);
+      if(result) {
+        this.http.post('/room', {data: result}).subscribe(data => {
+          this.http.post('/room/' + result['name'], {
+            data: this.sessionService.getSessionId()
+          }).subscribe(dat => {
+            console.log('create room', result);
 
-          this.gameIo.setRoomId(result['name']);
-          this.sessionService.setCurrentPage('game');
+            this.gameIo.setRoomId(result['name']);
+            this.sessionService.setCurrentPage('game');
+          });
         });
-      });
+      }
       console.log('The dialog was closed');
     });
   }
