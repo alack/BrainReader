@@ -102,8 +102,12 @@ export class CreateRoom {
   selector: 'rank',
   template: `
       <mat-list dense>
-          <mat-list-item *ngFor="let user of users">
-              {{user.id}} - {{user.points}}
+          <mat-list-item *ngFor="let user of users; let i = index" [attr.data-index]="i">
+            <div style="display:flex;justify-content: space-between; width: 100%">
+              <div> {{i+1}}위 </div>
+              <div> {{user.id}} </div>
+              <div> {{user.points}} </div>
+            </div>
           </mat-list-item>
       </mat-list>`
 })
