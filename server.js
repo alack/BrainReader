@@ -13,6 +13,7 @@ const user = require('./server/routes/user');
 const room = require('./server/routes/room');
 const word = require('./server/routes/word');
 const draw = require('./server/routes/draw');
+
 const app = express();
 // express-session
 const session = require('express-session');
@@ -27,6 +28,8 @@ db.once('open', function() {
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/web-system-design', { useMongoClient: true });
 
+app.use(bodyParser.json());
+
 // POST 데이터 파싱 설정
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb', extended: true}));
@@ -38,16 +41,19 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
 // user
 app.use('/user', user);
 app.use('/word', word);
 app.use('/room', room);
 app.use('/draw', draw);
+
+
+
 // 모든 경로에 대한 라우터 설정 및 반환 파일 경로 설정
 app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
-
 
 // Port 설정
 const port = process.env.PORT || '80';

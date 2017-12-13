@@ -35,7 +35,6 @@ export class Header implements OnInit {
                 this.sessionService.setSessionId(null);
                 this.sessionService.setCurrentPage('login');
                 this.gameio.leaveRoom();
-                // this.gameio.requestUserList(); // todo joinroom에서 자동으로 시키지 않나??
             }
         });
     }

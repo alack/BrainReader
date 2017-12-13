@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Create a Room</h1>
+<h1 mat-dialog-title>Edit a Room</h1>
 <div mat-dialog-content>
   <mat-form-field>
     <input matInput [(ngModel)]="room.name" placeholder="Name" disabled>
@@ -6,19 +6,16 @@
   <mat-form-field>
     <input matInput [(ngModel)]="room.password" placeholder="Password">
   </mat-form-field>
-  <!--<mat-form-field>-->
-  <!-- todo mode 선택 부분(human : false, com : true) 넣고, 선택안하면 안넘어가게 하기 -->
   <label>Mode: </label>
   <mat-radio-group [(ngModel)]="room.mode">
     <mat-radio-button [value]=false>Human</mat-radio-button>
     <mat-radio-button [value]=true>Com</mat-radio-button>
   </mat-radio-group>
-  <!--</mat-form-field>-->
   <mat-form-field>
     <mat-select [(ngModel)]="room.type" placeholder="Type">
-      <mat-option value="1">All</mat-option> <!-- todo value는 그대로 가더라도 표시라도 바꾸기. 적당한 db가 들어가면. -->
-      <mat-option value="2">Animal</mat-option>
-      <mat-option value="3">Fruits</mat-option>
+      <mat-option value="All">All</mat-option> <!-- todo value는 그대로 가더라도 표시라도 바꾸기. 적당한 db가 들어가면. -->
+      <mat-option value="Animals">Animal</mat-option>
+      <mat-option value="Plants">Plants</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
@@ -32,7 +29,7 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="room" tabindex="2">Create</button>
+  <button mat-button [mat-dialog-close]="room" tabindex="2">Edit</button>
   <button mat-button (click)="onNoClick1()" tabindex="-1">Cancel</button>
 </div>
 

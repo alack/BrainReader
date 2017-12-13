@@ -27,7 +27,6 @@ export class UpdateRoomComponent implements OnInit {
       width: '250px'
     });
 
-    // todo cancel 경우도 해결
     dialogRef.afterClosed().subscribe(result => {
       console.log('result update');
       console.log(result);
@@ -47,12 +46,10 @@ export class UpdateRoomComponent implements OnInit {
   templateUrl: './updateRoom.dialog.html'
 })
 export class UpdateRoomModalComponent implements OnInit{
-
-
   room: Room = {
     name: '',
     password: '',
-    type: '1',
+    type: 'All',
     maxUser: 4,
     users: [],
     painter: '',
@@ -63,9 +60,9 @@ export class UpdateRoomModalComponent implements OnInit{
     remainSec: 5
   };
 
-  constructor(public dialogRef: MatDialogRef<UpdateRoomModalComponent>, private httpClient: HttpClient , private gameIo: GameIoService) {
-
-  }
+  constructor(public dialogRef: MatDialogRef<UpdateRoomModalComponent>,
+              private httpClient: HttpClient,
+              private gameIo: GameIoService) { }
 
   ngOnInit(): void {
     console.log('check correct getRoom Name ::  '  + this.gameIo.getRoomId());

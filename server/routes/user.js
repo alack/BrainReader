@@ -114,14 +114,16 @@ router.post('/logout', (req, res) => {
 
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
-  User.findOne({
-    id: req.session.name
-  }, (err, user) => {
-    res.json(user);
-  });
+  if(req.session.name) {
+    User.findOne({
+      id: req.session.name
+    }, (err, user) => {
+      res.json(user);
+    });
+  } else {
+    res.json({result :'failed'});
+  }
 });
-
-
 
 router.put('/:id',(req,res) => {
   console.log('server part update');

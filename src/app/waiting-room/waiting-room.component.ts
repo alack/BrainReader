@@ -33,10 +33,6 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     console.log('lobby destroyed');
     this.gameIo.leaveRoom();
-    // TODO 전에 있던 방 ID 로 해야함
-    // 방 접속할때 들어간거 나간거 다 request 해주게 했음.
-    // 문제는 창끌때가 문제, 그걸 처리 하려고 여기서 한 것 아닌가?
-    // this.gameIo.requestUserList();
   }
 
   openDialog(): void {
@@ -47,14 +43,18 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       if(result) {
         this.http.post('/room', {data: result}).subscribe(data => {
-          this.http.post('/room/' + result['name'], {
-            data: this.sessionService.getSessionId()
-          }).subscribe(dat => {
-            console.log('create room', result);
+          if(data['result'] == 'ok'){
+            this.http.post('/room/' + result['name'], {
+              data: this.sessionService.getSessionId()
+            }).subscribe(dat => {
+              console.log('create room', result);
 
-            this.gameIo.setRoomId(result['name']);
-            this.sessionService.setCurrentPage('game');
-          });
+              this.gameIo.setRoomId(result['name']);
+              this.sessionService.setCurrentPage('game');
+            });
+          } else {
+              alert('이미 존재하는 방 제목입니다.!');
+          }
         });
       }
       console.log('The dialog was closed');
@@ -87,7 +87,7 @@ export class CreateRoom {
     mode: false,
     gamecnt: 1,
     curcnt: 0,
-    timeOut: 10, // todo
+    timeOut: 10,
     remainSec: 10
   };
 
