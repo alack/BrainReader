@@ -89,6 +89,9 @@ setInterval(function () {
   }
 }, 1000);
 
+
+const User = require('./models/user');
+
 io.sockets.on('connection', socket => {
     // Join Room
   socket.on('joinroom', data => {
@@ -135,6 +138,10 @@ io.sockets.on('connection', socket => {
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
       // 현재 방안의 단어를 모두 삭제
       io.sockets.in(socket.room).emit('wordremove');
+      // 정답자의 포인트 상승시킴
+      User.update({id: socket.userName} , {$inc: {points: 1}}, (err) => {
+        if(err) console.log(err);
+      });
       // 문제를 맞췄으므로 현재 게임수를 하나 증가시킴
       if(++exports.rooms[roomnum].curcnt <= exports.rooms[roomnum].gamecnt) {
         // game이 gamecnt에 도달하지 못했으므로 게임은 계속 된다.
