@@ -204,7 +204,7 @@ io.sockets.on('connection', socket => {
 });
 
 function userRemove(roomName, userName) {
-  if(roomName=='0') return;
+  if(roomName=='0' || typeof roomName == 'undefined') return;
   const target = exports.rooms.find(o => o.name === roomName);
   const target_num = target['users'].findIndex(user => user === userName);
   target['users'].splice(target_num,1);
