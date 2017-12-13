@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   userPassword: string;
   session: boolean;
   sessId: string;
+  validation = true;  // true 이면 로그인 버튼 비활성화
 
   user = {
     sessionId: '',
@@ -59,5 +60,12 @@ export class LoginComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onKeyUp() {
+    if(this.userId.length > 0 && this.userPassword.length > 0)
+      this.validation = false;
+    else
+      this.validation = true;
   }
 }

@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Create a Room</h1>
 <div mat-dialog-content>
     <mat-form-field>
-        <input matInput [(ngModel)]="room.name" placeholder="Name">
+        <input matInput [(ngModel)]="room.name" placeholder="Name" (keyup)="onKeyDown()">
     </mat-form-field>
     <mat-form-field>
         <input matInput [(ngModel)]="room.password" placeholder="Password">
@@ -29,7 +29,7 @@
     </mat-form-field>
 </div>
 <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="room" tabindex="2">Create</button>
+    <button mat-button [mat-dialog-close]="room" tabindex="2" [disabled]="formisvalid">Create</button>
     <button mat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
 </div>
 

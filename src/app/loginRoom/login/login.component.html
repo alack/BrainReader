@@ -1,15 +1,15 @@
 <br>
 <form class="example-form">
   <mat-form-field class="example-full-width">
-    <input [(ngModel)]= "userId" [ngModelOptions]="{standalone: true}" matInput placeholder="아이디 입력" >
+    <input [(ngModel)]= "userId" [ngModelOptions]="{standalone: true}" matInput placeholder="아이디 입력" (keyup)="onKeyUp()">
   </mat-form-field>
 
   <mat-form-field class="example-full-width">
-    <input [(ngModel)]= "userPassword" [ngModelOptions]="{standalone: true}" matInput  type="password" placeholder="패스워드 입력" >
+    <input [(ngModel)]= "userPassword" [ngModelOptions]="{standalone: true}" matInput  type="password" placeholder="패스워드 입력" (keyup)="onKeyUp()">
   </mat-form-field>
 
 
-  <button style="width: 210px"  mat-raised-button color="primary" (click)='userLogin()'>로그인</button>
+  <button style="width: 210px"  mat-raised-button color="primary" (click)='userLogin()' [disabled]="validation">로그인</button>
   <button style="width: 210px"  mat-raised-button color="primary" (click)='onNoClick()'>취소</button>
 </form>
 

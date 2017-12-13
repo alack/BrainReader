@@ -90,11 +90,18 @@ export class CreateRoom {
     timeOut: 10,
     remainSec: 10
   };
-
+  formisvalid = true;
   constructor(public dialogRef: MatDialogRef<CreateRoom>) { }
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onKeyDown() {
+    if(this.room.name.length > 0)
+      this.formisvalid = false;
+    else
+      this.formisvalid = true;
   }
 
 }
