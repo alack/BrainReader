@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
   }
 
  ngOnInit(): void {
-    this.http.get('/user/me').subscribe(result => {
+    this.http.get('/user/check').subscribe(result => {
      if(result['result'] == "failed")
          console.log('세션 없음');
      else {

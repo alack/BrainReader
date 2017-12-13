@@ -71,8 +71,10 @@ const io = require('socket.io').listen(server);
 
 exports.rooms = [];
 exports.truewords = {};
+exports.users = [];
 
 setInterval(function () {
+  console.log(exports.users)
   if(exports.rooms){
     for(let room of exports.rooms) {
       console.log('setTimeout::room.curcnt : ', room.curcnt);
@@ -197,6 +199,9 @@ io.sockets.on('connection', socket => {
     io.sockets.in(socket.room).emit('getcolor', {color: data})
   });
   socket.on('disconnect', data => {
+    if(exports.users.find(name => name === socket.userName)) {
+      exports.users.splice(exports.users.indexOf(socket.userName), 1);
+    }
     userRemove( socket.room, socket.userName );
     socket.leave( socket.room , getUserList( socket.room ));
   });

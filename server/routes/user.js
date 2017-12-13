@@ -3,6 +3,7 @@
  */
 const express = require('express');
 const User = require('../../models/user');
+const server = require('../../server');
 
 const router = express.Router();
 
@@ -80,11 +81,16 @@ router.post('/login', (req, res) => {
     } else {
       user.comparePassword(req.body.password, function (err, isMatch) {
         if (isMatch && !err) {
-          // if user is found and password is right create a token
-
-          sess.name = req.body.id;
-
-          res.json({success: true, session: sess.name});
+          // 접속하려는 아이디가 이미 접속자 아이디에 없을 경우 로그인됨
+          if(!server.users.find(name => name === req.body.id)) {
+            // if user is found and password is right create a token
+            sess.name = req.body.id;
+            server.users.push(req.body.id);
+            res.json({success: true, session: sess.name});
+          } else {
+            // 중복 로그인에 걸리는 경우
+            res.send({success: false, msg: 'Authentication failed. already logged in.'});
+          }
 
         } else {
           res.send({success: false, msg: 'Authentication failed. Wrong password.'});
@@ -104,6 +110,7 @@ router.post('/logout', (req, res) => {
           console.log(err);
         }
         else {
+        server.users.splice(server.users.indexOf(sess.name), 1);
         res.json({result: true});
       }
     });
@@ -115,15 +122,35 @@ router.post('/logout', (req, res) => {
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
   if(req.session.name) {
-    User.findOne({
-      id: req.session.name
-    }, (err, user) => {
-      res.json(user);
-    });
+      User.findOne({
+        id: req.session.name
+      }, (err, user) => {
+        console.log(user.id);
+        res.json(user);
+      });
   } else {
     res.json({result :'failed'});
   }
 });
+
+router.get('/check', (req, res) => {
+  if(req.session.name) {
+    // 유저가 접속해있으면
+    if(server.users.find(name => name === req.session.name)) {
+      res.json({result :'failed'});
+    } else {
+      User.findOne({
+        id: req.session.name
+      }, (err, user) => {
+        server.users.push(user.id);
+        res.json(user);
+      });
+    }
+  } else {
+    res.json({result :'failed'});
+  }
+});
+
 
 
 
