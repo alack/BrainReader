@@ -125,6 +125,19 @@ router.get('/me', (req, res) => {
   }
 });
 
+
+
+router.get('/:id/image',(req,res)=>{
+
+   User.findOne({
+    id: req.params.id
+  }, (err, user) => {
+    res.json(user);
+  });
+
+});
+
+
 router.put('/:id',(req,res) => {
   console.log('server part update');
   User.update({id: req.params.id}, {image: req.body.image}, function (err, doc) {
