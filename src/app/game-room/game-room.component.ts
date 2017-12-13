@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GameIoService } from '../service/game-io.service';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-game-room',
@@ -13,7 +13,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
   start;
   startflag = false;
 
-  constructor(public gameIo: GameIoService, private http : HttpClient) {  }
+  constructor(public gameIo: GameIoService, public http: HttpClient) {  }
 
   ngOnInit() {
     this.gameIo.joinRoom();
@@ -21,22 +21,22 @@ export class GameRoomComponent implements OnInit, OnDestroy {
       console.log('both users push push!!' +
         'left : ', data['left'],
         'right : ', data['right']);
-
-      data['left'].forEach(result => {
-        this.http.get('/user/' + result.userName + '/image').subscribe( res =>{
-          this.leftusers.push(res);
+      const left = [], right = [];
+      data['left'].forEach( l => {
+        this.http.get('/user/' + l.userName + '/findUser').subscribe(res => {
+          left.push(res);
+          this.leftusers = left;
         });
       });
-
-      data['right'].forEach(result => {
-        this.http.get('/user/' + result.userName + '/image').subscribe( res =>{
-          this.rightusers.push(res);
+      this.leftusers = left;
+      data['right'].forEach(r => {
+        this.http.get('/user/' + r.userName + '/findUser').subscribe(res => {
+          right.push(res);
+          this.rightusers = right;
         });
       });
+      this.rightusers = right;
     });
-
-
-
     this.gameIo.gameStart().subscribe( () => {
       this.startflag = true;
     });

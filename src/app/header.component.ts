@@ -41,5 +41,6 @@ export class Header implements OnInit {
 
     onExit() {
         this.sessionService.setCurrentPage('waiting');
+        this.gameio.leaveRoom();
     }
 }

@@ -121,6 +121,8 @@ router.post('/logout', (req, res) => {
 
 // 로그인 유저의 정보 반환
 router.get('/me', (req, res) => {
+  // console.log('req.session : ', req.session);
+  // console.log('req.session.name : ', req.session.name);
   if(req.session.name) {
       User.findOne({
         id: req.session.name
@@ -154,7 +156,7 @@ router.get('/check', (req, res) => {
 
 
 
-router.get('/:id/image',(req,res)=>{
+router.get('/:id/findUser',(req,res)=>{
 
    User.findOne({
     id: req.params.id

@@ -74,7 +74,7 @@ exports.truewords = {};
 exports.users = [];
 
 setInterval(function () {
-  console.log(exports.users)
+  //console.log(exports.users)
   if(exports.rooms){
     for(let room of exports.rooms) {
       console.log('setTimeout::room.curcnt : ', room.curcnt);
@@ -239,7 +239,7 @@ function getUserList(id = 0) {
     } else {
       console.log('before : ', exports.rooms);
       exports.rooms.find((room, roomidx) => {
-        console.log(room);
+        // console.log(room);
         // 빈 list의 경우 unsigned로 취급 하지 않는듯, 빈 list를 확인하고 싶으면 length로 판단하자.
         if (!room.users.length) {
           delete exports.truewords[room.name];

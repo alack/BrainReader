@@ -42,7 +42,6 @@ export class LoginComponent implements OnInit {
       this.sessId = result['session'];
 
       if (this.session === true) {
-
         alert('로그인 성공');
         this.user.sessionId = this.sessId;
         this.user.currentPage = 'waiting';
@@ -63,9 +62,13 @@ export class LoginComponent implements OnInit {
   }
 
   onKeyUp() {
-    if(this.userId.length > 0 && this.userPassword.length > 0)
-      this.validation = false;
-    else
+    if (this.userId && this.userPassword) {
+      if (this.userId.length > 0 && this.userPassword.length > 0)
+        this.validation = false;
+      else
+        this.validation = true;
+    } else {
       this.validation = true;
+    }
   }
 }

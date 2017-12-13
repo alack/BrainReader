@@ -50,7 +50,6 @@ import { TabsOverviewComponent } from './loginRoom/start/tabs-overview.component
 import { RegisterComponent } from './loginRoom/register/register.component';
 import { LoginComponent } from './loginRoom/login/login.component';
 
-import { HttpWaitingRoomService } from './service/http-waitingRoom.service';
 import { HttpUserService } from './service/http-user.service';
 import { GameIoService } from './service/game-io.service';
 import { SessionService } from './service/session.service';
@@ -114,7 +113,6 @@ import { UpdateRoomComponent, UpdateRoomModalComponent } from "./game-room/game/
     MatRadioModule
   ],
   providers: [
-    HttpWaitingRoomService,
     HttpUserService,
     SessionService,
     GameIoService

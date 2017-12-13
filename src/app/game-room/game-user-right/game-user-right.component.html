@@ -1,6 +1,7 @@
 <mat-card class = "usercard" *ngFor="let rightuser of rightusers" [style.background]="rightuser.ready && !startflag ? 'blue' : 'white'">
   <mat-card-header>
-    <mat-card-title><img src="{{rightuser.image}}" width="50" height="50"></mat-card-title>
+    <mat-card-title>{{rightuser.id}}</mat-card-title>
+    <img mat-card-image src="{{rightuser.image}}" width="50" height="50">
   </mat-card-header>
   <!--<mat-card-content>-->
   <!--<img mat-card-image src="'{{rightuser.url}}'">-->

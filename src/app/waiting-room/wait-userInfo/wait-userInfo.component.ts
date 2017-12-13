@@ -20,7 +20,7 @@ export class WaitUserInfoComponent implements OnInit {
       attempt: 512,
       points: 1442,
       image: 'sssss.jpg'
-    }
+    };
 
     this.http.get('/user/me').subscribe( user => {
       this.user = user;

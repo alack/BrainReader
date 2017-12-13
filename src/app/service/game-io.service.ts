@@ -19,7 +19,7 @@ export class GameIoService implements OnInit {
   };
   public socket;
     constructor(private sessionService: SessionService,
-                private http: HttpClient) {
+                public http: HttpClient) {
     this.socket = io(this.url);
     this.LeftUser = [];
     this.RightUser = [];
@@ -195,14 +195,13 @@ export class GameIoService implements OnInit {
         console.log('gameIoService::gameroomuserlist event coming  ', data); // data가 이상한게 들어온다!!!
         if (data['users'] !== undefined) {
           const left = [], right = [];
-          data['users'].forEach(
-            (user, idx) => {
+          data['users'].forEach((user, idx) => {
               if (idx % 2 == 0) {
                 left.push(user);
-                  console.log('roomLeftUser push!! idx : ', idx);
+                console.log('roomLeftUser push!! idx : ', idx);
               } else {
                 right.push(user);
-                  console.log('roomRightUser push!! idx : ', idx);
+                console.log('roomRightUser push!! idx : ', idx);
               }
             });
           console.log({left: left, right: right});
