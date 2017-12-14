@@ -21,8 +21,6 @@ export class GameIoService implements OnInit {
     constructor(private sessionService: SessionService,
                 public http: HttpClient) {
     this.socket = io(this.url);
-    this.LeftUser = [];
-    this.RightUser = [];
     // this.joinRoom();
   }
 
@@ -288,8 +286,24 @@ export class GameIoService implements OnInit {
       this.socket.on('nexthuman', (data) => {
         console.log('gameIoService::nexthuman event coming');
         if (data === this.sessionService.getSessionId()) {
+          console.log('gameIoService::observer()');
           observer.next();
         }
+      });
+      return () => {
+        // this.socket.leave();
+        // this.socket.disconnect();
+      };
+    });
+    return observable;
+  }
+  painterChk() {
+    // 드로잉 하는자 색 부여하기
+    let observable = new Observable(observer => {
+
+      this.socket.on('painterchk', (data) => {
+        console.log('gameIoService::painterChk event coming');
+        observer.next(data);
       });
       return () => {
         // this.socket.leave();

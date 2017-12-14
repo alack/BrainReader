@@ -20,14 +20,14 @@ export class WaitLobbyComponent implements OnInit, OnDestroy {
               private sessionService: SessionService) {}
 
   ngOnInit(): void {
-    console.log('lobby init');
-    this.gameIo.setRoomId(0);
-    this.gameIo.joinRoom();
-    // Make the HTTP request:
-    this.http.get('/room').subscribe(data => {
-      // Read the result field from the JSON response.
-      this.rooms = data['result'];
-    });
+      console.log('lobby init');
+      this.gameIo.setRoomId(0);
+      this.gameIo.joinRoom();
+      // Make the HTTP request:
+      this.http.get('/room').subscribe(data => {
+        // Read the result field from the JSON response.
+        this.rooms = data['result'];
+      });
   }
 
   ngOnDestroy() {

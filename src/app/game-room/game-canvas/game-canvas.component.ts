@@ -39,9 +39,11 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       this.gameStart();
     });
     this.drawoff = this.gameIo.drawingAuthRemove().subscribe(() => {
+      console.log('drawingAuthRemove to drawoff event');
       this.drawingauth = false;
     });
-    this.drawon = this.gameIo.nextHuman().subscribe((data) => {
+    this.drawon = this.gameIo.nextHuman().subscribe(() => {
+      console.log('nextHuman() to drawon event');
       this.drawingauth = true;
     });
     this.end = this.gameIo.gameEnd().subscribe( () => {
@@ -159,10 +161,7 @@ export class GameCanvasComponent implements OnInit, OnDestroy {
       this.drawremove = this.gameIo.picRemove().subscribe(data => {
         console.log('chungseong chungseong!!  ', data);
         if (data['dangchum']) {
-          // 이미지 떠서
           const imgstring = this.c.toDataURL();
-          // 보낸다!!!
-          // 성공했다는 알림을 받아서 콘솔로 출력
           this.gameIo.sendDraw(imgstring).subscribe(back => {
             if (back['result']) {
               console.log(back['obj']);

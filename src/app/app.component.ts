@@ -21,7 +21,8 @@ export class AppComponent implements OnInit {
 
  ngOnInit(): void {
     this.http.get('/user/check').subscribe(result => {
-     if(result['result'] == "failed")
+      console.log('app-component result : ', result, '  ', this.sessionService.getCurrentPage());
+     if ( result['result'] == 'failed' )
          console.log('세션 없음');
      else {
          this.sessionService.setCurrentPage('waiting');

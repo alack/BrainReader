@@ -116,40 +116,59 @@ io.sockets.on('connection', socket => {
   socket.on('leaveroom', () => {
     userRemove( socket.room, socket.userName );
     socket.leave( socket.room , getUserList( socket.room ));
+    if(socket.room != 0) {
+      var roomidx;
+      if(roomidx = exports.rooms.findIndex(o => o.name == socket.room)) {
+        if (exports.rooms[roomidx].painter == socket.userName) {
+          holdPainter(socket.room);
+        }
+      }
+    }
   });
   // Broadcast to room
   socket.on('send:message', function(data) {
     console.log('send:message:: : ', socket.room,' msg : ', data.message);
     const roomnum = exports.rooms.findIndex(o => o.name === socket.room);
     // 그리는 사람은 어떤 대화를 대화를 쳐도 말을 할 수 없음.
+
     if (socket.room != '0' && socket.userName === exports.rooms[roomnum].painter && exports.rooms[roomnum].curcnt)
       data.message = '저는 말을 할 수 없습니다.';
+
     // 메세지를 전송함
     io.sockets.in(socket.room).emit('message', {name: socket.userName, msg: data.message});
+
     // 방이 가지는 실제 답 단어 목록은 객체라서 방이름으로 접근가능, 실제 답과 현재 메세지가 일치하고
     // 현재 방의 game stage 회수가 1이상이라면 답을 맞춘 것으로 인정하고 후속 동작을 한다.
     if(socket.room != '0' && exports.truewords[socket.room].word === data.message && exports.rooms[roomnum].curcnt) {
+
       // io.sockets.in(socket.room)으로는 그림 삭제
       const room = exports.rooms.find(o => o.name === socket.room);
       const dangchumUser = room.users[Math.floor(room.users.length * Math.random())];
       console.log('send:message::dangchum : ', dangchumUser);
       io.sockets.in(socket.room).emit('PICremove', {dangchum: dangchumUser});
+
       // broadcast로는 드로잉 권한 삭제 trigger
       socket.broadcast.emit('drawingauthremove');
+
       // io.sockets.in('room'...)으로는 정답자 알림
       io.sockets.in(socket.room).emit('message', {name: 'system', msg: socket.userName + '님이 정답을 맞추셨습니다.'});
+
       // 현재 방안의 단어를 모두 삭제
       io.sockets.in(socket.room).emit('wordremove');
+
       // 정답자의 포인트 상승시킴
       User.update({id: socket.userName} , {$inc: {points: 1}}, (err) => {
         if(err) console.log(err);
       });
+
       // 문제를 맞췄으므로 현재 게임수를 하나 증가시킴
       if(++exports.rooms[roomnum].curcnt <= exports.rooms[roomnum].gamecnt) {
+
         // game이 gamecnt에 도달하지 못했으므로 게임은 계속 된다.
         // socket.emit()으로는 드로잉 권한 부여, 단어 불러오기 트리거 발동
         exports.rooms[roomnum].painter = socket.userName;
         socket.emit('nexthuman', socket.userName);
+        io.sockets.in(socket.room).emit('painterchk', {painter: exports.rooms[roomnum].painter});
       } else {
         // game이 gamecnt를 넘었으므로 게임이 종료되고 상태가 초기화 된다.
         io.sockets.in(socket.room).emit('gameend');
@@ -158,11 +177,16 @@ io.sockets.on('connection', socket => {
             io.sockets.connected[client].ready = false;
           });
         });
+
+
         // trueword 지우기
         exports.truewords[socket.room] = '';
+
+
         // 시간 초기화
         exports.rooms[roomnum].curcnt = 0;
         exports.rooms[roomnum].painter='';
+        io.sockets.in(socket.room).emit('painterchk', {painter: exports.rooms[roomnum].painter});
         exports.rooms[roomnum].remainSec = exports.rooms[roomnum].timeOut;
         getUserList(socket.room);
       }
@@ -205,7 +229,6 @@ io.sockets.on('connection', socket => {
     userRemove( socket.room, socket.userName );
     socket.leave( socket.room , getUserList( socket.room ));
   });
-
 });
 
 function userRemove(roomName, userName) {
@@ -232,7 +255,9 @@ function getUserList(id = 0) {
         io.sockets.in(id).emit('getuserlist', {users: users});
       } else {
         console.log('gameroomuserlist from room ' + id, ' ', roomusers);
+        let roomidx = exports.rooms.findIndex(o => o.name == id);
         io.sockets.in(id).emit('gameroomuserlist', {users: roomusers});
+        io.sockets.in(id).emit('painterchk', {painter: exports.rooms[roomidx].painter});
         // game start chk trigger
         chkStart(id, roomusers);
       }
@@ -268,7 +293,7 @@ function chkStart(id, roomusers) {
 }
 // 랜덤으로 그릴사람 정해서 권한 부여하기 (맞춘 사람이 없거나 => 맞춘 사람 없이 시간이 끝난 경우)
 function holdPainter(id) {
-  console.log('server.js::holdPainter ');
+  console.log('server.js::holdPainter');
   exports.rooms.find((room) => {
     if( room.name === id ) {
       // canvas 초기화
@@ -282,6 +307,7 @@ function holdPainter(id) {
         room.painter = dangchumUser;
         console.log('after holdPainter result room name : ', id, 'room painter : ', room.painter);
         io.sockets.in(id).emit('nexthuman', dangchumUser);
+        io.sockets.in(id).emit('painterchk', {painter:room.painter});
       } else {
         // game이 gamecnt를 넘었으므로 게임이 종료되고 상태가 초기화 된다. 어떻게 할까. 고민해보자.
         console.log('game end room id : ', room.name);
@@ -295,6 +321,7 @@ function holdPainter(id) {
         // 시간 초기화
         room.curcnt = 0;
         room.painter = '';
+        io.sockets.in(id).emit('painterchk', {painter: room.painter});
         getUserList(id);
       }
       room.remainSec = room.timeOut;
