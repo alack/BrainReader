@@ -20,6 +20,7 @@ export class WaitUserListComponent implements  OnInit, OnDestroy {
     this.connection = this.gameIo.getUserList().subscribe(result => {
       this.users = result['users'];
     });
+    this.gameIo.requestUserList();
   }
 
   ngOnDestroy() {
