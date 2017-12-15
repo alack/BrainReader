@@ -52,6 +52,7 @@ export class GameComponent implements OnInit {
       this.problem_word = '0 0 0 0 0';
     });
     this.nexthuman = this.gameIo.nextHuman().subscribe(() => {
+      console.log('nextHuman() to getword event');
       this.getWord();
     });
     this.updateSec = this.gameIo.updateSec().subscribe( data => {

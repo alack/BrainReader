@@ -12,7 +12,7 @@ export class GameRoomComponent implements OnInit, OnDestroy {
   rightusers = [];
   start;
   startflag = false;
-
+  painter = '';
   constructor(public gameIo: GameIoService, public http: HttpClient) {  }
 
   ngOnInit() {
@@ -22,15 +22,21 @@ export class GameRoomComponent implements OnInit, OnDestroy {
         'left : ', data['left'],
         'right : ', data['right']);
       const left = [], right = [];
-      data['left'].forEach( l => {
+      data['left'].forEach( (l, lidx) => {
         this.http.get('/user/' + l.userName + '/findUser').subscribe(res => {
+          res['painter'] = res['id'] == this.painter ? true : false;
+          res['ready'] = data['left'][lidx].ready;
+          console.log('leftuser : ', res);
           left.push(res);
           this.leftusers = left;
         });
       });
       this.leftusers = left;
-      data['right'].forEach(r => {
+      data['right'].forEach((r, ridx) => {
         this.http.get('/user/' + r.userName + '/findUser').subscribe(res => {
+          res['painter'] = res['id'] == this.painter ? true : false;
+          res['ready'] = data['right'][ridx].ready;
+          console.log('leftuser : ', res);
           right.push(res);
           this.rightusers = right;
         });
@@ -38,10 +44,15 @@ export class GameRoomComponent implements OnInit, OnDestroy {
       this.rightusers = right;
     });
     this.gameIo.gameStart().subscribe( () => {
+      console.log('gamestart to startflag live');
       this.startflag = true;
     });
     this.gameIo.gameEnd().subscribe( () => {
+      console.log('gameend to startflag dead');
       this.startflag = false;
+    });
+    this.gameIo.painterChk().subscribe(res => {
+      this.painter = res['painter'];
     });
   }
 

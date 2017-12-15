@@ -91,7 +91,6 @@ router.post('/login', (req, res) => {
             // 중복 로그인에 걸리는 경우
             res.send({success: false, msg: 'Authentication failed. already logged in.'});
           }
-
         } else {
           res.send({success: false, msg: 'Authentication failed. Wrong password.'});
         }
@@ -136,9 +135,10 @@ router.get('/me', (req, res) => {
 });
 
 router.get('/check', (req, res) => {
-  if(req.session.name) {
+  // console.log(req.session);
+  if(typeof(req.session.name) != 'undefined') {
     // 유저가 접속해있으면
-    if(server.users.find(name => name === req.session.name)) {
+    if(typeof(server.users.find(name => name === req.session.name)) =='undefined') {
       res.json({result :'failed'});
     } else {
       User.findOne({
