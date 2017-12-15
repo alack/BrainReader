@@ -13,6 +13,7 @@ export class RegisterComponent implements OnInit {
 
   registerId: string;
   registerPw: string;
+  validation = true;  // true 이면 로그인 버튼 비활성화
 
   constructor(private httpUserService: HttpUserService, public dialogRef: MatDialogRef<DialogComponent>) {
   }
@@ -34,5 +35,16 @@ export class RegisterComponent implements OnInit {
 
   onNoClick(): void {
     this.dialogRef.close();
+  }
+
+  onKeyUp() {
+    if (this.registerId && this.registerPw) {
+      if (this.registerId.length > 0 && this.registerPw.length > 0)
+        this.validation = false;
+      else
+        this.validation = true;
+    } else {
+      this.validation = true;
+    }
   }
 }

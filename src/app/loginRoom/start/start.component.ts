@@ -23,7 +23,6 @@ export class StartComponent {
 
     const dialogRef = this.dialog.open(DialogComponent, {
       width: '500px',
-      height: '350px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
