@@ -1,33 +1,25 @@
-# WebSystemDesignProject
+# BrainReader
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.5.0.
+한 명이 제시어를 그리고 나머지가 채팅으로 맞히는 실시간 그림 맞히기 게임.
 
-## Development server
+2017년 아주대학교 웹시스템설계 수업 팀 프로젝트로 만들었고, 최종 발표에서 기능이 정상 동작하지 않았다. 이 저장소는 그 프로젝트를 새 기술 스택으로 다시 만들어 완성하는 작업이다.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## 현재 상태
 
-## Code scaffolding
+- 버전: v0.01 (2026-11-15)
+- 재작성 계획 단계. 아직 새 코드는 없고, 저장소에는 2017년 원본 코드(Angular 5 + Express + MongoDB)가 그대로 있다.
+- 원본은 최신 Node에서 실행을 확인하지 않았다.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## 저장소 구성
 
-## Build
+| 이름 | 내용 |
+|---|---|
+| `main` 브랜치 | 재작성 작업 |
+| `review-2017` 브랜치 | 2017년 원본의 잘못된 점과 바른 구현 방식 분석 (`docs/REVIEW-2017.md`) |
+| `v2017-final` 태그 | 2017-12-15 발표 시점 원본 |
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `-prod` flag for a production build.
+작업 규칙은 [AGENTS.md](AGENTS.md), 설계 판단과 재작성 계획은 [DEV_NOTES.md](DEV_NOTES.md)에 있다.
 
-## Running unit tests
+## 원작자
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## nohup
-
-if you need to run this project without care of terminal or session logout, run with 'nohup' command like below.
-(nohup mongod --dbpath ./& nohup ng build&&node server&)
-
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+2017 웹시스템설계 팀: alack, Yoo Jaehong, j_man, Crosstreet74, woaksths
