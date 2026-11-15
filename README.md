@@ -30,7 +30,7 @@ npm run dev
 | `npm run dev` | 서버(`apps/server`)와 웹(`apps/web`)을 함께 실행 |
 | `npm run typecheck` | 모든 워크스페이스 타입 검사 |
 | `npm test` | 단위·통합 테스트 (Vitest) |
-| `npm run e2e` | 두 브라우저 한 판 E2E (Playwright, 설치된 Chrome 사용). 3100·5180 포트에 테스트 서버를 따로 띄운다 |
+| `npm run e2e` | 두 브라우저 E2E (Playwright, 설치된 Chrome 사용). 한 판(`one-game`)과 회원가입부터 로그아웃까지 전체 흐름(`full-flow`). 3100·5180 포트에 테스트 서버를 따로 띄운다 |
 
 서버 환경 변수
 
