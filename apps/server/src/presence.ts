@@ -19,6 +19,10 @@ export class Presence {
     if (this.sockets.get(userId) === socket) this.sockets.delete(userId);
   }
 
+  get(userId: string): AppSocket | undefined {
+    return this.sockets.get(userId);
+  }
+
   disconnect(userId: string) {
     this.sockets.get(userId)?.disconnect(true);
   }

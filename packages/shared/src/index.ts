@@ -1,6 +1,15 @@
 export type { ClientToServerEvents, ServerToClientEvents } from './events.ts';
 export { credentialsSchema, type Credentials, type PublicUser } from './auth.ts';
-export type { GameSnapshot, Player, PlayerId, PublicPhase, RoundEndReason } from './game.ts';
+export { BRUSH_WIDTHS, PALETTE, strokeSchema, type Stroke } from './drawing.ts';
+export type {
+  GameEndReason,
+  GameSnapshot,
+  Player,
+  PlayerId,
+  PublicGameEvent,
+  PublicPhase,
+  RoundEndReason,
+} from './game.ts';
 export {
   chatTextSchema,
   createRoomSchema,

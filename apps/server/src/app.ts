@@ -6,25 +6,28 @@ import { Presence } from './presence.ts';
 import { SESSION_COOKIE, registerAuthRoutes } from './auth/routes.ts';
 import { findSessionUser } from './auth/store.ts';
 import { pickRandomWord } from './game/words.ts';
-import { RoomManager } from './rooms/room-manager.ts';
+import { RoomManager, type RoomTiming } from './rooms/room-manager.ts';
 import { registerRoomHandlers } from './rooms/handlers.ts';
+import { createGameRunner } from './rooms/game-runner.ts';
 import type { AppServer } from './socket-types.ts';
 
 export interface AppDeps {
   db: Db;
   logger?: boolean;
   pickWord?: () => string;
+  timing?: RoomTiming; // 테스트에서 라운드 시간을 줄일 때만 넘긴다
 }
 
 // 서버 구성 요소를 만들어 돌려주기만 한다. listen은 진입점(index.ts)이 한다.
-// 라우트와 소켓 핸들러가 필요한 것(db, presence, rooms)은 여기서 인자로 넘긴다.
-export function buildApp({ db, logger = true, pickWord = pickRandomWord }: AppDeps) {
+// 라우트와 소켓 핸들러가 필요한 것(db, presence, rooms, runner)은 여기서 인자로 넘긴다.
+export function buildApp({ db, logger = true, pickWord = pickRandomWord, timing }: AppDeps) {
   const fastify = Fastify({ logger });
   fastify.register(fastifyCookie);
 
   const io: AppServer = new Server(fastify.server);
   const presence = new Presence();
-  const rooms = new RoomManager(pickWord);
+  const rooms = new RoomManager(pickWord, timing);
+  const runner = createGameRunner({ io, rooms, presence });
 
   fastify.get('/api/health', async () => ({ ok: true }));
   registerAuthRoutes(fastify, db, presence);
@@ -42,7 +45,7 @@ export function buildApp({ db, logger = true, pickWord = pickRandomWord }: AppDe
     const { user } = socket.data;
     presence.connect(user.id, socket);
     socket.emit('hello', { serverTime: Date.now(), user });
-    registerRoomHandlers(socket, { io, rooms, presence, log: fastify.log });
+    registerRoomHandlers(socket, { io, rooms, presence, runner, log: fastify.log });
   });
 
   return { fastify, io, rooms };

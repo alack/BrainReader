@@ -1,73 +1,7 @@
-import type { AddressInfo } from 'node:net';
-import { afterEach, describe, expect, it } from 'vitest';
-import { io as connect, type Socket } from 'socket.io-client';
-import type {
-  ClientToServerEvents,
-  CreateRoomInput,
-  LobbyState,
-  RoomView,
-  ServerToClientEvents,
-} from '@brainreader/shared';
-import { buildApp } from '../app.ts';
-import { openDb } from '../db.ts';
-
-type Client = Socket<ServerToClientEvents, ClientToServerEvents>;
-type App = ReturnType<typeof buildApp>;
-
-const apps: App[] = [];
-const clients: Client[] = [];
-
-afterEach(async () => {
-  for (const c of clients.splice(0)) c.disconnect();
-  for (const app of apps.splice(0)) {
-    app.io.close();
-    await app.fastify.close();
-  }
-});
-
-async function startServer() {
-  const app = buildApp({ db: openDb(':memory:'), logger: false, pickWord: () => '사과' });
-  apps.push(app);
-  await app.fastify.listen({ port: 0, host: '127.0.0.1' });
-  const url = `http://127.0.0.1:${(app.fastify.server.address() as AddressInfo).port}`;
-
-  // 가입하고 그 세션으로 소켓을 연다. 대기실 상태를 한 번 받을 때까지 기다린다.
-  const login = async (username: string) => {
-    const res = await app.fastify.inject({
-      method: 'POST',
-      url: '/api/auth/register',
-      payload: { username, password: 'password123' },
-    });
-    const token = res.cookies.find((c) => c.name === 'sid')!.value;
-    const client: Client = connect(url, {
-      transports: ['websocket'],
-      reconnection: false,
-      extraHeaders: { cookie: `sid=${token}` },
-    });
-    clients.push(client);
-    await next(client, 'lobby:state');
-    return client;
-  };
-  return { app, login };
-}
-
-function next<E extends keyof ServerToClientEvents>(client: Client, event: E) {
-  return new Promise<Parameters<ServerToClientEvents[E]>[0]>((resolve) => {
-    client.once(event, ((arg: Parameters<ServerToClientEvents[E]>[0]) => resolve(arg)) as never);
-  });
-}
-
-// 조건에 맞는 대기실 상태가 올 때까지 기다린다.
-function lobbyWhere(client: Client, check: (s: LobbyState) => boolean) {
-  return new Promise<LobbyState>((resolve) => {
-    const listener = (s: LobbyState) => {
-      if (!check(s)) return;
-      client.off('lobby:state', listener);
-      resolve(s);
-    };
-    client.on('lobby:state', listener);
-  });
-}
+import { describe, expect, it } from 'vitest';
+import type { Socket } from 'socket.io-client';
+import type { CreateRoomInput, RoomView } from '@brainreader/shared';
+import { lobbyWhere, next, startServer, type Client } from '../testing.ts';
 
 const ROOM: CreateRoomInput = { name: '그림방', maxPlayers: 4, rounds: 3, roundTimeSec: 60 };
 

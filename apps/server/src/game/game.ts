@@ -4,9 +4,11 @@
 // 상태를 바꾼 결과로 "무슨 일이 일어났는지"를 GameEvent 목록으로 돌려준다.
 // 누구에게 어떻게 보낼지는 소켓 계층이 정한다.
 import type {
+  GameEndReason,
   GameSnapshot,
   Player,
   PlayerId,
+  PublicGameEvent,
   PublicPhase,
   RoundEndReason,
 } from '@brainreader/shared';
@@ -17,8 +19,6 @@ export interface GameSettings {
   roundTimeMs: number;
   roundEndPauseMs: number;
 }
-
-export type GameEndReason = 'finished' | 'notEnoughPlayers';
 
 // 점수 규칙. 정답자는 맞힌 순서대로 10, 8, 6, 4, 2, 2...점,
 // 출제자는 누가 맞힐 때마다 2점을 받는다. 아무도 못 맞히면 출제자는 0점이다.
@@ -50,28 +50,12 @@ export type Phase =
       nextAt: number;
     };
 
+// 모두에게 알리는 이벤트(PublicGameEvent)에 출제와 채팅을 더한 것.
 export type GameEvent =
-  | { type: 'gameStarted' }
-  | { type: 'roundStarted'; round: number; drawerId: PlayerId; endsAt: number }
+  | PublicGameEvent
   // 정답 단어는 이 이벤트로만 나간다. 소켓 계층은 drawerId에게만 보내야 한다.
-  | { type: 'wordAssigned'; drawerId: PlayerId; word: string }
-  | { type: 'chat'; playerId: PlayerId; text: string }
-  | {
-      type: 'correctGuess';
-      playerId: PlayerId;
-      order: number;
-      points: number;
-      drawerId: PlayerId;
-      drawerPoints: number;
-    }
-  | {
-      type: 'roundEnded';
-      round: number;
-      word: string;
-      reason: RoundEndReason;
-      correctIds: PlayerId[];
-    }
-  | { type: 'gameEnded'; reason: GameEndReason; ranking: Player[] };
+  | { type: 'wordAssigned'; round: number; drawerId: PlayerId; word: string }
+  | { type: 'chat'; playerId: PlayerId; text: string };
 
 export type GameErrorCode =
   | 'alreadyJoined'
@@ -177,6 +161,11 @@ export class Game {
     return [];
   }
 
+  // 지금 그릴 수 있는 사람. 그리는 중이 아니면 아무도 없다.
+  currentDrawer(): PlayerId | null {
+    return this.phase.kind === 'drawing' ? this.phase.drawerId : null;
+  }
+
   nextDeadline(): number | null {
     if (this.phase.kind === 'drawing') return this.phase.endsAt;
     if (this.phase.kind === 'roundEnd') return this.phase.nextAt;
@@ -224,7 +213,7 @@ export class Game {
     };
     return [
       { type: 'roundStarted', round: this.round, drawerId: drawer.id, endsAt },
-      { type: 'wordAssigned', drawerId: drawer.id, word },
+      { type: 'wordAssigned', round: this.round, drawerId: drawer.id, word },
     ];
   }
 

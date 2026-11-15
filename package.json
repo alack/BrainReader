@@ -10,9 +10,11 @@
     "dev": "concurrently -n server,web -c blue,green \"npm run dev -w @brainreader/server\" \"npm run dev -w @brainreader/web\"",
     "build": "npm run build -w @brainreader/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test --workspaces --if-present",
+    "e2e": "playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@types/node": "^26.6.6",
     "concurrently": "^10.0.7",
     "typescript": "^7.0.2"
