@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
 // 2017년 발표에서 확인하지 못한 것: 브라우저 두 개로 로그인부터 게임 끝까지 한 판.
-// 이 테스트가 통과하지 않으면 main에 병합하지 않는다 (AGENTS.md).
+// 이 테스트가 통과하지 않으면 main에 병합하지 않는다.
 
 async function signUp(page: Page, username: string) {
   await page.goto('/');
