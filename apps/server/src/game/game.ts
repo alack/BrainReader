@@ -3,15 +3,13 @@
 // 소켓, 타이머, DB를 모른다. 현재 시각(now)과 단어 뽑기(pickWord)는 밖에서 받고,
 // 상태를 바꾼 결과로 "무슨 일이 일어났는지"를 GameEvent 목록으로 돌려준다.
 // 누구에게 어떻게 보낼지는 소켓 계층이 정한다.
-
-export type PlayerId = string;
-
-export interface Player {
-  id: PlayerId;
-  name: string;
-  ready: boolean;
-  score: number;
-}
+import type {
+  GameSnapshot,
+  Player,
+  PlayerId,
+  PublicPhase,
+  RoundEndReason,
+} from '@brainreader/shared';
 
 export interface GameSettings {
   maxPlayers: number;
@@ -20,7 +18,6 @@ export interface GameSettings {
   roundEndPauseMs: number;
 }
 
-export type RoundEndReason = 'allGuessed' | 'timeout' | 'drawerLeft';
 export type GameEndReason = 'finished' | 'notEnoughPlayers';
 
 // 점수 규칙. 정답자는 맞힌 순서대로 10, 8, 6, 4, 2, 2...점,
@@ -91,18 +88,6 @@ export class GameError extends Error {
 }
 
 export const MIN_PLAYERS = 2;
-
-// 모두에게 보내도 되는 상태. 출제 중인 단어는 빠져 있다.
-export type PublicPhase =
-  | { kind: 'lobby' }
-  | { kind: 'drawing'; round: number; drawerId: PlayerId; endsAt: number; correctIds: PlayerId[] }
-  | Extract<Phase, { kind: 'roundEnd' }>;
-
-export interface GameSnapshot {
-  players: Player[];
-  phase: PublicPhase;
-  rounds: number;
-}
 
 export class Game {
   private readonly players: Player[] = []; // 입장 순서. 출제 순서도 이 순서를 따른다.

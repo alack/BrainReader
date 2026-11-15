@@ -12,7 +12,8 @@ export const credentialsSchema = z.object({
 export type Credentials = z.infer<typeof credentialsSchema>;
 
 // 클라이언트로 나가는 유저 정보는 이 모양뿐이다. 비밀번호 해시 같은 DB 칼럼은 여기 없다.
+// id는 API에서 항상 문자열이다. DB 정수 id를 문자열로 바꾸는 곳은 toPublicUser 하나뿐이다.
 export interface PublicUser {
-  id: number;
+  id: string;
   username: string;
 }

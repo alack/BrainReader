@@ -16,7 +16,7 @@ import {
 export const SESSION_COOKIE = 'sid';
 
 export function registerAuthRoutes(fastify: FastifyInstance, db: Db, presence: Presence) {
-  const startSession = (reply: FastifyReply, userId: number) => {
+  const startSession = (reply: FastifyReply, userId: string) => {
     const token = createSession(db, userId, Date.now());
     reply.setCookie(SESSION_COOKIE, token, {
       path: '/',
@@ -50,8 +50,9 @@ export function registerAuthRoutes(fastify: FastifyInstance, db: Db, presence: P
       return reply.code(401).send({ error: 'invalidCredentials' });
     }
 
-    startSession(reply, row.id);
-    return { user: toPublicUser(row) };
+    const user = toPublicUser(row);
+    startSession(reply, user.id);
+    return { user };
   });
 
   fastify.post('/api/auth/logout', async (request, reply) => {

@@ -40,7 +40,7 @@ describe('회원가입과 로그인', () => {
   it('가입하면 세션 쿠키가 생기고, 응답에 비밀번호 관련 필드가 없다 (REVIEW X1)', async () => {
     const res = await register(makeApp());
     expect(res.statusCode).toBe(201);
-    expect(res.json()).toEqual({ user: { id: 1, username: '지수' } });
+    expect(res.json()).toEqual({ user: { id: '1', username: '지수' } });
     expect(res.body).not.toMatch(/password|hash/i);
     expect(sessionCookie(res)).toMatchObject({ httpOnly: true, sameSite: 'Lax' });
   });
@@ -76,7 +76,7 @@ describe('회원가입과 로그인', () => {
     const cookies = { sid: sessionCookie(login).value };
 
     const me = await app.fastify.inject({ url: '/api/auth/me', cookies });
-    expect(me.json()).toEqual({ user: { id: 1, username: '지수' } });
+    expect(me.json()).toEqual({ user: { id: '1', username: '지수' } });
 
     await app.fastify.inject({ method: 'POST', url: '/api/auth/logout', cookies });
     const after = await app.fastify.inject({ url: '/api/auth/me', cookies });
@@ -124,7 +124,7 @@ describe('소켓 인증', () => {
     const app = makeApp();
     const token = sessionCookie(await register(app)).value;
     const hello = await once<{ user: unknown }>(open(await listen(app), token), 'hello');
-    expect(hello.user).toEqual({ id: 1, username: '지수' });
+    expect(hello.user).toEqual({ id: '1', username: '지수' });
   });
 
   it('같은 계정이 새로 접속하면 이전 연결은 끊긴다 (REVIEW S13 대체)', async () => {

@@ -6,6 +6,8 @@ const ERROR_TEXT: Record<string, string> = {
   invalidCredentials: '아이디 또는 비밀번호가 맞지 않습니다.',
   usernameTaken: '이미 쓰는 아이디입니다.',
   invalidInput: '입력 형식이 맞지 않습니다.',
+  network: '서버에 연결할 수 없습니다.',
+  serverError: '서버에서 오류가 났습니다. 잠시 뒤 다시 시도하세요.',
 };
 
 export function AuthForm({ onLogin }: { onLogin: (user: PublicUser) => void }) {
