@@ -85,4 +85,6 @@ npm run dev
 
 ## 원작자
 
-2017 웹시스템설계 팀: alack, Yoo Jaehong, j_man, Crosstreet74, woaksths
+2017 웹시스템설계 팀(4명): alack, Yoo Jaehong, woaksths, Crosstreet74
+
+커밋 기록에서 Kim Ji Soo는 alack, yoojaehong92는 Yoo Jaehong, j_man은 woaksths와 같은 사람이다.
