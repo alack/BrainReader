@@ -1,39 +1,35 @@
-import { useEffect, useState } from 'react';
-import { socket } from './socket.ts';
+import { useCallback, useEffect, useState } from 'react';
+import type { PublicUser } from '@brainreader/shared';
+import { fetchMe, logout } from './api.ts';
+import { AuthForm } from './AuthForm.tsx';
+import { Home } from './Home.tsx';
 
 export function App() {
-  const [connected, setConnected] = useState(socket.connected);
-  const [latencyMs, setLatencyMs] = useState<number | null>(null);
+  // undefined: 아직 확인 중, null: 로그인 안 됨
+  const [user, setUser] = useState<PublicUser | null | undefined>(undefined);
 
   useEffect(() => {
-    const onConnect = () => setConnected(true);
-    const onDisconnect = () => setConnected(false);
-
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.connect();
-
-    // 등록한 리스너는 같은 effect의 정리 함수에서 반드시 해제한다.
+    let cancelled = false;
+    fetchMe().then((me) => {
+      if (!cancelled) setUser(me);
+    });
     return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.disconnect();
+      cancelled = true;
     };
   }, []);
 
-  const ping = () => {
-    const sentAt = Date.now();
-    socket.emit('ping', () => setLatencyMs(Date.now() - sentAt));
-  };
+  const handleLogout = useCallback(async () => {
+    await logout();
+    setUser(null);
+  }, []);
+  const handleSessionExpired = useCallback(() => setUser(null), []);
 
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', padding: 24 }}>
       <h1>BrainReader</h1>
-      <p data-testid="status">{connected ? '서버 연결됨' : '연결 안 됨'}</p>
-      <button onClick={ping} disabled={!connected}>
-        ping
-      </button>
-      {latencyMs !== null && <p data-testid="latency">응답 {latencyMs}ms</p>}
+      {user === undefined && <p>확인 중</p>}
+      {user === null && <AuthForm onLogin={setUser} />}
+      {user && <Home user={user} onLogout={handleLogout} onSessionExpired={handleSessionExpired} />}
     </main>
   );
 }

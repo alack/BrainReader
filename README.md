@@ -6,9 +6,10 @@
 
 ## 현재 상태
 
-- 버전: v0.03 (2026-11-15)
-- 게임 규칙(`apps/server/src/game/game.ts`)을 소켓과 분리한 상태 기계로 작성했고 단위 테스트 27개가 통과한다. 아직 소켓에 연결하지 않아 화면에서는 게임을 할 수 없다.
-- 서버와 웹이 뜨고 브라우저에서 소켓 연결과 ping 응답을 확인했다 (v0.02).
+- 버전: v0.04 (2026-11-15)
+- 회원가입, 로그인, 로그아웃, 세션 쿠키, 소켓 인증이 동작한다. 같은 계정으로 새로 접속하면 이전 연결이 끊긴다. 브라우저에서 가입, 새로고침 후 유지, 두 탭 중복 접속, 로그아웃을 확인했다.
+- 게임 규칙(`apps/server/src/game/game.ts`)은 상태 기계로 작성했지만 아직 소켓에 연결하지 않아 화면에서는 게임을 할 수 없다.
+- 테스트 37개(게임 규칙 27, 인증 10)가 통과한다.
 - 2017년 원본(Angular 5 + Express + MongoDB)은 `legacy/`에 그대로 있다. 최신 Node에서 실행은 확인하지 않았다.
 
 ## 실행
@@ -26,7 +27,15 @@ npm run dev
 |---|---|
 | `npm run dev` | 서버(`apps/server`)와 웹(`apps/web`)을 함께 실행 |
 | `npm run typecheck` | 모든 워크스페이스 타입 검사 |
-| `npm test` | 단위 테스트 (Vitest) |
+| `npm test` | 테스트 (Vitest) |
+
+서버 환경 변수
+
+| 이름 | 기본값 | 내용 |
+|---|---|---|
+| `PORT` | `3000` | 서버 포트 |
+| `HOST` | `127.0.0.1` | 서버 주소 |
+| `DATABASE_PATH` | `data/brainreader.sqlite` | SQLite 파일 위치 (`apps/server` 기준). 없으면 만들고 스키마를 적용한다 |
 
 ## 저장소 구성
 
@@ -55,8 +64,8 @@ npm run dev
 | 서버 | Node 26 LTS, Fastify 5, Socket.IO 4 | 방, 재접속, ack를 Socket.IO가 처리하고 이벤트에 타입을 붙일 수 있다 |
 | 검증 | zod | 소켓 페이로드와 HTTP 본문을 같은 스키마로 검사 |
 | 웹 | React 19, Vite 8 | 컴포넌트 수명과 구독 정리(`useEffect` 반환)가 명시적 |
-| DB | SQLite + Drizzle ORM | 유저, 단어, 저장된 그림 정도라 별도 DB 서버가 필요 없다. 방과 게임 상태는 메모리 |
-| 인증 | 세션 쿠키(DB 저장), `@node-rs/argon2` | 원본의 `bcrypt` 네이티브 빌드 문제를 피한다 |
+| DB | Node 내장 `node:sqlite`, SQL 직접 작성 | 유저, 단어, 저장된 그림 정도라 별도 DB 서버가 필요 없다. 방과 게임 상태는 메모리. Drizzle은 `node:sqlite`를 지원하지 않고 대안(`better-sqlite3`)은 네이티브 빌드가 필요해서 뺐다 |
+| 인증 | 세션 쿠키(DB에는 토큰 해시만 저장), `@node-rs/argon2` | 원본의 `bcrypt` 네이티브 빌드 문제를 피한다 |
 | 테스트 | Vitest(게임 상태 기계), Playwright(두 브라우저 E2E) | |
 
 ## 단계

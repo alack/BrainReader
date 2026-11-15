@@ -10,10 +10,14 @@
   },
   "dependencies": {
     "@brainreader/shared": "*",
+    "@fastify/cookie": "^11.1.5",
+    "@node-rs/argon2": "^2.2.2",
     "fastify": "^5.12.8",
-    "socket.io": "^4.8.4"
+    "socket.io": "^4.8.4",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "socket.io-client": "^4.8.4",
     "tsx": "^4.23.15",
     "vitest": "^5.1.0"
   }
