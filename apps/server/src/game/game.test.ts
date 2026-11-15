@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Game, GameError, type GameEvent, type GameSettings } from './game.ts';
+import { Game, GameError, guessPoints, type GameEvent, type GameSettings } from './game.ts';
 
 const SETTINGS: GameSettings = {
   maxPlayers: 4,
@@ -25,6 +25,10 @@ function startedGame(ids = ['A', 'B'], settings: Partial<GameSettings> = {}) {
 
 function types(events: GameEvent[]) {
   return events.map((e) => e.type);
+}
+
+function score(game: Game, id: string) {
+  return game.snapshot().players.find((p) => p.id === id)?.score;
 }
 
 function drawing(game: Game) {
@@ -81,13 +85,11 @@ describe('채팅과 정답', () => {
     expect(game.chat('B', '   ', 10)).toEqual([]);
   });
 
-  it('정답을 맞히면 라운드가 끝나고 정답자가 1점을 얻으며, 정답 문장은 채팅으로 퍼지지 않는다', () => {
+  it('정답 문장은 채팅으로 퍼지지 않고, 띄어쓰기는 무시한다', () => {
     const { game } = startedGame();
     const events = game.chat('B', '사 과', 10_000);
-    expect(events).toEqual([
-      { type: 'roundEnded', round: 1, word: '사과', reason: 'correct', winnerId: 'B' },
-    ]);
-    expect(game.snapshot().players.find((p) => p.id === 'B')?.score).toBe(1);
+    expect(types(events)).toEqual(['correctGuess', 'roundEnded']);
+    expect(JSON.stringify(events[0])).not.toContain('사과');
   });
 
   it('출제자는 채팅할 수 없다', () => {
@@ -96,10 +98,16 @@ describe('채팅과 정답', () => {
   });
 
   it('라운드가 끝난 뒤의 정답은 점수가 되지 않는다', () => {
+    const { game } = startedGame();
+    game.chat('B', '사과', 10);
+    expect(game.chat('B', '사과', 20)).toEqual([{ type: 'chat', playerId: 'B', text: '사과' }]);
+    expect(score(game, 'B')).toBe(10);
+  });
+
+  it('이미 맞힌 사람은 라운드가 끝날 때까지 채팅할 수 없다', () => {
     const { game } = startedGame(['A', 'B', 'C']);
     game.chat('B', '사과', 10);
-    expect(game.chat('C', '사과', 20)).toEqual([{ type: 'chat', playerId: 'C', text: '사과' }]);
-    expect(game.snapshot().players.find((p) => p.id === 'C')?.score).toBe(0);
+    expect(() => game.chat('B', 'ㅋㅋ', 20)).toThrowError(new GameError('alreadyGuessed'));
   });
 
   it('모두에게 보내는 스냅숏에는 정답 단어가 없다 (REVIEW 2-3)', () => {
@@ -108,12 +116,56 @@ describe('채팅과 정답', () => {
   });
 });
 
+describe('점수', () => {
+  it('맞힌 순서대로 10, 8, 6, 4, 2점이고 다섯 번째부터는 2점이다', () => {
+    expect([1, 2, 3, 4, 5, 6].map(guessPoints)).toEqual([10, 8, 6, 4, 2, 2]);
+  });
+
+  it('한 명이 맞혀도 라운드는 계속되고, 모두 맞히면 끝난다. 출제자는 정답자마다 2점', () => {
+    const { game } = startedGame(['A', 'B', 'C']);
+
+    expect(game.chat('B', '사과', 10_000)).toEqual([
+      { type: 'correctGuess', playerId: 'B', order: 1, points: 10, drawerId: 'A', drawerPoints: 2 },
+    ]);
+    expect(drawing(game).correctIds).toEqual(['B']);
+
+    expect(game.chat('C', '사과', 20_000)).toEqual([
+      { type: 'correctGuess', playerId: 'C', order: 2, points: 8, drawerId: 'A', drawerPoints: 2 },
+      { type: 'roundEnded', round: 1, word: '사과', reason: 'allGuessed', correctIds: ['B', 'C'] },
+    ]);
+    expect([score(game, 'A'), score(game, 'B'), score(game, 'C')]).toEqual([4, 10, 8]);
+  });
+
+  it('일부만 맞히고 시간이 끝나면 맞힌 사람 점수만 남는다', () => {
+    const { game } = startedGame(['A', 'B', 'C']);
+    game.chat('C', '사과', 10_000);
+    expect(game.tick(60_000)).toEqual([
+      { type: 'roundEnded', round: 1, word: '사과', reason: 'timeout', correctIds: ['C'] },
+    ]);
+    expect([score(game, 'A'), score(game, 'B'), score(game, 'C')]).toEqual([2, 0, 10]);
+  });
+
+  it('아무도 못 맞히면 출제자도 0점이다', () => {
+    const { game } = startedGame(['A', 'B', 'C']);
+    game.tick(60_000);
+    expect(score(game, 'A')).toBe(0);
+  });
+
+  it('못 맞힌 사람이 나가서 남은 사람이 모두 맞힌 상태가 되면 라운드가 끝난다', () => {
+    const { game } = startedGame(['A', 'B', 'C']);
+    game.chat('B', '사과', 10_000);
+    expect(game.removePlayer('C', 20_000)).toEqual([
+      { type: 'roundEnded', round: 1, word: '사과', reason: 'allGuessed', correctIds: ['B'] },
+    ]);
+  });
+});
+
 describe('시간', () => {
   it('제한 시간 전에는 아무 일도 없고, 제한 시간이 되면 시간 초과로 끝난다', () => {
     const { game } = startedGame();
     expect(game.tick(59_999)).toEqual([]);
     expect(game.tick(60_000)).toEqual([
-      { type: 'roundEnded', round: 1, word: '사과', reason: 'timeout', winnerId: null },
+      { type: 'roundEnded', round: 1, word: '사과', reason: 'timeout', correctIds: [] },
     ]);
   });
 
@@ -160,9 +212,10 @@ describe('게임 종료', () => {
     const ended = events[0]!;
     if (ended.type !== 'gameEnded') throw new Error(ended.type);
     expect(ended.reason).toBe('finished');
+    // 각자 한 번씩 출제(2점)하고 한 번씩 1등으로 맞혔다(10점).
     expect(ended.ranking.map((p) => [p.id, p.score])).toEqual([
-      ['A', 1],
-      ['B', 1],
+      ['A', 12],
+      ['B', 12],
     ]);
     expect(game.snapshot().phase.kind).toBe('lobby');
     expect(game.snapshot().players.every((p) => !p.ready)).toBe(true);
@@ -183,7 +236,7 @@ describe('나가기', () => {
   it('출제자가 나가면 라운드가 끝나고, 다음 출제자는 건너뛰지 않는다', () => {
     const { game } = startedGame(['A', 'B', 'C']);
     expect(game.removePlayer('A', 10_000)).toEqual([
-      { type: 'roundEnded', round: 1, word: '사과', reason: 'drawerLeft', winnerId: null },
+      { type: 'roundEnded', round: 1, word: '사과', reason: 'drawerLeft', correctIds: [] },
     ]);
     game.tick(13_000);
     expect(drawing(game).drawerId).toBe('B');

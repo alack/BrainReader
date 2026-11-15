@@ -20,18 +20,36 @@ export interface GameSettings {
   roundEndPauseMs: number;
 }
 
-export type RoundEndReason = 'correct' | 'timeout' | 'drawerLeft';
+export type RoundEndReason = 'allGuessed' | 'timeout' | 'drawerLeft';
 export type GameEndReason = 'finished' | 'notEnoughPlayers';
+
+// 점수 규칙. 정답자는 맞힌 순서대로 10, 8, 6, 4, 2, 2...점,
+// 출제자는 누가 맞힐 때마다 2점을 받는다. 아무도 못 맞히면 출제자는 0점이다.
+export const FIRST_GUESS_POINTS = 10;
+export const GUESS_POINTS_STEP = 2;
+export const MIN_GUESS_POINTS = 2;
+export const DRAWER_POINTS_PER_GUESS = 2;
+
+export function guessPoints(order: number): number {
+  return Math.max(MIN_GUESS_POINTS, FIRST_GUESS_POINTS - (order - 1) * GUESS_POINTS_STEP);
+}
 
 export type Phase =
   | { kind: 'lobby' }
-  | { kind: 'drawing'; round: number; drawerId: PlayerId; word: string; endsAt: number }
+  | {
+      kind: 'drawing';
+      round: number;
+      drawerId: PlayerId;
+      word: string;
+      endsAt: number;
+      correctIds: PlayerId[]; // 맞힌 순서
+    }
   | {
       kind: 'roundEnd';
       round: number;
       word: string;
       reason: RoundEndReason;
-      winnerId: PlayerId | null;
+      correctIds: PlayerId[];
       nextAt: number;
     };
 
@@ -42,15 +60,29 @@ export type GameEvent =
   | { type: 'wordAssigned'; drawerId: PlayerId; word: string }
   | { type: 'chat'; playerId: PlayerId; text: string }
   | {
+      type: 'correctGuess';
+      playerId: PlayerId;
+      order: number;
+      points: number;
+      drawerId: PlayerId;
+      drawerPoints: number;
+    }
+  | {
       type: 'roundEnded';
       round: number;
       word: string;
       reason: RoundEndReason;
-      winnerId: PlayerId | null;
+      correctIds: PlayerId[];
     }
   | { type: 'gameEnded'; reason: GameEndReason; ranking: Player[] };
 
-export type GameErrorCode = 'alreadyJoined' | 'roomFull' | 'unknownPlayer' | 'notInLobby' | 'drawerCannotChat';
+export type GameErrorCode =
+  | 'alreadyJoined'
+  | 'roomFull'
+  | 'unknownPlayer'
+  | 'notInLobby'
+  | 'drawerCannotChat'
+  | 'alreadyGuessed';
 
 export class GameError extends Error {
   constructor(public readonly code: GameErrorCode) {
@@ -63,7 +95,7 @@ export const MIN_PLAYERS = 2;
 // 모두에게 보내도 되는 상태. 출제 중인 단어는 빠져 있다.
 export type PublicPhase =
   | { kind: 'lobby' }
-  | { kind: 'drawing'; round: number; drawerId: PlayerId; endsAt: number }
+  | { kind: 'drawing'; round: number; drawerId: PlayerId; endsAt: number; correctIds: PlayerId[] }
   | Extract<Phase, { kind: 'roundEnd' }>;
 
 export interface GameSnapshot {
@@ -102,9 +134,10 @@ export class Game {
     if (this.phase.kind === 'lobby') return this.tryStart(now);
     if (this.players.length < MIN_PLAYERS) return this.endGame('notEnoughPlayers');
     if (this.phase.kind === 'drawing' && this.phase.drawerId === id) {
-      return this.endRound('drawerLeft', null, now);
+      return this.endRound('drawerLeft', now);
     }
-    return [];
+    // 아직 못 맞힌 사람이 나가서 남은 사람이 전부 맞힌 상태가 될 수 있다.
+    return this.endRoundIfAllGuessed(now);
   }
 
   setReady(id: PlayerId, ready: boolean, now: number): GameEvent[] {
@@ -120,10 +153,29 @@ export class Game {
     if (trimmed === '') return [];
 
     if (this.phase.kind === 'drawing') {
-      if (this.phase.drawerId === id) throw new GameError('drawerCannotChat');
-      if (normalize(trimmed) === normalize(this.phase.word)) {
-        player.score += 1;
-        return this.endRound('correct', id, now);
+      const phase = this.phase;
+      if (phase.drawerId === id) throw new GameError('drawerCannotChat');
+      // 이미 맞힌 사람이 채팅하면 정답을 흘릴 수 있으므로 라운드가 끝날 때까지 막는다.
+      if (phase.correctIds.includes(id)) throw new GameError('alreadyGuessed');
+
+      if (normalize(trimmed) === normalize(phase.word)) {
+        phase.correctIds.push(id);
+        const order = phase.correctIds.length;
+        const points = guessPoints(order);
+        player.score += points;
+        this.requirePlayer(phase.drawerId).score += DRAWER_POINTS_PER_GUESS;
+
+        return [
+          {
+            type: 'correctGuess',
+            playerId: id,
+            order,
+            points,
+            drawerId: phase.drawerId,
+            drawerPoints: DRAWER_POINTS_PER_GUESS,
+          },
+          ...this.endRoundIfAllGuessed(now),
+        ];
       }
     }
     return [{ type: 'chat', playerId: id, text: trimmed }];
@@ -132,7 +184,7 @@ export class Game {
   // 시간에 따른 전이. 소켓 계층은 nextDeadline() 시각에 이 함수를 부른다.
   tick(now: number): GameEvent[] {
     if (this.phase.kind === 'drawing' && now >= this.phase.endsAt) {
-      return this.endRound('timeout', null, now);
+      return this.endRound('timeout', now);
     }
     if (this.phase.kind === 'roundEnd' && now >= this.phase.nextAt) {
       return this.round >= this.settings.rounds ? this.endGame('finished') : this.startRound(now);
@@ -148,15 +200,15 @@ export class Game {
 
   snapshot(): GameSnapshot {
     const players = this.players.map((p) => ({ ...p }));
-    const phase: PublicPhase =
-      this.phase.kind === 'drawing'
-        ? {
-            kind: 'drawing',
-            round: this.phase.round,
-            drawerId: this.phase.drawerId,
-            endsAt: this.phase.endsAt,
-          }
-        : { ...this.phase };
+    let phase: PublicPhase;
+    if (this.phase.kind === 'drawing') {
+      const { word: _word, ...rest } = this.phase;
+      phase = { ...rest, correctIds: [...rest.correctIds] };
+    } else if (this.phase.kind === 'roundEnd') {
+      phase = { ...this.phase, correctIds: [...this.phase.correctIds] };
+    } else {
+      phase = { kind: 'lobby' };
+    }
     return { players, phase, rounds: this.settings.rounds };
   }
 
@@ -177,26 +229,40 @@ export class Game {
     const word = this.pickWord();
     const endsAt = now + this.settings.roundTimeMs;
 
-    this.phase = { kind: 'drawing', round: this.round, drawerId: drawer.id, word, endsAt };
+    this.phase = {
+      kind: 'drawing',
+      round: this.round,
+      drawerId: drawer.id,
+      word,
+      endsAt,
+      correctIds: [],
+    };
     return [
       { type: 'roundStarted', round: this.round, drawerId: drawer.id, endsAt },
       { type: 'wordAssigned', drawerId: drawer.id, word },
     ];
   }
 
-  // 라운드를 끝내는 곳은 여기 하나뿐이다. 정답, 시간 초과, 출제자 이탈이 모두 이 함수를 거친다.
-  private endRound(reason: RoundEndReason, winnerId: PlayerId | null, now: number): GameEvent[] {
+  private endRoundIfAllGuessed(now: number): GameEvent[] {
     if (this.phase.kind !== 'drawing') return [];
-    const { round, word } = this.phase;
+    const { drawerId, correctIds } = this.phase;
+    const allGuessed = this.players.every((p) => p.id === drawerId || correctIds.includes(p.id));
+    return allGuessed ? this.endRound('allGuessed', now) : [];
+  }
+
+  // 라운드를 끝내는 곳은 여기 하나뿐이다. 모두 정답, 시간 초과, 출제자 이탈이 모두 이 함수를 거친다.
+  private endRound(reason: RoundEndReason, now: number): GameEvent[] {
+    if (this.phase.kind !== 'drawing') return [];
+    const { round, word, correctIds } = this.phase;
     this.phase = {
       kind: 'roundEnd',
       round,
       word,
       reason,
-      winnerId,
+      correctIds,
       nextAt: now + this.settings.roundEndPauseMs,
     };
-    return [{ type: 'roundEnded', round, word, reason, winnerId }];
+    return [{ type: 'roundEnded', round, word, reason, correctIds: [...correctIds] }];
   }
 
   private endGame(reason: GameEndReason): GameEvent[] {
